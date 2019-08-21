@@ -19,7 +19,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
 app.get('/', function (req, res) {
-    res.send('This is a Tapster');
+    res.send('Tapster');
 })
   
 const DB = dbService(environment, config.migrate).start();
