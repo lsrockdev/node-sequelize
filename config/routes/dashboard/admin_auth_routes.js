@@ -1,10 +1,5 @@
-var express = require('express');
-var router = express.Router();
+const adminAuthRoutes = {
+  // 'GET /users': 'AdminController.getAll',
+};
 
-
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
-
-module.exports = router;
+module.exports.adminAuthRoutes = adminAuthRoutes;

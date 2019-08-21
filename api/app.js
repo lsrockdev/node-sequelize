@@ -5,7 +5,6 @@ var logger = require('morgan');
 const cors = require('cors');
 const http = require('http');
 
-
 var app = express();
 const server = http.Server(app);
 const config = require('../config/');
@@ -18,6 +17,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
+
+app.get('/', function (req, res) {
+    res.send('This is a Tapster');
+})
+  
 const DB = dbService(environment, config.migrate).start();
 
 server.listen(config.port, () => {
@@ -29,6 +33,6 @@ server.listen(config.port, () => {
       process.exit(1);
     }
     return DB;
-  });
+});
   
 module.exports = app;
