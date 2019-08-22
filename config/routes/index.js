@@ -1,9 +1,10 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+const customerAuthRoutes = require("./customer/customer_auth_routes");
+const adminAuthRoutes = require("./dashboard/admin_auth_routes");
+
+router.use("/customer", customerAuthRoutes);
+router.use("/admin", adminAuthRoutes);
 
 module.exports = router;

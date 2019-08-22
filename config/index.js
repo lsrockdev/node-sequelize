@@ -1,8 +1,9 @@
-var express = require('express');
-var router = express.Router();
+const routes = require("./routes/index");
 
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+const config = {
+  migrate: false,
+  routes,
+  port: process.env.PORT || "3306"
+};
 
-module.exports = router;
+module.exports = config;
