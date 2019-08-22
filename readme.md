@@ -19,6 +19,7 @@ TWILIO_AUTH_TOKEN=yourtwilioauthtoken
 - Make sure mysql server is running locally.
 - Download and use [MySQL Workbench](https://dev.mysql.com/downloads/workbench/) to manage and browse your local db server
 - Create a schema (database) called `tapster`
+- Initialize sequelize: `sequelize init`
 - Run migrations to update the schema: `npx sequelize-cli db:migrate`
 - Seed the database:
   - `sequelize db:seed --seed 20190904234255-categories.js`
