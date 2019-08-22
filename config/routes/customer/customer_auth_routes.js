@@ -3,7 +3,7 @@ var router = express.Router();
 const customerController = require("../../../api/controllers/customers_controller");
 
 router.post("/signup", function(req, res) {
-  return res.send("testing");
+  return customerController().register(req, res);
 });
 
 module.exports = router;

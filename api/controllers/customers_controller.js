@@ -6,12 +6,31 @@ const CustomerController = () => {
   const register = async (req, res) => {
     const { body } = req;
     try {
-      const customer = await Customer.create({
+      const existing = await Customer.findOne({
+        where: {
+          email: body.email
+        }
+      });
+      if (!!existing) {
+        return res
+          .status(400)
+          .json({ msg: `${body.email} is already registered` });
+      }
+      await Customer.create({
         email: body.email,
         password: body.password
       });
-      const token = authService().issue({ id: customer.id });
-      return res.status(200).json({ token, customer });
+      const customer = await Customer.findOne({
+        where: {
+          email: body.email
+        }
+      });
+      customer.token = authService().issue({ id: customer.id });
+      return res.status(200).json({
+        message: "Successfully Registered",
+        StatusCode: 1,
+        customer
+      });
     } catch (err) {
       console.log(err);
       return res.status(500).json({ msg: "Internal server error" });
@@ -27,12 +46,16 @@ const CustomerController = () => {
             email
           }
         });
-        if (!user) {
+        if (!customer) {
           return res.status(400).json({ msg: "Bad Request: User not found" });
         }
-        if (bcryptService().comparePassword(password, user.password)) {
-          const token = authService().issue({ id: user.id });
-          return res.status(200).json({ token, user });
+        if (bcryptService().comparePassword(password, customer.password)) {
+          customer.token = authService().issue({ id: customer.id });
+          return res.status(200).json({
+            message: "Successfully Registered",
+            StatusCode: 1,
+            ...customer
+          });
         }
         return res.status(401).json({ msg: "Unauthorized" });
       } catch (err) {

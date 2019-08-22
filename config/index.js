@@ -1,7 +1,7 @@
 const routes = require("./routes/index");
 
 const config = {
-  migrate: false,
+  migrate: true,
   routes,
   port: process.env.PORT || "2017"
 };
