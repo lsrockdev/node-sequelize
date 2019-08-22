@@ -4,7 +4,6 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const cors = require("cors");
 const http = require("http");
-const mapRoutes = require("express-routes-mapper");
 
 var app = express();
 const server = http.Server(app);
@@ -14,13 +13,12 @@ const dbService = require("./services/db.service");
 
 app.use(logger("dev"));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
 
 app.use("/api", config.routes);
-
 const DB = dbService(environment, config.migrate).start();
 
 server.listen(config.port, () => {
