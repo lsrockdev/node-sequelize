@@ -14,9 +14,19 @@ const tableName = "customers";
 const Customer = sequelize.define(
   "Customer",
   {
+    id: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true
+    },
     email: {
       type: Sequelize.STRING,
-      unique: true
+      unique: true,
+      allowNull: false
+    },
+    phone: {
+      type: Sequelize.STRING
     },
     password: {
       type: Sequelize.STRING
@@ -43,7 +53,7 @@ const Customer = sequelize.define(
       type: Sequelize.DATE
     },
     gender: {
-      type: Sequelize.ENUM("male", "female")
+      type: Sequelize.INTEGER
     },
     isFbUser: {
       type: Sequelize.BOOLEAN

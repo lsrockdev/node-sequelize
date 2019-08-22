@@ -18,18 +18,20 @@ const CustomerController = () => {
       }
       await Customer.create({
         email: body.email,
-        password: body.password
+        password: body.password,
+        address: body.address
       });
       const customer = await Customer.findOne({
         where: {
           email: body.email
         }
       });
-      customer.token = authService().issue({ id: customer.id });
+      const token = authService().issue({ id: customer.id });
       return res.status(200).json({
         message: "Successfully Registered",
         StatusCode: 1,
-        customer
+        customer,
+        token
       });
     } catch (err) {
       console.log(err);
@@ -41,7 +43,7 @@ const CustomerController = () => {
     const { email, password } = req.body;
     if (email && password) {
       try {
-        const customer = await Customer.findOne({
+        let customer = await Customer.findOne({
           where: {
             email
           }
@@ -50,11 +52,12 @@ const CustomerController = () => {
           return res.status(400).json({ msg: "Bad Request: User not found" });
         }
         if (bcryptService().comparePassword(password, customer.password)) {
-          customer.token = authService().issue({ id: customer.id });
+          const token = authService().issue({ id: customer.id });
           return res.status(200).json({
-            message: "Successfully Registered",
+            message: "Login Success",
             StatusCode: 1,
-            ...customer
+            customer,
+            token
           });
         }
         return res.status(401).json({ msg: "Unauthorized" });
@@ -75,7 +78,6 @@ const CustomerController = () => {
       if (err) {
         return res.status(401).json({ isvalid: false, err: "Invalid Token!" });
       }
-
       return res.status(200).json({ isvalid: true });
     });
   };

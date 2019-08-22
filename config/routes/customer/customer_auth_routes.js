@@ -6,4 +6,8 @@ router.post("/signup", function(req, res) {
   return customerController().register(req, res);
 });
 
+router.post("/login", function(req, res) {
+  return customerController().login(req, res);
+});
+
 module.exports = router;
