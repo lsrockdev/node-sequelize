@@ -9,7 +9,6 @@ var app = express();
 const server = http.Server(app);
 const config = require("../config/index");
 const environment = process.env.NODE_ENV;
-// const dbService = require("./services/db.service");
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -19,7 +18,6 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
 
 app.use("/api", config.routes);
-// const DB = dbService(environment, config.migrate).start();
 
 server.listen(config.port, () => {
   if (
@@ -32,7 +30,6 @@ server.listen(config.port, () => {
     );
     process.exit(1);
   }
-  // return DB;
 });
 
 module.exports = app;

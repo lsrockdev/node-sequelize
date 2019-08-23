@@ -1,6 +1,6 @@
-const Cart = require("../models/cart");
-const Inventory = require("../models/inventory");
-const Customer = require("../models/customer");
+const Cart = require("../../models").Cart;
+const Customer = require("../../models").Customer;
+const Inventory = require("../../models").Inventory;
 
 const CartController = () => {
   const getAll = async (req, res) => {};
