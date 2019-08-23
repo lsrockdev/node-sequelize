@@ -20,17 +20,21 @@ const Cart = sequelize.define(
     hastap: {
       type: Sequelize.BOOLEAN
     },
-    Quantity: {
+    quantity: {
       type: Sequelize.DOUBLE
     },
-    Price: {
+    price: {
       type: Sequelize.DOUBLE
     },
-    CustomerId: {
+    customerId: {
       type: Sequelize.INTEGER
     },
-    InventoryId: {
+    inventoryId: {
       type: Sequelize.INTEGER
+    },
+    deleted: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false
     }
   },
   { hooks, tableName }
@@ -38,7 +42,6 @@ const Cart = sequelize.define(
 
 Cart.prototype.toJSON = function() {
   const values = Object.assign({}, this.get());
-  delete values.password;
   return values;
 };
 
