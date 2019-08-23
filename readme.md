@@ -22,18 +22,24 @@ DB_PASS=yourpassword
 
 ## Sequelize ORM CLI commands:
 
+Install sequelize-cli:
+`npm install --save-dev sequelize-cli`
+
+or globally:
+`npm install -g sequelize-cli`
+
 ### Creating migrations/models:
 
-`npx sequelize-cli model:generate --name User --attributes firstName:string,lastName:string,email:string`
+`sequelize model:generate --name User --attributes firstName:string,lastName:string,email:string`
 
 ### Apply migrations:
 
-`npx sequelize-cli db:migrate`
+`sequelize db:migrate`
 
 ### Undo last migration:
 
-`npx sequelize-cli db:migrate:undo`
+`sequelize db:migrate:undo`
 
 ### Seed the database:
 
-`npx sequelize-cli db:seed:all`
+`sequelize db:seed:all`
