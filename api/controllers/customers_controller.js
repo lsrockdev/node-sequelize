@@ -1,4 +1,4 @@
-const Customer = require("../models/customer");
+const Customer = require("../../models").Customer;
 const authService = require("../services/auth.service");
 const bcryptService = require("../services/bcrypt.service");
 
@@ -11,6 +11,7 @@ const CustomerController = () => {
           email: body.email
         }
       });
+      console.log("passed");
       if (!!existing) {
         return res
           .status(400)
@@ -18,14 +19,16 @@ const CustomerController = () => {
       }
       await Customer.create({
         email: body.email,
-        password: body.password,
+        password: bcryptService().password(body),
         address: body.address
       });
-      const customer = await Customer.findOne({
+      var customer = await Customer.findOne({
         where: {
           email: body.email
         }
       });
+      delete customer.password;
+      console.log(customer);
       const token = authService().issue({ id: customer.id });
       return res.status(200).json({
         message: "Successfully Registered",
