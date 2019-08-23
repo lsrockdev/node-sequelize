@@ -3,7 +3,16 @@ const Customer = require("../../models").Customer;
 const Inventory = require("../../models").Inventory;
 
 const CartController = () => {
-  const getAll = async (req, res) => {};
+  const getAll = async (req, res) => {
+    try {
+      const carts = await Cart.findAll();
+
+      return res.status(200).json({ carts });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ msg: "Internal server error" });
+    }
+  };
 
   const addOne = async (req, res) => {
     const { body } = req;
