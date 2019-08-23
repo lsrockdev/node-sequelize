@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./api/app.js",
-    "dev": " NODE_ENV=development DEBUG=tapster:* nodemon start",
+    "dev": "cross-env NODE_ENV=development DEBUG=tapster:* nodemon start",
     "production": "cross-env NODE_ENV=production DEBUG=tapster:* nodemon start"
   },
   "dependencies": {
