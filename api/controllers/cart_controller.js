@@ -5,9 +5,19 @@ const Inventory = require("../../models").Inventory;
 const CartController = () => {
   const getAll = async (req, res) => {
     try {
-      const carts = await Cart.findAll();
-
-      return res.status(200).json({ carts });
+      Inventory.hasMany(Cart, { foreignKey: "inventoryId" });
+      Cart.belongsTo(Inventory, { foreignKey: "inventoryId" });
+      const carts = await Cart.findAll({
+        where: {
+          deleted: false || null
+        },
+        include: [Inventory]
+      });
+      return res.status(200).json({
+        carts,
+        message: "Cart Added Succesfully",
+        StatusCode: 1
+      });
     } catch (err) {
       console.log(err);
       return res.status(500).json({ msg: "Internal server error" });

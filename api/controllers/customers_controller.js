@@ -11,7 +11,6 @@ const CustomerController = () => {
           email: body.email
         }
       });
-      console.log("passed");
       if (!!existing) {
         return res
           .status(400)
