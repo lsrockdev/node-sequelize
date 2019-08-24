@@ -43,14 +43,24 @@ const CartController = () => {
   const deleteOne = async (req, res) => {
     const { cartId } = req.body;
     try {
-      const cart = await Cart.findOne({
-        where: {
-          id: cartId
-        }
-      });
-      await cart.update({ deleted: 1 });
+      await Cart.update({ deleted: 1 }, { where: { id: cartId } });
       return res.status(200).json({
-        message: "Cart Deleted Succesfully"
+        message: "Cart Deleted Succesfully",
+        StatusCode: 1
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ msg: "Internal server error" });
+    }
+  };
+
+  const deleteByCustomerId = async (req, res) => {
+    const { customerId } = req.body;
+    try {
+      await Cart.update({ deleted: 1 }, { where: { customerId } });
+      return res.status(200).json({
+        message: "Cart Deleted Succesfully",
+        StatusCode: 1
       });
     } catch (err) {
       console.log(err);
@@ -82,7 +92,8 @@ const CartController = () => {
   return {
     getAll,
     addOne,
-    deleteOne
+    deleteOne,
+    deleteByCustomerId
   };
 };
 

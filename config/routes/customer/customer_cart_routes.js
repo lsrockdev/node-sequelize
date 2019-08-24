@@ -15,4 +15,8 @@ router.post("/deletecart", authPolicy, function(req, res) {
   return cartController().deleteOne(req, res);
 });
 
+router.post("/clearCustomerCartItems", authPolicy, function(req, res) {
+  return cartController().deleteByCustomerId(req, res);
+});
+
 module.exports = router;
