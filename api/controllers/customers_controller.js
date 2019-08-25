@@ -84,18 +84,27 @@ const CustomerController = () => {
     });
   };
 
-  const updateProfile = (req, res) => {
-    console.log(req.user);
+  const updateProfile = async (req, res) => {
+    customerId = req.token.id;
+
+    // TODO: Ira - abstract this currentUser lookup to a shared method:
+    const customer = await Customer.findOne({
+      where: {
+        id: customerId
+      }
+    });
+
+    if (!customer) {
+      throw new Error();
+    }
 
     // TODO: Ira - Update logic goes here
 
-    return res
-      .status(200)
-      .json({
-        isvalid: true,
-        message: "Update profile path",
-        customer: req.user
-      });
+    return res.status(200).json({
+      isvalid: true,
+      message: "Update profile path",
+      customer: customer
+    });
   };
 
   return {
