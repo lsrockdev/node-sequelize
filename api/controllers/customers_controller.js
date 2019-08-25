@@ -84,10 +84,25 @@ const CustomerController = () => {
     });
   };
 
+  const updateProfile = (req, res) => {
+    console.log(req.user);
+
+    // TODO: Ira - Update logic goes here
+
+    return res
+      .status(200)
+      .json({
+        isvalid: true,
+        message: "Update profile path",
+        customer: req.user
+      });
+  };
+
   return {
     register,
     login,
-    validate
+    validate,
+    updateProfile
   };
 };
 

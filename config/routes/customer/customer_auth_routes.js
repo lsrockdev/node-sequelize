@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
 const customerController = require("../../../api/controllers/customers_controller");
+const authPolicy = require("../../../api/policies/auth.policy");
 
 router.post("/signup", function(req, res) {
   return customerController().register(req, res);
@@ -8,6 +9,10 @@ router.post("/signup", function(req, res) {
 
 router.post("/login", function(req, res) {
   return customerController().login(req, res);
+});
+
+router.post("/updateprofile", authPolicy, function(req, res) {
+  return customerController().updateProfile(req, res);
 });
 
 module.exports = router;
