@@ -1,3 +1,5 @@
+require("dotenv").config(); // Allows access to .env vars throughout entire app
+
 var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
