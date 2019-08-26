@@ -7,4 +7,8 @@ router.get("/getStoresByCustomerId", authPolicy, function(req, res) {
   return storeController().getByCustomerId(req, res);
 });
 
+router.post("/getStoresByLocation", authPolicy, function(req, res) {
+  return storeController().getByLocation(req, res);
+});
+
 module.exports = router;
