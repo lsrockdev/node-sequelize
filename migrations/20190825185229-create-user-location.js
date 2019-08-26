@@ -1,48 +1,42 @@
-"use strict";
+'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable("Stores", {
+    return queryInterface.createTable('UserLocations', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      name: {
+      address1: {
         type: Sequelize.STRING
+      },
+      address2: {
+        type: Sequelize.STRING
+      },
+      address3: {
+        type: Sequelize.STRING
+      },
+      type: {
+        type: Sequelize.INTEGER
+      },
+      latitude: {
+        type: Sequelize.DOUBLE
+      },
+      longitude: {
+        type: Sequelize.DOUBLE
       },
       isActive: {
         type: Sequelize.BOOLEAN
       },
-      logo: {
-        type: Sequelize.STRING
-      },
-      taxPercentage: {
-        type: Sequelize.DOUBLE
-      },
-      WebsiteUrl: {
-        type: Sequelize.STRING
-      },
-      numberOfDays: {
+      customerId: {
         type: Sequelize.INTEGER
       },
-      uid: {
-        type: Sequelize.STRING
-      },
-      description: {
-        type: Sequelize.STRING
-      },
-      isDeleted: {
-        type: Sequelize.BOOLEAN
-      },
-      IsFrattapStore: {
-        type: Sequelize.BOOLEAN
+      stateId: {
+        type: Sequelize.INTEGER
       },
       userId: {
         type: Sequelize.INTEGER
-      },
-      storeAddress: {
-        type: Sequelize.JSON
       },
       createdAt: {
         allowNull: false,
@@ -55,6 +49,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("Stores");
+    return queryInterface.dropTable('UserLocations');
   }
 };
