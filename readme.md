@@ -20,6 +20,14 @@ DB_PASS=yourpassword
 - Run migrations to update the schema: `npx sequelize-cli db:migrate`
 - `npm run dev` to start the server and make sure it runs with no errors.
 
+## Heroku deploy:
+
+- Deploy:
+  `git push heroku master`
+
+- Run database migrations:
+  `heroku run npx sequelize-cli db:migrate`
+
 ## Sequelize ORM CLI commands:
 
 Install sequelize-cli:
