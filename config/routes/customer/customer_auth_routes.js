@@ -11,7 +11,7 @@ router.post("/login", function(req, res) {
   return customerController().login(req, res);
 });
 
-router.post("/updateprofile", authPolicy, function(req, res) {
+router.patch("/updateprofile", authPolicy, function(req, res) {
   return customerController().updateProfile(req, res);
 });
 
