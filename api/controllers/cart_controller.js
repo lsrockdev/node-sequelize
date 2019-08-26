@@ -55,7 +55,7 @@ const CartController = () => {
   };
 
   const deleteByCustomerId = async (req, res) => {
-    const { customerId } = req.body;
+    const customerId = req.token.id;
     try {
       await Cart.update({ deleted: 1 }, { where: { customerId } });
       return res.status(200).json({
