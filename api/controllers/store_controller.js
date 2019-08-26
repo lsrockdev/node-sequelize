@@ -22,45 +22,52 @@ const StoreController = () => {
         });
       }
       const activeAddress = addresses[0];
-
-      Store.hasMany(Customer, { foreignKey: "userId" });
-      StoreUser.belongsTo(Store, { foreignKey: "userId" });
-
-      const allStores = Store.findAll({
-        where: {
-          isDeleted: false || null
-        },
-        include: [StoreUser]
-      });
-      const availableStores = await allStores.filter(async store => {
-        const distance = await LocationHelper().distanceBetweenLocations(
-          activeAddress,
-          store.StoreUser.address
-        );
-        if (distance > 20) {
-          return store;
-        }
-      });
-
-      if (availableStores.length == 0) {
-        return res.status(200).json({
-          message: `This address is currently out of range of all Tapster stores. We'll be coming to you soon!`,
-          StatusCode: 0
-        });
-      }
-      return res.status(200).json({
-        stores,
-        message: `Available stores count:${count}`,
-        StatusCode: 1
-      });
+      return getStoresByLocation(await getStoresByLocation(activeAddress));
     } catch (err) {
       console.log(err);
       return res.status(500).json({ msg: "Internal server error" });
     }
   };
 
+  const getByLocation = async (req, res) => {
+    const { address } = req.body;
+    return res.status(200).json(await getStoresByLocation(address));
+  };
+
+  const getStoresByLocation = async address => {
+    StoreUser.hasOne(Store, { foreignKey: "userId" });
+    Store.belongsTo(StoreUser, { foreignKey: "userId" });
+    const allStores = Store.findAll({
+      where: {
+        isDeleted: false || null
+      },
+      include: [StoreUser]
+    });
+    const availableStores = await allStores.filter(async store => {
+      const distance = await LocationHelper().distanceBetweenLocations(
+        address,
+        store.StoreUser.address
+      );
+      if (distance > 20) {
+        return store;
+      }
+    });
+    if (availableStores.length == 0) {
+      return {
+        message: `This address is currently out of range of all Tapster stores. We'll be coming to you soon!`,
+        StatusCode: 0
+      };
+    }
+    return {
+      stores,
+      message: `Available stores count:${count}`,
+      StatusCode: 1
+    };
+  };
+
   return {
-    getByCustomerId
+    getByCustomerId,
+    getByLocation
   };
 };
 
