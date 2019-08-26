@@ -32,16 +32,16 @@ const StoreController = () => {
         },
         include: [StoreUser]
       });
-      const availableStores = allStores.filter(store => {
-        if (
-          LocationHelper.distanceBetweenLocations(
-            activeAddress,
-            store.StoreUser.address
-          ) > 20
-        ) {
+      const availableStores = await allStores.filter(async store => {
+        const distance = await LocationHelper().distanceBetweenLocations(
+          activeAddress,
+          store.StoreUser.address
+        );
+        if (distance > 20) {
           return store;
         }
       });
+
       if (availableStores.length == 0) {
         return res.status(200).json({
           message: `This address is currently out of range of all Tapster stores. We'll be coming to you soon!`,
