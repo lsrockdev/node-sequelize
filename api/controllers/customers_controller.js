@@ -1,6 +1,8 @@
 const Customer = require("../../models").Customer;
 const authService = require("../services/auth.service");
 const bcryptService = require("../services/bcrypt.service");
+const getCurrentUser = require("../helpers/current_user_helper");
+var _ = require("lodash");
 
 const CustomerController = () => {
   const register = async (req, res) => {
@@ -8,22 +10,22 @@ const CustomerController = () => {
     try {
       const existing = await Customer.findOne({
         where: {
-          email: body.email
+          email: body.email.toLowerCase()
         }
       });
       if (!!existing) {
         return res
           .status(400)
-          .json({ msg: `${body.email} is already registered` });
+          .json({ msg: `${body.email.toLowerCase()} is already registered` });
       }
       await Customer.create({
-        email: body.email,
+        email: body.email.toLowerCase(),
         password: bcryptService().password(body),
         address: body.address
       });
       var customer = await Customer.findOne({
         where: {
-          email: body.email
+          email: body.email.toLowerCase()
         }
       });
       delete customer.password;
@@ -42,12 +44,13 @@ const CustomerController = () => {
   };
 
   const login = async (req, res) => {
-    const { email, password } = req.body;
+    const { password } = req.body;
+    const email = req.body.email.toLowerCase();
     if (email && password) {
       try {
         let customer = await Customer.findOne({
           where: {
-            email
+            email: email
           }
         });
         if (!customer) {
@@ -85,25 +88,58 @@ const CustomerController = () => {
   };
 
   const updateProfile = async (req, res) => {
+    const { body } = req;
     customerId = req.token.id;
+    const currentUser = await getCurrentUser("Customer", customerId);
 
-    // TODO: Ira - abstract this currentUser lookup to a shared method:
-    const customer = await Customer.findOne({
-      where: {
-        id: customerId
-      }
-    });
+    // Whitelist allowable attributes:
+    const filteredAttributes = _.pick(body, [
+      "phone",
+      "firstName",
+      "lastName",
+      "userName",
+      "address",
+      "gender",
+      "secondaryContact",
+      "secondaryContactName",
+      "stateId",
+      "dob"
+    ]);
 
-    if (!customer) {
-      throw new Error();
+    // Check for password
+    if (body.password) {
+      filteredAttributes.password = bcryptService().password(body);
     }
 
-    // TODO: Ira - Update logic goes here
+    // Check for email - only update if different from current email:
+    if (
+      body.email &&
+      body.email.toLowerCase() !== currentUser.email.toLowerCase()
+    ) {
+      const email = body.email.toLowerCase();
+
+      // Make sure new email is unique in the db:
+      const existing = await Customer.findOne({
+        where: {
+          email: email
+        }
+      });
+      if (!!existing) {
+        return res.status(400).json({ msg: `${email} is already registered` });
+      } else {
+        // valid unique email:
+        filteredAttributes.email = email;
+      }
+    }
+
+    console.log(filteredAttributes);
+
+    await currentUser.update(filteredAttributes);
 
     return res.status(200).json({
       isvalid: true,
-      message: "Update profile path",
-      customer: customer
+      message: "Updated user profile details",
+      customer: currentUser
     });
   };
 
