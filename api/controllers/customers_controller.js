@@ -132,8 +132,6 @@ const CustomerController = () => {
       }
     }
 
-    console.log(filteredAttributes);
-
     await currentUser.update(filteredAttributes);
 
     return res.status(200).json({
