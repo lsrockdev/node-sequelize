@@ -1,6 +1,7 @@
 const Cart = require("../../models").Cart;
 const Customer = require("../../models").Customer;
 const Inventory = require("../../models").Inventory;
+const Store = require("../../models").Store;
 
 const CartController = () => {
   const getAll = async (req, res) => {
@@ -89,11 +90,60 @@ const CartController = () => {
     }
   };
 
+  const getCartByCustomer = async customerId => {
+    try {
+      Customer.hasMany(Cart, { foreignKey: "customerId" });
+      Inventory.hasMany(Cart, { foreignKey: "inventoryId" });
+
+      Cart.belongsTo(Customer, { foreignKey: "customerId" });
+      Cart.belongsTo(Inventory, { foreignKey: "inventoryId" });
+
+      Inventory.hasOne(Store, { foreignKey: "storeId" });
+      Store.belongsTo(Inventory, { foreignKey: "storeId" });
+
+      const carts = await Cart.findAll({
+        where: {
+          customerId: customerId
+        },
+        include: [
+          Customer,
+          {
+            model: Inventory,
+            include: [
+              {
+                model: Store
+              }
+            ]
+          }
+        ]
+      });
+      return carts;
+    } catch (err) {
+      console.log(err);
+      return null;
+    }
+  };
+
+  const getActiveStore = async customerId => {
+    const carts = await getCartByCustomer(id);
+    const activeCarts = carts.filter(
+      cart =>
+        cart.Inventory &&
+        cart.Inventory.Store &&
+        !cart.Inventory.Store.IsFrattapStore
+    );
+    if (activeCarts.length > 0) {
+      return activeCarts[0].Inventory.Store;
+    }
+    return null;
+  };
+
   return {
     getAll,
     addOne,
     deleteOne,
-    deleteByCustomerId
+    deleteByCustomerId,
+    getActiveStore
   };
 };
 

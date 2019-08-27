@@ -11,4 +11,8 @@ router.post("/getStoresByLocation", authPolicy, function(req, res) {
   return storeController().getByLocation(req, res);
 });
 
+router.post("/checkAddressWithInStoresRange", authPolicy, function(req, res) {
+  return storeController().checkAddressWithInStoresRange(req, res);
+});
+
 module.exports = router;
