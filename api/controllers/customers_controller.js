@@ -132,13 +132,11 @@ const CustomerController = () => {
       }
     }
 
-    console.log(filteredAttributes);
-
     await currentUser.update(filteredAttributes);
 
     return res.status(200).json({
       isvalid: true,
-      message: "Updated user profile details",
+      message: "Successfully updated customer",
       customer: currentUser
     });
   };
