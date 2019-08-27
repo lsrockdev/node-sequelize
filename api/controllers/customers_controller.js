@@ -2,6 +2,7 @@ const Customer = require("../../models").Customer;
 const authService = require("../services/auth.service");
 const bcryptService = require("../services/bcrypt.service");
 const getCurrentUser = require("../helpers/current_user_helper");
+const UserLocation = require("../../models").UserLocation;
 var _ = require("lodash");
 
 const CustomerController = () => {
@@ -141,11 +142,35 @@ const CustomerController = () => {
     });
   };
 
+  const getCustomerProfile = async (req, res) => {
+    customerId = req.token.id;
+    const currentUser = await getCurrentUser("Customer", customerId);
+
+    try {
+      const addresses = await UserLocation.findAll({
+        where: {
+          isActive: true,
+          customerId: customerId
+        }
+      });
+
+      return res.status(200).json({
+        message: "Successfully retrieved customer profile",
+        customer: currentUser,
+        addresses: addresses
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ msg: "Internal server error" });
+    }
+  };
+
   return {
     register,
     login,
     validate,
-    updateProfile
+    updateProfile,
+    getCustomerProfile
   };
 };
 
