@@ -4,10 +4,11 @@ const StoreUser = require("../../models").StoreUser;
 
 const UserLocation = require("../../models").UserLocation;
 const LocationHelper = require("../helpers/location_helper");
+const cartController = require("./cart_controller");
 
 const StoreController = () => {
   const getByCustomerId = async (req, res) => {
-    customerId = req.token.id;
+    const customerId = req.token.id;
     try {
       const addresses = await UserLocation.findAll({
         where: {
@@ -32,6 +33,36 @@ const StoreController = () => {
   const getByLocation = async (req, res) => {
     const { address } = req.body;
     return res.status(200).json(await getStoresByLocation(address));
+  };
+
+  const checkAddressWithInStoresRange = async (req, res) => {
+    const { address } = req.body;
+    const customerId = req.token.id;
+    const storesRes = await getStoresByLocation(address);
+    const activeStore = cartController().getActiveStore(customerId);
+
+    if (storesRes.status != 1) {
+      return res.status(200).json(storesRes);
+    }
+    if (activeStore == null) {
+      return res.status(200).json({
+        message: "",
+        StatusCode: 1, //success
+        stores: stores
+      });
+    }
+
+    if (storesRes.stores.map(store => store.id).include(activeStore.id)) {
+      return res.status(200).json({
+        message: "",
+        StatusCode: 1 //success
+      });
+    }
+    return res.status(200).json({
+      message: `This address is out of the delivery range of ${activeStore.name} store. 
+                Please empty your cart and choose a store within delivery range.`,
+      StatusCode: 3 //success
+    });
   };
 
   const getStoresByLocation = async address => {
@@ -67,7 +98,8 @@ const StoreController = () => {
 
   return {
     getByCustomerId,
-    getByLocation
+    getByLocation,
+    checkAddressWithInStoresRange
   };
 };
 
