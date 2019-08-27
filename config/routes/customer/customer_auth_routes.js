@@ -15,4 +15,8 @@ router.patch("/updateprofile", authPolicy, function(req, res) {
   return customerController().updateProfile(req, res);
 });
 
+router.get("/getcustomerprofile", authPolicy, function(req, res) {
+  return customerController().getCustomerProfile(req, res);
+});
+
 module.exports = router;
