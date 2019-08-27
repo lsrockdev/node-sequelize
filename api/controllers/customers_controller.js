@@ -1,6 +1,7 @@
 const Customer = require("../../models").Customer;
 const authService = require("../services/auth.service");
 const bcryptService = require("../services/bcrypt.service");
+const BrainTreeHelper = require("../helpers/braintree_helper");
 const getCurrentUser = require("../helpers/current_user_helper");
 const UserLocation = require("../../models").UserLocation;
 var _ = require("lodash");
@@ -88,6 +89,24 @@ const CustomerController = () => {
     });
   };
 
+  const generateBraintreeToken = async (req, res) => {
+    const customerId = req.token.id;
+    const currentUser = await getCurrentUser("Customer", customerId);
+    const brainTreeResponse = await BrainTreeHelper().generateBraintreeToken(
+      currentUser.braintreeCustomerId
+    );
+    if (brainTreeResponse.err) {
+      return res
+        .status(500)
+        .json({ StatusCode: 0, err: brainTreeResponse.err });
+    }
+    return res.status(200).json({
+      BraintreeToken: brainTreeResponse.response.clientToken,
+      Message: "Token generated",
+      StatusCode: 1
+    });
+  };
+
   const updateProfile = async (req, res) => {
     const { body } = req;
     customerId = req.token.id;
@@ -170,7 +189,8 @@ const CustomerController = () => {
     login,
     validate,
     updateProfile,
-    getCustomerProfile
+    getCustomerProfile,
+    generateBraintreeToken
   };
 };
 

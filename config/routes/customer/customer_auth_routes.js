@@ -11,6 +11,10 @@ router.post("/login", function(req, res) {
   return customerController().login(req, res);
 });
 
+router.get("/generateBrainTreeToken", authPolicy, function(req, res) {
+  return customerController().generateBraintreeToken(req, res);
+});
+
 router.patch("/updateprofile", authPolicy, function(req, res) {
   return customerController().updateProfile(req, res);
 });
