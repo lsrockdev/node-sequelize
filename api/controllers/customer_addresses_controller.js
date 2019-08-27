@@ -47,7 +47,6 @@ const CustomerController = () => {
     try {
       const addresses = await UserLocation.findAll({
         where: {
-          isActive: true,
           customerId: customerId
         }
       });
@@ -62,9 +61,37 @@ const CustomerController = () => {
     }
   };
 
+  const deleteCustomerAddress = async (req, res) => {
+    const { body } = req;
+    customerId = req.token.id;
+    // const currentUser = await getCurrentUser("Customer", customerId);
+
+    try {
+      const dbOperation = await UserLocation.destroy({
+        where: {
+          id: body.id,
+          customerId: customerId
+        }
+      });
+
+      if (!dbOperation) {
+        return res.status(400).json({
+          msg: `There was a problem deleting address with id ${body.id}`
+        });
+      }
+      return res.status(200).json({
+        message: `Successfully deleted address with id ${body.id}`
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ msg: "Internal server error" });
+    }
+  };
+
   return {
     addCustomerAddress,
-    getCustomerAddresses
+    getCustomerAddresses,
+    deleteCustomerAddress
   };
 };
 
