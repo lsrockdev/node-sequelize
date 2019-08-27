@@ -1,6 +1,7 @@
 const Customer = require("../../models").Customer;
 const authService = require("../services/auth.service");
 const bcryptService = require("../services/bcrypt.service");
+const otpService = require("../services/otp.service");
 const BrainTreeHelper = require("../helpers/braintree_helper");
 const getCurrentUser = require("../helpers/current_user_helper");
 const UserLocation = require("../../models").UserLocation;
@@ -184,13 +185,53 @@ const CustomerController = () => {
     }
   };
 
+  const createOtp = async (req, res) => {
+    await otpService().create();
+    return res.status(200).json({
+      message: "Successfully sent One Time Password (OTP) code!",
+      StatusCode: 1
+    });
+
+    // const { password } = req.body;
+    // const email = req.body.email.toLowerCase();
+    // if (email && password) {
+    //   try {
+    //     let customer = await Customer.findOne({
+    //       where: {
+    //         email: email
+    //       }
+    //     });
+    //     if (!customer) {
+    //       return res.status(400).json({ msg: "Bad Request: User not found" });
+    //     }
+    //     if (bcryptService().comparePassword(password, customer.password)) {
+    //       const token = authService().issue({ id: customer.id });
+    //       return res.status(200).json({
+    //         message: "Login Success",
+    //         StatusCode: 1,
+    //         customer,
+    //         token
+    //       });
+    //     }
+    //     return res.status(401).json({ msg: "Unauthorized" });
+    //   } catch (err) {
+    //     console.log(err);
+    //     return res.status(500).json({ msg: "Internal server error" });
+    //   }
+    // }
+    // return res
+    //   .status(400)
+    //   .json({ msg: "Bad Request: Email or password is wrong" });
+  };
+
   return {
     register,
     login,
     validate,
     updateProfile,
     getCustomerProfile,
-    generateBraintreeToken
+    generateBraintreeToken,
+    createOtp
   };
 };
 

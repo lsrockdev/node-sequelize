@@ -23,4 +23,9 @@ router.get("/getcustomerprofile", authPolicy, function(req, res) {
   return customerController().getCustomerProfile(req, res);
 });
 
+// No auth required since this is a signup and pw reset route
+router.post("/createotp", function(req, res) {
+  return customerController().createOtp(req, res);
+});
+
 module.exports = router;
