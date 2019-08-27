@@ -39,8 +39,32 @@ const CustomerController = () => {
     }
   };
 
+  const getCustomerAddresses = async (req, res) => {
+    const { body } = req;
+    customerId = req.token.id;
+    // const currentUser = await getCurrentUser("Customer", customerId);
+
+    try {
+      const addresses = await UserLocation.findAll({
+        where: {
+          isActive: true,
+          customerId: customerId
+        }
+      });
+
+      return res.status(200).json({
+        message: "Successfully retrieved addresses",
+        addresses: addresses
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ msg: "Internal server error" });
+    }
+  };
+
   return {
-    addCustomerAddress
+    addCustomerAddress,
+    getCustomerAddresses
   };
 };
 

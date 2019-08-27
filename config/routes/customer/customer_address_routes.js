@@ -7,4 +7,8 @@ router.post("/addCustomerAddress", authPolicy, function(req, res) {
   return customerAddressesController().addCustomerAddress(req, res);
 });
 
+router.get("/getCustomerAddresses", authPolicy, function(req, res) {
+  return customerAddressesController().getCustomerAddresses(req, res);
+});
+
 module.exports = router;
