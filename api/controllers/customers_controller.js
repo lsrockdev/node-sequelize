@@ -186,42 +186,26 @@ const CustomerController = () => {
   };
 
   const createOtp = async (req, res) => {
-    await otpService().create();
-    return res.status(200).json({
-      message: "Successfully sent One Time Password (OTP) code!",
-      StatusCode: 1
+    const customer = await Customer.findOne({
+      where: {
+        email: req.body.email.toLowerCase(),
+        phone: req.body.phone
+      }
     });
 
-    // const { password } = req.body;
-    // const email = req.body.email.toLowerCase();
-    // if (email && password) {
-    //   try {
-    //     let customer = await Customer.findOne({
-    //       where: {
-    //         email: email
-    //       }
-    //     });
-    //     if (!customer) {
-    //       return res.status(400).json({ msg: "Bad Request: User not found" });
-    //     }
-    //     if (bcryptService().comparePassword(password, customer.password)) {
-    //       const token = authService().issue({ id: customer.id });
-    //       return res.status(200).json({
-    //         message: "Login Success",
-    //         StatusCode: 1,
-    //         customer,
-    //         token
-    //       });
-    //     }
-    //     return res.status(401).json({ msg: "Unauthorized" });
-    //   } catch (err) {
-    //     console.log(err);
-    //     return res.status(500).json({ msg: "Internal server error" });
-    //   }
-    // }
-    // return res
-    //   .status(400)
-    //   .json({ msg: "Bad Request: Email or password is wrong" });
+    if (!customer)
+      res.status(404).json({ msg: "No user found for that email/phone." });
+
+    try {
+      await otpService().create("Customer", customer.id);
+      return res.status(200).json({
+        message: "Successfully sent One Time Password (OTP) code!",
+        StatusCode: 1
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ msg: "Internal server error" });
+    }
   };
 
   return {
