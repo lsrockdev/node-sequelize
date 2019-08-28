@@ -11,4 +11,8 @@ router.get("/getCustomerAddresses", authPolicy, function(req, res) {
   return customerAddressesController().getCustomerAddresses(req, res);
 });
 
+router.delete("/deleteCustomerAddress", authPolicy, function(req, res) {
+  return customerAddressesController().deleteCustomerAddress(req, res);
+});
+
 module.exports = router;

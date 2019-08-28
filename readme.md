@@ -12,6 +12,8 @@ NODE_ENV=development
 DB_NAME=tapster
 DB_USER=root
 DB_PASS=yourpassword
+TWILIO_SID=yourtwiliosid
+TWILIO_AUTH_TOKEN=yourtwilioauthtoken
 ```
 
 - Make sure mysql server is running locally.

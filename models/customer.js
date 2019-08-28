@@ -24,7 +24,8 @@ module.exports = (sequelize, DataTypes) => {
       isFbUser: DataTypes.BOOLEAN,
       secondaryContact: DataTypes.STRING,
       secondaryContactName: DataTypes.STRING,
-      stateId: DataTypes.INTEGER
+      stateId: DataTypes.INTEGER,
+      otpCode: DataTypes.STRING
     },
     {}
   );
