@@ -52,9 +52,26 @@ const CustomerController = () => {
   };
 
   const forgotPassword = async (req, res) => {
-    const { body } = req.body;
+    const { body } = req;
+    console.log(body);
+    const existing = await Customer.findOne({
+      where: {
+        phone: body.phone
+      }
+    });
+    if (!existing) {
+      return res.status(200).json({
+        Message:
+          "There are no Tapster accounts associated with that phone number",
+        StatusCode: 0
+      });
+    }
+    await Customer.update(
+      { password: body.password },
+      { where: { phone: body.phone } }
+    );
     return res.status(200).json({
-      Message: "testing",
+      Message: "Passowrd Updated Succesfully",
       StatusCode: 1
     });
   };
