@@ -1,6 +1,8 @@
 const Customer = require("../../models").Customer;
 const authService = require("../services/auth.service");
 const bcryptService = require("../services/bcrypt.service");
+const Sequelize = require("sequelize");
+
 const BrainTreeHelper = require("../helpers/braintree_helper");
 const getCurrentUser = require("../helpers/current_user_helper");
 const UserLocation = require("../../models").UserLocation;
@@ -12,18 +14,23 @@ const CustomerController = () => {
     try {
       const existing = await Customer.findOne({
         where: {
-          email: body.email.toLowerCase()
+          [Sequelize.Op.or]: [
+            { email: body.email.toLowerCase() },
+            { phone: body.phone }
+          ]
         }
       });
       if (!!existing) {
-        return res
-          .status(400)
-          .json({ msg: `${body.email.toLowerCase()} is already registered` });
+        return res.status(400).json({
+          msg: `${body.email.toLowerCase()} or ${
+            body.phone
+          } was already used in other accounts`
+        });
       }
       await Customer.create({
+        ...body,
         email: body.email.toLowerCase(),
-        password: bcryptService().password(body),
-        address: body.address
+        password: bcryptService().password(body)
       });
       var customer = await Customer.findOne({
         where: {
@@ -31,7 +38,6 @@ const CustomerController = () => {
         }
       });
       delete customer.password;
-      console.log(customer);
       const token = authService().issue({ id: customer.id });
       return res.status(200).json({
         message: "Successfully Registered",
@@ -43,6 +49,14 @@ const CustomerController = () => {
       console.log(err);
       return res.status(500).json({ msg: "Internal server error" });
     }
+  };
+
+  const forgotPassword = async (req, res) => {
+    const { body } = req.body;
+    return res.status(200).json({
+      Message: "testing",
+      StatusCode: 1
+    });
   };
 
   const login = async (req, res) => {
@@ -187,6 +201,7 @@ const CustomerController = () => {
   return {
     register,
     login,
+    forgotPassword,
     validate,
     updateProfile,
     getCustomerProfile,
