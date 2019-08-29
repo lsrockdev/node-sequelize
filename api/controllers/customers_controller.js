@@ -52,31 +52,6 @@ const CustomerController = () => {
     }
   };
 
-  const forgotPassword = async (req, res) => {
-    const { body } = req;
-    console.log(body);
-    const existing = await Customer.findOne({
-      where: {
-        phone: body.phone
-      }
-    });
-    if (!existing) {
-      return res.status(200).json({
-        Message:
-          "There are no Tapster accounts associated with that phone number",
-        StatusCode: 0
-      });
-    }
-    await Customer.update(
-      { password: body.password },
-      { where: { phone: body.phone } }
-    );
-    return res.status(200).json({
-      Message: "Passowrd Updated Succesfully",
-      StatusCode: 1
-    });
-  };
-
   const login = async (req, res) => {
     const { password } = req.body;
     const email = req.body.email.toLowerCase();
@@ -109,6 +84,66 @@ const CustomerController = () => {
     return res
       .status(400)
       .json({ msg: "Bad Request: Email or password is wrong" });
+  };
+
+  const forgotPassword = async (req, res) => {
+    const { body } = req;
+    console.log(body);
+    const existing = await Customer.findOne({
+      where: {
+        phone: body.phone
+      }
+    });
+    if (!existing) {
+      return res.status(200).json({
+        Message:
+          "There are no Tapster accounts associated with that phone number",
+        StatusCode: 0
+      });
+    }
+    await Customer.update(
+      { password: body.password },
+      { where: { phone: body.phone } }
+    );
+    return res.status(200).json({
+      Message: "Passowrd Updated Succesfully",
+      StatusCode: 1
+    });
+  };
+
+  const forgotPasswordOTP = async (req, res) => {
+    const { body } = req;
+    try {
+      const customer = await Customer.findOne({
+        where: {
+          phone: body.phone
+        }
+      });
+      if (!customer) {
+        return res.status(404).json({
+          Message:
+            "There are no Tapster accounts associated with that phone number",
+          StatusCode: 0
+        });
+      }
+      const optCode = await otpService().create("Customer", customer.id);
+      if (optCode) {
+        return res.status(200).json({
+          otp: optCode,
+          message: "OTP generated.",
+          StatusCode: 1
+        });
+      }
+      return res
+        .status(500)
+        .json({
+          StatusCode: 0,
+          msg: "Failed to send OPT code. Please try again!"
+        });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ msg: "Internal server error" });
+    }
   };
 
   const validate = (req, res) => {
@@ -243,6 +278,7 @@ const CustomerController = () => {
     register,
     login,
     forgotPassword,
+    forgotPasswordOTP,
     validate,
     updateProfile,
     getCustomerProfile,
