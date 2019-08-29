@@ -9,18 +9,20 @@ const generateOtpCode = () => Math.floor(100000 + Math.random() * 900000);
 
 const otpService = () => {
   const create = async (model, id) => {
-    const code = generateOtpCode();
-    console.log(`Generated OTP Code for ${model} ${id}`);
-    const currentUser = await getCurrentUser(model, id);
-    const response = await currentUser.update({ otpCode: code });
-
-    client.messages
-      .create({
-        body: `Your Tapster code is: ${code}`,
-        from: fromPhone,
-        to: currentUser.phone
-      })
-      .then(message => console.log("Sent SMS:", message));
+    return new Promise(async (resolve, reject) => {
+      const code = generateOtpCode();
+      console.log(`Generated OTP Code for ${model} ${id}`);
+      const currentUser = await getCurrentUser(model, id);
+      const response = await currentUser.update({ otpCode: code });
+      client.messages
+        .create({
+          body: `Your Tapster code is: ${code}`,
+          from: fromPhone,
+          to: currentUser.phone
+        })
+        .then(message => console.log("Sent SMS:", message), resolve(code))
+        .catch(e => reject(e));
+    });
   };
 
   // const verify = () => {

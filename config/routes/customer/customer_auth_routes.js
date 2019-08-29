@@ -15,6 +15,10 @@ router.post("/forgotPassword", function(req, res) {
   return customerController().forgotPassword(req, res);
 });
 
+router.post("/forgotPasswordOTP", function(req, res) {
+  return customerController().forgotPasswordOTP(req, res);
+});
+
 router.get("/generateBrainTreeToken", authPolicy, function(req, res) {
   return customerController().generateBraintreeToken(req, res);
 });
