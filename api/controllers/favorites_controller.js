@@ -1,26 +1,31 @@
 const Favorites = require("../../models").Favorites;
-const Category = require("../../models").Category;
-const Customer = require("../../models").Customer;
-
-Customer.hasMany(Favorites, { foreignKey: "customerId" });
-Favorites.belongsTo(Customer, { foreignKey: "customerId" });
-
-Category.hasMany(Favorites, { foreignKey: "categoryId" });
-Favorites.belongsTo(Category, { foreignKey: "categoryId" });
+const Product = require("../../models").Product;
+const Store = require("../../models").Store;
+const Sequelize = require("sequelize");
 
 const FavoritesController = () => {
-  const getAll = async (req, res) => {
-    const favoriteProducts = await Favorites.findAll({
-      where: {
-        deleted: false || null
-      },
-      include: [Customer, Favorites]
-    });
-    return res.status(200).json({
-      favoriteProducts,
-      message: "Favorite product read successful.",
-      StatusCode: 1
-    });
+  const getFavoriteProducts = async (req, res) => {
+    const { body } = req;
+    try {
+      Store.hasMany(Product, { foreignKey: "storeId" });
+      Product.belongsTo(Store, { foreignKey: "storeId" });
+      const favoriteProducts = await Product.findAll({
+        include: [Store],
+        where: {
+          storeId: {
+            [Sequelize.Op.in]: body.StoreIds
+          }
+        }
+      });
+      return res.status(200).json({
+        favoriteProducts,
+        message: "Favorite product read successful.",
+        StatusCode: 1
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ msg: "Internal server error" });
+    }
   };
 
   const addorDeleteOne = async (req, res) => {
@@ -52,7 +57,7 @@ const FavoritesController = () => {
   };
 
   return {
-    getAll,
+    getFavoriteProducts,
     addorDeleteOne
   };
 };
