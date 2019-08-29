@@ -127,19 +127,11 @@ const CustomerController = () => {
         });
       }
       const optCode = await otpService().create("Customer", customer.id);
-      if (optCode) {
-        return res.status(200).json({
-          otp: optCode,
-          message: "OTP generated.",
-          StatusCode: 1
-        });
-      }
-      return res
-        .status(500)
-        .json({
-          StatusCode: 0,
-          msg: "Failed to send OPT code. Please try again!"
-        });
+      return res.status(200).json({
+        otp: optCode,
+        message: "OTP generated.",
+        StatusCode: 1
+      });
     } catch (err) {
       console.log(err);
       return res.status(500).json({ msg: "Internal server error" });
