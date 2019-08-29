@@ -14,7 +14,7 @@ router.post("/updateFavorites", authPolicy, function(req, res) {
 });
 
 router.get("/getFavoriteProducts", authPolicy, function(req, res) {
-  return favoritesController().addOne(req, res);
+  return favoritesController().getAll(req, res);
 });
 
 module.exports = router;
