@@ -13,8 +13,8 @@ router.post("/updateFavorites", authPolicy, function(req, res) {
   return favoritesController().addorDeleteOne(req, res);
 });
 
-router.get("/getFavoriteProducts", authPolicy, function(req, res) {
-  return favoritesController().getAll(req, res);
+router.post("/getFavoriteProducts", authPolicy, function(req, res) {
+  return favoritesController().getFavoriteProducts(req, res);
 });
 
 module.exports = router;
