@@ -22,6 +22,14 @@ TWILIO_AUTH_TOKEN=yourtwilioauthtoken
 - Run migrations to update the schema: `npx sequelize-cli db:migrate`
 - `npm run dev` to start the server and make sure it runs with no errors.
 
+## Node console:
+
+To run the node console with access to db, run:
+`node api/console.js`
+
+To return all records from the Products table:
+`Product.findAll().then(p => console.log(p))`
+
 ## Heroku deploy:
 
 - Deploy:
@@ -53,3 +61,56 @@ or globally:
 ### Seed the database:
 
 `sequelize db:seed:all`
+
+### Creating model associations inside the models:
+
+#### Examples:
+
+For `Product.js`:
+
+Inside the `Product.associate = function(models) {` block in the model:
+
+```
+Product.belongsTo(models.Category, {
+  foreignKey: "id",
+  sourceKey: "categoryId"
+});
+```
+
+And inside the `Category.js`:
+
+Inside the `Category.associate = function(models) {` block:
+
+```
+  Category.hasMany(models.Product, {
+    foreignKey: "id",
+    targetKey: "productId"
+  });
+```
+
+Can work with shortcuts instead if the keys are named using the standard names:
+`Category.hasMany(models.Product)`
+
+### Using associations:
+
+#### Retrieving a Product with associated Category:
+
+```
+const product = await Product.findOne({
+  where: { id: 1 },
+  include: [Category]
+});
+```
+
+`product.Category.name` `//'Beer'`
+
+#### Retrieving a Category with associated Products:
+
+```
+const category = await Category.findOne({
+   where: { id: 1 },
+   include: [Product]
+});
+```
+
+`_.first(cat.Products).name;`
