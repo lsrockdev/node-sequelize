@@ -30,6 +30,10 @@ To run the node console with access to db, run:
 To return all records from the Products table:
 `Product.findAll().then(p => console.log(p))`
 
+OR
+
+`const prod = await Product.findOne({ where: { id: 1 }, include: [Category] });`
+
 ## Heroku deploy:
 
 - Deploy:
@@ -96,21 +100,21 @@ Can work with shortcuts instead if the keys are named using the standard names:
 #### Retrieving a Product with associated Category:
 
 ```
-const product = await Product.findOne({
+const prod = await Product.findOne({
   where: { id: 1 },
   include: [Category]
 });
 ```
 
-`product.Category.name` `//'Beer'`
+`prod.Category.name` `//'Beer'`
 
 #### Retrieving a Category with associated Products:
 
 ```
-const category = await Category.findOne({
+const cat = await Category.findOne({
    where: { id: 1 },
    include: [Product]
 });
 ```
 
-`_.first(cat.Products).name;`
+`_.first(cat.Products).name;` || `cat.Products[0].name;`
