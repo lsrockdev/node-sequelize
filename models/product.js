@@ -10,7 +10,11 @@ module.exports = (sequelize, DataTypes) => {
       imageUrl: DataTypes.STRING,
       imageGuide: DataTypes.STRING,
       storeId: DataTypes.INTEGER,
-      categoryId: DataTypes.INTEGER
+      categoryId: DataTypes.INTEGER,
+      isKeg: DataTypes.BOOLEAN,
+      depositFee: DataTypes.INTEGER,
+      deliveryFee: DataTypes.INTEGER,
+      price: DataTypes.INTEGER
     },
     {}
   );
