@@ -11,7 +11,8 @@ module.exports = (sequelize, DataTypes) => {
       imageGuid: DataTypes.STRING,
       IsForFrattapStore: DataTypes.BOOLEAN,
       isMaster: DataTypes.BOOLEAN,
-      categoryOrder: DataTypes.BOOLEAN
+      categoryOrder: DataTypes.BOOLEAN,
+      deliveryFee: DataTypes.INTEGER
     },
     {}
   );
