@@ -23,7 +23,10 @@ module.exports = (sequelize, DataTypes) => {
       kegsReturnedQty: DataTypes.INTEGER,
       tapsReturnedQty: DataTypes.INTEGER,
       customerId: DataTypes.INTEGER,
-      storeId: DataTypes.INTEGER
+      storeId: DataTypes.INTEGER,
+      paymentCompleted: DataTypes.BOOLEAN,
+      billingAddress: DataTypes.STRING,
+      stripeToken: DataTypes.STRING
     },
     {}
   );
