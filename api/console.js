@@ -8,6 +8,7 @@ const Category = require("../models").Category;
 const CatergorySizes = require("../models").CatergorySizes;
 const Size = require("../models").Size;
 const Product = require("../models").Product;
+const Order = require("../models").Order;
 
 var replServer = repl.start({
   prompt: "Tapster Node Console> "
@@ -15,6 +16,7 @@ var replServer = repl.start({
 
 replServer.context.Category = Category;
 replServer.context.Product = Product;
+replServer.context.Product = Order;
 replServer.context._ = _;
 
 // Product.belongsTo(Category);
