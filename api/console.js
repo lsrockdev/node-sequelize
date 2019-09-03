@@ -5,10 +5,12 @@ const environment = process.env.NODE_ENV;
 
 // Sequelize Database Models:
 const Category = require("../models").Category;
-const CatergorySizes = require("../models").CatergorySizes;
+const CategorySizes = require("../models").CategorySizes;
 const Size = require("../models").Size;
 const Product = require("../models").Product;
 const Order = require("../models").Order;
+const LineItem = require("../models").LineItem;
+const Customer = require("../models").Customer;
 
 var replServer = repl.start({
   prompt: "Tapster Node Console> "
@@ -16,7 +18,11 @@ var replServer = repl.start({
 
 replServer.context.Category = Category;
 replServer.context.Product = Product;
-replServer.context.Product = Order;
+replServer.context.Order = Order;
+replServer.context.LineItem = LineItem;
+replServer.context.Customer = Customer;
+replServer.context.CategorySizes = CategorySizes;
+replServer.context.Size = Size;
 replServer.context._ = _;
 
 // Product.belongsTo(Category);
