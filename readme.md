@@ -145,6 +145,13 @@ o.Products // array of associated products
 o.Products[0].name // name of first product
 ```
 
+OR
+
+```
+const o = await Order.findOne({where: {id: 1}})
+const productsInOrder = await o.getProducts()
+```
+
 #### Other angles (many to many): working with the LineItems join table:
 
 ```
