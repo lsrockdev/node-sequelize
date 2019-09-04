@@ -20,10 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "id",
       sourceKey: "orderId"
     });
-    LineItem.belongsTo(models.Product, {
-      foreignKey: "id",
-      sourceKey: "productId"
-    });
+    LineItem.belongsTo(models.Product);
   };
   return LineItem;
 };

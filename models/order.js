@@ -39,6 +39,8 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "id",
       sourceKey: "storeId"
     });
+    Order.hasMany(models.LineItem);
+    Order.belongsToMany(models.Product, { through: models.LineItem });
   };
   return Order;
 };

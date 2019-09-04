@@ -37,3 +37,13 @@ replServer.context._ = _;
 
 // cat = await Category.findOne({ where: { id: 1 }, include: [Product] });
 // _.first(cat.Products).name;
+
+// const o = await Order.findAll({include: [Product]})
+// o[0].Products
+// const o = await Order.findAll({include: [{model: Product, as: "Products", through: {attributes: ["orderId", "productId"]}}]});
+// o1 = await Order.findOne({ where: { id: 1 }, include: [LineItem] });
+
+// li = await LineItem.findOne({ where: { id: 1 }, include: [Order] });
+
+// getProducts(), setProducts(), addProduct(), addProducts() to Order
+// getOrders(), setOrders(), addOrder(), and addOrders() to Products

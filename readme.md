@@ -118,3 +118,55 @@ const cat = await Category.findOne({
 ```
 
 `_.first(cat.Products).name;` || `cat.Products[0].name;`
+
+### Many to Many Associations:
+
+Orders has and belongs to many Products through LineItems:
+
+#### In product.js:
+
+```
+Product.hasMany(models.LineItem);
+Product.belongsToMany(models.Order, { through: models.LineItem });
+```
+
+#### In order.js:
+
+```
+Order.hasMany(models.LineItem);
+Order.belongsToMany(models.Product, { through: models.LineItem });
+```
+
+#### Retrieving through a many to many relationship:
+
+```
+const o = await Order.findOne({where: {id: 1}, include: [Product]});
+o.Products // array of associated products
+o.Products[0].name // name of first product
+```
+
+#### Other angles (many to many): working with the LineItems join table:
+
+```
+const o = await Order.findOne({ where: { id: 1 }, include: [LineItem] });
+```
+
+```
+const li = await LineItem.findOne({ where: { id: 1 }, include: [Order] });
+```
+
+#### Creating an associated item through a many to many relationship:
+
+`belongsToMany` adds the following getters and setters to your models:
+
+```
+getProducts(), setProducts(), addProduct(), addProducts() to Order
+getOrders(), setOrders(), addOrder(), and addOrders() to Products
+```
+
+Add a Product to an order:
+
+```
+const p = await Product.findOne({where: {id: 1});
+p.setOrders([1]) // Where order id is 1. Can also pass an array of id's.
+```
