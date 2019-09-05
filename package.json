@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node ./api/app.js",
     "dev": "cross-env NODE_ENV=development DEBUG=tapster:* nodemon start",
-    "production": "cross-env NODE_ENV=production DEBUG=tapster:* nodemon start"
+    "production": "cross-env NODE_ENV=production DEBUG=tapster:* nodemon start",
+    "console": "node --experimental-repl-await ./api/console.js"
   },
   "dependencies": {
     "bcrypt": "^3.0.6",

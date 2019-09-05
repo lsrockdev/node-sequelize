@@ -37,7 +37,11 @@ module.exports = (sequelize, DataTypes) => {
   };
 
   Customer.associate = function(models) {
-    return models;
+    // return models;
+    Customer.hasMany(models.Order, {
+      foreignKey: "id",
+      targetKey: "customerId"
+    });
   };
   return Customer;
 };
