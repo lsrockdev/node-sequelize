@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
           return JSON.parse(this.getDataValue("address"));
         },
         set: function(value) {
-          this.setDataValue("address", JSON.stringify(value));
+          return this.setDataValue("address", JSON.stringify(value));
         }
       }
     },

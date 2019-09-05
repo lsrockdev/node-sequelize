@@ -7,6 +7,7 @@ const environment = process.env.NODE_ENV;
 const Category = require("../models").Category;
 const CategorySizes = require("../models").CategorySizes;
 const Size = require("../models").Size;
+const Store = require("../models").Store;
 const Product = require("../models").Product;
 const Order = require("../models").Order;
 const LineItem = require("../models").LineItem;
@@ -23,6 +24,7 @@ replServer.context.LineItem = LineItem;
 replServer.context.Customer = Customer;
 replServer.context.CategorySizes = CategorySizes;
 replServer.context.Size = Size;
+replServer.context.Store = Store;
 replServer.context._ = _;
 
 // Product.belongsTo(Category);
