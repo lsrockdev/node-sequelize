@@ -24,6 +24,7 @@ const SizeController = () => {
     try {
       const size = await Size.create(body);
       return res.status(200).json({
+        size,
         message: "size added Successfully",
         StatusCode: 1
       });
