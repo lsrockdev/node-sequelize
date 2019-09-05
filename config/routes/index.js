@@ -9,6 +9,7 @@ const customerAddressRoutes = require("./customer/customer_address_routes");
 const customerOrderRoutes = require("./customer/customer_order_routes");
 
 const adminAuthRoutes = require("./dashboard/admin_auth_routes");
+const adminSizeRoutes = require("./dashboard/admin_size_route");
 
 router.use("/customer", customerAuthRoutes);
 router.use("/customer", customerCartRoutes);
@@ -18,5 +19,6 @@ router.use("/customer", customerAddressRoutes);
 router.use("/customer", customerOrderRoutes);
 
 router.use("/admin", adminAuthRoutes);
+router.use("/admin", adminSizeRoutes);
 
 module.exports = router;
