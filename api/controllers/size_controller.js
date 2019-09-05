@@ -37,7 +37,7 @@ const SizeController = () => {
   const deleteOne = async (req, res) => {
     const { sizeId } = req.body;
     try {
-      await Cart.update({ isDeleted: true }, { where: { id: sizeId } });
+      await Size.update({ isDeleted: true }, { where: { id: sizeId } });
       return res.status(200).json({
         message: "Size Deleted Successfully",
         StatusCode: 1
