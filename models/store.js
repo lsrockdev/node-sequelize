@@ -14,7 +14,15 @@ module.exports = (sequelize, DataTypes) => {
       isDeleted: DataTypes.BOOLEAN,
       IsFrattapStore: DataTypes.BOOLEAN,
       userId: DataTypes.INTEGER,
-      storeAddress: DataTypes.JSON
+      address: {
+        type: DataTypes.TEXT,
+        get: function() {
+          return JSON.parse(this.getDataValue("address"));
+        },
+        set: function(value) {
+          return this.setDataValue("address", JSON.stringify(value));
+        }
+      }
     },
     {}
   );

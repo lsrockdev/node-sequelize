@@ -20,7 +20,9 @@ TWILIO_AUTH_TOKEN=yourtwilioauthtoken
 - Download and use [MySQL Workbench](https://dev.mysql.com/downloads/workbench/) to manage and browse your local db server
 - Create a schema (database) called `tapster`
 - Run migrations to update the schema: `npx sequelize-cli db:migrate`
-- Seed the database: `sequelize db:seed --seed 20190904234255-categories.js`
+- Seed the database:
+  - `sequelize db:seed --seed 20190904234255-categories.js`
+  - `sequelize db:seed --seed 20190904234306-stores.js`
 - `npm run dev` to start the server and make sure it runs with no errors.
 
 ## Node console:
