@@ -34,6 +34,26 @@ const SizeController = () => {
     }
   };
 
+  const updateOne = async (req, res) => {
+    const { body } = req;
+    try {
+      size = await Size.findOne({
+        where: {
+          id: body.id
+        }
+      });
+      await size.update(body);
+      return res.status(200).json({
+        size,
+        message: "Updated Successfully",
+        StatusCode: 1
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ msg: "Internal server error" });
+    }
+  };
+
   const deleteOne = async (req, res) => {
     const { sizeId } = req.body;
     try {
@@ -51,6 +71,7 @@ const SizeController = () => {
   return {
     getAll,
     addOne,
+    updateOne,
     deleteOne
   };
 };
