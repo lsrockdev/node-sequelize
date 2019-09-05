@@ -11,6 +11,10 @@ router.post("/addSize", authPolicy, function(req, res) {
   return sizeController().addOne(req, res);
 });
 
+router.post("/updateSize", authPolicy, function(req, res) {
+  return sizeController().updateOne(req, res);
+});
+
 router.post("/deleteSize", authPolicy, function(req, res) {
   return sizeController().deleteOne(req, res);
 });
