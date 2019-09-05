@@ -1,11 +1,15 @@
-'use strict';
+"use strict";
 module.exports = (sequelize, DataTypes) => {
-  const Size = sequelize.define('Size', {
-    name: DataTypes.STRING,
-    size_: DataTypes.STRING,
-    description: DataTypes.INTEGER,
-    isDeleted: DataTypes.INTEGER
-  }, {});
+  const Size = sequelize.define(
+    "Size",
+    {
+      name: DataTypes.STRING,
+      size: DataTypes.STRING,
+      description: DataTypes.STRING,
+      isDeleted: DataTypes.BOOLEAN
+    },
+    {}
+  );
   Size.associate = function(models) {
     // associations can be defined here
   };
