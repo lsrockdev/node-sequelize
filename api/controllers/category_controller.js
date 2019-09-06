@@ -38,10 +38,26 @@ const CategoryController = () => {
   };
 
   const addOne = async (req, res) => {
-    return res.status(200).json({
-      message: "Your category successfully saved.",
-      StatusCode: 1
-    });
+    const { body } = req;
+    try {
+      const sizeIds = body.categorySizes;
+      delete body.categorySizes;
+      const category = await Category.create(body);
+      const categorySizes = sizeIds.map(sizeId => {
+        return {
+          sizeId: sizeId,
+          categoryId: category.id
+        };
+      });
+      await CatergorySizes.bulkCreate(categorySizes);
+      return res.status(200).json({
+        message: "Your category successfully saved.",
+        StatusCode: 1
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ msg: "Internal server error" });
+    }
   };
 
   const updateOne = async (req, res) => {
