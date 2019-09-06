@@ -37,6 +37,10 @@ const CategoryController = () => {
     }
   };
 
-  return { getAll };
+  const addOne = async (req, res) => {
+
+  };
+
+  return { getAll, addOne };
 };
 module.exports = CategoryController;
