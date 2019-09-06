@@ -1,12 +1,11 @@
 const getCurrentUser = require("../helpers/current_user_helper");
-const Order = require("../../models").Order;
-const LineItem = require("../../models").LineItem;
+const db = require("../services/db.service.js");
 
 const OrdersController = () => {
   const placeOrder = async (req, res) => {
     // const { body } = req.body;
     // const customerId = req.token.id;
-    // const currentUser = await getCurrentUser("Customer", customerId);
+    // const currentUser = await getCurrentUser("db.Customer", customerId);
     return res.status(200).json({
       Message: "testing",
       StatusCode: 1
@@ -17,11 +16,11 @@ const OrdersController = () => {
     const customerId = req.token.id;
 
     try {
-      const orders = await Order.findAll({
+      const orders = await db.Order.findAll({
         where: {
           customerId
         },
-        include: [LineItem]
+        include: [db.LineItem]
       });
       return res.status(200).json({
         orders,
@@ -39,12 +38,12 @@ const OrdersController = () => {
     const { id } = req.body;
 
     try {
-      const order = await Order.findOne({
+      const order = await db.Order.findOne({
         where: {
           customerId,
           id
         },
-        include: [LineItem]
+        include: [db.LineItem]
       });
       return res.status(200).json({
         order,
