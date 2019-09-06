@@ -38,9 +38,26 @@ const CategoryController = () => {
   };
 
   const addOne = async (req, res) => {
-
+    return res.status(200).json({
+      message: "Your category successfully saved.",
+      StatusCode: 1
+    });
   };
 
-  return { getAll, addOne };
+  const updateOne = async (req, res) => {
+    return res.status(200).json({
+      message: "Your category successfully updated.",
+      StatusCode: 1
+    });
+  };
+
+  const deleteOne = async (req, res) => {
+    return res.status(200).json({
+      message: "Your category successfully deleted.",
+      StatusCode: 1
+    });
+  };
+
+  return { getAll, addOne, updateOne, deleteOne };
 };
 module.exports = CategoryController;
