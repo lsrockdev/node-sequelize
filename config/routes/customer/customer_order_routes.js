@@ -11,4 +11,8 @@ router.get("/getOrders", authPolicy, function(req, res) {
   return ordersController().getAll(req, res);
 });
 
+router.post("/getOrderById", authPolicy, function(req, res) {
+  return ordersController().getOne(req, res);
+});
+
 module.exports = router;

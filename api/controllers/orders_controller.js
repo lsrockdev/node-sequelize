@@ -34,7 +34,30 @@ const OrdersController = () => {
     }
   };
 
-  return { placeOrder, getAll };
+  const getOne = async (req, res) => {
+    const customerId = req.token.id;
+    const { id } = req.body;
+
+    try {
+      const order = await Order.findOne({
+        where: {
+          customerId,
+          id
+        },
+        include: [LineItem]
+      });
+      return res.status(200).json({
+        order,
+        message: "Successfully returned Order",
+        StatusCode: 1
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ msg: "Internal server error" });
+    }
+  };
+
+  return { placeOrder, getAll, getOne };
 };
 
 module.exports = OrdersController;
