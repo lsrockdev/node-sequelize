@@ -7,4 +7,8 @@ router.post("/placeOrder", authPolicy, function(req, res) {
   return ordersController().placeOrder(req, res);
 });
 
+router.get("/getOrders", authPolicy, function(req, res) {
+  return ordersController().getAll(req, res);
+});
+
 module.exports = router;
