@@ -41,6 +41,7 @@ module.exports = (sequelize, DataTypes) => {
     });
     Order.hasMany(models.LineItem);
     Order.belongsToMany(models.Product, { through: models.LineItem });
+    Order.belongsToMany(models.Inventory, { through: models.LineItem });
   };
   return Order;
 };

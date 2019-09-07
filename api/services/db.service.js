@@ -7,6 +7,7 @@ db.Store = require("../../models").Store;
 db.StoreUser = require("../../models").StoreUser;
 db.Favorites = require("../../models").Favorites;
 db.Product = require("../../models").Product;
+db.Inventory = require("../../models").Inventory;
 db.Customer = require("../../models").Customer;
 db.UserLocation = require("../../models").UserLocation;
 db.Category = require("../../models").Category;
