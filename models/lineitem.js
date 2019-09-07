@@ -5,6 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       orderId: DataTypes.INTEGER,
       productId: DataTypes.INTEGER,
+      inventoryId: DataTypes.INTEGER,
       qty: DataTypes.INTEGER,
       price: DataTypes.INTEGER,
       extendedPrice: DataTypes.INTEGER,
@@ -21,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       sourceKey: "orderId"
     });
     LineItem.belongsTo(models.Product);
+    LineItem.belongsTo(models.Inventory);
   };
   return LineItem;
 };

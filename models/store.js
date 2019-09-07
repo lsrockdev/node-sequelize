@@ -32,6 +32,8 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "id",
       targetKey: "storeId"
     });
+    Store.belongsToMany(models.Product, { through: models.Inventory });
+    Store.hasMany(models.Inventory);
   };
   return Store;
 };

@@ -26,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     });
     Product.hasMany(models.LineItem);
     Product.belongsToMany(models.Order, { through: models.LineItem });
+    Product.belongsToMany(models.Store, { through: models.Inventory });
   };
   return Product;
 };
