@@ -9,7 +9,6 @@ module.exports = (sequelize, DataTypes) => {
       isDeleted: DataTypes.BOOLEAN,
       imageUrl: DataTypes.STRING,
       imageGuide: DataTypes.STRING,
-      storeId: DataTypes.INTEGER,
       categoryId: DataTypes.INTEGER,
       isKeg: DataTypes.BOOLEAN,
       depositFee: DataTypes.INTEGER,
@@ -24,8 +23,6 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "id",
       sourceKey: "categoryId"
     });
-    Product.hasMany(models.LineItem);
-    Product.belongsToMany(models.Order, { through: models.LineItem });
     Product.belongsToMany(models.Store, { through: models.Inventory });
   };
   return Product;

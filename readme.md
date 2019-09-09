@@ -24,6 +24,7 @@ TWILIO_AUTH_TOKEN=yourtwilioauthtoken
   - `sequelize db:seed --seed 20190904234255-categories.js`
   - `sequelize db:seed --seed 20190904234306-stores.js`
   - `sequelize db:seed --seed 20190904234312-products.js`
+  - `sequelize db:seed --seed 20190909074116-inventories.js`
 - `npm run dev` to start the server and make sure it runs with no errors.
 
 ## Node console:

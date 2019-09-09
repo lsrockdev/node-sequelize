@@ -3,28 +3,34 @@ var _ = require("lodash");
 var repl = require("repl");
 const environment = process.env.NODE_ENV;
 
-// Sequelize Database Models:
-const Category = require("../models").Category;
-const CategorySizes = require("../models").CategorySizes;
-const Size = require("../models").Size;
-const Store = require("../models").Store;
-const Product = require("../models").Product;
-const Order = require("../models").Order;
-const LineItem = require("../models").LineItem;
-const Customer = require("../models").Customer;
-
 var replServer = repl.start({
   prompt: "Tapster Node Console> "
 });
 
+// Sequelize Database Models:
+const {
+  Category,
+  CategorySizes,
+  Size,
+  Store,
+  Product,
+  Order,
+  LineItem,
+  Customer,
+  Cart,
+  Inventory
+} = require("./services/db.service.js");
+
 replServer.context.Category = Category;
+replServer.context.CategorySizes = CategorySizes;
+replServer.context.Size = Size;
+replServer.context.Store = Store;
 replServer.context.Product = Product;
 replServer.context.Order = Order;
 replServer.context.LineItem = LineItem;
 replServer.context.Customer = Customer;
-replServer.context.CategorySizes = CategorySizes;
-replServer.context.Size = Size;
-replServer.context.Store = Store;
+replServer.context.Cart = Cart;
+replServer.context.Inventory = Inventory;
 replServer.context._ = _;
 
 // Product.belongsTo(Category);

@@ -70,13 +70,19 @@ const CartController = () => {
   };
 
   const getCartById = async id => {
+    // Inventory.hasMany(Cart, { foreignKey: "inventoryId" });
+    // Cart.belongsTo(Inventory, { foreignKey: "inventoryId" });
+
     try {
-      const cart = await Cart.findOne({
+      let cart = await Cart.findOne({
         where: {
           id: id
         },
         include: [Customer, Inventory]
       });
+      // cart.Inventory = await Inventory.findOne({
+      //   where: { id: cart.inventoryId }
+      // });
       return cart;
     } catch (err) {
       console.log(err);

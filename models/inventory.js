@@ -3,9 +3,15 @@ module.exports = (sequelize, DataTypes) => {
   const Inventory = sequelize.define(
     "Inventory",
     {
+      // Adding id PK here fixes weird sequelize issue with join table querying:
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+      },
       name: DataTypes.STRING,
       quantity: DataTypes.INTEGER,
-      description: DataTypes.STRING,
+      description: DataTypes.TEXT,
       deliveryFee: DataTypes.INTEGER,
       createdBy: DataTypes.INTEGER,
       modifiedBy: DataTypes.INTEGER,
@@ -27,7 +33,10 @@ module.exports = (sequelize, DataTypes) => {
     Inventory.belongsTo(models.Product);
     Inventory.belongsTo(models.Store);
     Inventory.belongsTo(models.Category);
-    Inventory.hasMany(models.Store);
+    // Inventory.hasMany(models.Store);
+    // Inventory.hasMany(models.LineItem);
+    // Inventory.belongsToMany(models.Order, { through: models.LineItem });
+    // Inventory.hasMany(models.Cart);
   };
   return Inventory;
 };
