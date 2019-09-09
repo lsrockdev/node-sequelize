@@ -12,19 +12,23 @@ const Product = require("../models").Product;
 const Order = require("../models").Order;
 const LineItem = require("../models").LineItem;
 const Customer = require("../models").Customer;
+const Cart = require("../models").Cart;
+const Inventory = require("../models").Inventory;
 
 var replServer = repl.start({
   prompt: "Tapster Node Console> "
 });
 
 replServer.context.Category = Category;
+replServer.context.CategorySizes = CategorySizes;
+replServer.context.Size = Size;
+replServer.context.Store = Store;
 replServer.context.Product = Product;
 replServer.context.Order = Order;
 replServer.context.LineItem = LineItem;
 replServer.context.Customer = Customer;
-replServer.context.CategorySizes = CategorySizes;
-replServer.context.Size = Size;
-replServer.context.Store = Store;
+replServer.context.Cart = Cart;
+replServer.context.Inventory = Inventory;
 replServer.context._ = _;
 
 // Product.belongsTo(Category);
