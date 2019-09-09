@@ -3,21 +3,23 @@ var _ = require("lodash");
 var repl = require("repl");
 const environment = process.env.NODE_ENV;
 
-// Sequelize Database Models:
-const Category = require("../models").Category;
-const CategorySizes = require("../models").CategorySizes;
-const Size = require("../models").Size;
-const Store = require("../models").Store;
-const Product = require("../models").Product;
-const Order = require("../models").Order;
-const LineItem = require("../models").LineItem;
-const Customer = require("../models").Customer;
-const Cart = require("../models").Cart;
-const Inventory = require("../models").Inventory;
-
 var replServer = repl.start({
   prompt: "Tapster Node Console> "
 });
+
+// Sequelize Database Models:
+const {
+  Category,
+  CategorySizes,
+  Size,
+  Store,
+  Product,
+  Order,
+  LineItem,
+  Customer,
+  Cart,
+  Inventory
+} = require("./services/db.service.js");
 
 replServer.context.Category = Category;
 replServer.context.CategorySizes = CategorySizes;
