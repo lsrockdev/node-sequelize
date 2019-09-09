@@ -9,7 +9,15 @@ module.exports = (sequelize, DataTypes) => {
       total: DataTypes.INTEGER,
       tip: DataTypes.INTEGER,
       deliveryFees: DataTypes.INTEGER,
-      deliveryAddress: DataTypes.STRING,
+      deliveryAddress: {
+        type: DataTypes.TEXT,
+        get: function() {
+          return JSON.parse(this.getDataValue("deliveryAddress"));
+        },
+        set: function(value) {
+          return this.setDataValue("deliveryAddress", JSON.stringify(value));
+        }
+      },
       status: DataTypes.INTEGER,
       failedStatus: DataTypes.INTEGER,
       penalty: DataTypes.INTEGER,
@@ -25,7 +33,15 @@ module.exports = (sequelize, DataTypes) => {
       customerId: DataTypes.INTEGER,
       storeId: DataTypes.INTEGER,
       paymentCompleted: DataTypes.BOOLEAN,
-      billingAddress: DataTypes.STRING,
+      billingAddress: {
+        type: DataTypes.TEXT,
+        get: function() {
+          return JSON.parse(this.getDataValue("billingAddress"));
+        },
+        set: function(value) {
+          return this.setDataValue("billingAddress", JSON.stringify(value));
+        }
+      },
       stripeToken: DataTypes.STRING
     },
     {}
