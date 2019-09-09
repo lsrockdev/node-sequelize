@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       name: DataTypes.STRING,
       quantity: DataTypes.INTEGER,
       description: DataTypes.TEXT,
+      // Not using deliveryFee, use Category.deliveryFee instead:
       deliveryFee: DataTypes.INTEGER,
       createdBy: DataTypes.INTEGER,
       modifiedBy: DataTypes.INTEGER,

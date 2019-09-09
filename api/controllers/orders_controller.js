@@ -9,24 +9,74 @@ const OrdersController = () => {
 
     try {
       order = await db.Order.create({
-        storeId: body.storeId
+        customerId: customerId,
+        storeId: body.storeId,
+        tip: body.tip,
+        tax: 0,
+        deliveryAddress: await db.UserLocation.findOne({
+          where: { customerId: customerId, id: body.addressId }
+        })
+        // TODO: If keg, Calculate returnedAt data based on noOfReturnDays
       });
+
+      body.lineItems.forEach(async item => {
+        // reject order if storeId's don't all match Order.storeId
+        if (item.storeId !== order.storeId) {
+          return res.status(500).json({
+            msg: "Error: LineItems must match storeId of Order"
+          });
+        }
+
+        // reject if item out of stock:
+        if (item.storeId !== order.storeId) {
+          return res.status(500).json({
+            msg: `Error: ${item.name} is out of stock, please resubmit order without that item.`
+          });
+        }
+
+        inventory = await db.Inventory.findOne({
+          where: { id: item.inventoryId },
+          include: [db.Category]
+        });
+
+        // loop through and create LineItems:
+        const li = {
+          // Capitalized O and I to work around weird sequelize issue of sending
+          // duplicate OrderId and orderId, and InventoryId and inventoryId fields:
+          OrderId: order.id,
+          InventoryId: item.inventoryId,
+          qty: item.qty,
+          // Clone Inventory details to LineItems:
+          price: await inventory.price,
+          productId: await inventory.productId,
+          extendedPrice: (await inventory.price) * item.qty,
+          name: await inventory.name,
+          description: await inventory.description,
+          depositfee: (await inventory.depositFee) || 0,
+          deliveryfee: (await inventory.Category.deliveryFee) * item.qty
+        };
+
+        const response = await db.LineItem.create(li);
+      });
+
+      // add up delivery fees
+      // total order
+
+      // TODO: Calculate tax (currently zero for all stores)
+      // TODO: Scheduling add slotStart, slotEnd
+      // TODO: Stripe:
+      // Insert billing address,
+      // set paymentCompleted to true,
+      // insert stripeToken.
     } catch (err) {
       console.log(err);
       return res.status(500).json({ msg: "Internal server error" });
     }
-    // loop through each inventory and add - make sure store id matches order
-    // add up delivery fees
-    // add tip
-    // add tax (zero currently now)
-    // total order
-    // take address id and expand it to order
-    // placeholder for noOfReturnDays
-    // placeholder for slotStart
-    // placeholder for nonce
 
     return res.status(200).json({
       Message: "Order successfully created",
+      // Order: "Order goes here",
+      nonce: body.nonce,
       StatusCode: 1
     });
   };
