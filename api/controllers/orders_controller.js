@@ -5,6 +5,8 @@ const OrdersController = () => {
   const placeOrder = async (req, res) => {
     const { body } = req;
     const customerId = req.token.id;
+    let subtotal = 0;
+    let deliveryFeeTotal = 0;
     // const currentUser = await getCurrentUser("db.Customer", customerId);
 
     try {
@@ -13,6 +15,7 @@ const OrdersController = () => {
         storeId: body.storeId,
         tip: body.tip,
         tax: 0,
+        status: 0,
         deliveryAddress: await db.UserLocation.findOne({
           where: { customerId: customerId, id: body.addressId }
         })
@@ -35,7 +38,9 @@ const OrdersController = () => {
         }
 
         inventory = await db.Inventory.findOne({
-          where: { id: item.inventoryId },
+          where: {
+            id: item.inventoryId
+          },
           include: [db.Category]
         });
 
@@ -47,20 +52,27 @@ const OrdersController = () => {
           InventoryId: item.inventoryId,
           qty: item.qty,
           // Clone Inventory details to LineItems:
-          price: await inventory.price,
-          productId: await inventory.productId,
-          extendedPrice: (await inventory.price) * item.qty,
-          name: await inventory.name,
-          description: await inventory.description,
-          depositfee: (await inventory.depositFee) || 0,
-          deliveryfee: (await inventory.Category.deliveryFee) * item.qty
+          price: inventory.price,
+          productId: inventory.productId,
+          extendedPrice: inventory.price * item.qty,
+          name: inventory.name,
+          description: inventory.description,
+          depositfee: inventory.depositFee || 0,
+          deliveryfee: inventory.Category.deliveryFee * item.qty
         };
 
         const response = await db.LineItem.create(li);
+
+        // add up delivery fees
+        deliveryFeeTotal = deliveryFeeTotal + li.deliveryfee;
+        subtotal = subtotal + li.extendedPrice;
       });
 
-      // add up delivery fees
-      // total order
+      // update order with totals
+      await order.update({
+        subtotal: subtotal,
+        deliveryFees: deliveryFeeTotal
+      });
 
       // TODO: Calculate tax (currently zero for all stores)
       // TODO: Scheduling add slotStart, slotEnd
@@ -75,7 +87,10 @@ const OrdersController = () => {
 
     return res.status(200).json({
       Message: "Order successfully created",
-      // Order: "Order goes here",
+      order: await db.Order.findOne({
+        where: { id: order.id },
+        include: [db.LineItem]
+      }),
       nonce: body.nonce,
       StatusCode: 1
     });
