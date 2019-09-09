@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
     {}
   );
   Inventory.associate = function(models) {
-    // Inventory.belongsTo(models.Product);
+    Inventory.belongsTo(models.Product);
     Inventory.belongsTo(models.Store);
     Inventory.belongsTo(models.Category);
     // Inventory.hasMany(models.Store);
