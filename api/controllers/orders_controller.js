@@ -5,8 +5,6 @@ const OrdersController = () => {
   const placeOrder = async (req, res) => {
     const { body } = req;
     const customerId = req.token.id;
-    let subtotal = 0;
-    let deliveryFeeTotal = 0;
     // const currentUser = await getCurrentUser("db.Customer", customerId);
 
     try {
@@ -22,56 +20,20 @@ const OrdersController = () => {
         // TODO: If keg, Calculate returnedAt data based on noOfReturnDays
       });
 
-      body.lineItems.forEach(async item => {
-        // reject order if storeId's don't all match Order.storeId
-        if (item.storeId !== order.storeId) {
-          return res.status(500).json({
-            msg: "Error: LineItems must match storeId of Order"
-          });
-        }
-
-        // reject if item out of stock:
-        if (item.storeId !== order.storeId) {
-          return res.status(500).json({
-            msg: `Error: ${item.name} is out of stock, please resubmit order without that item.`
-          });
-        }
-
-        inventory = await db.Inventory.findOne({
-          where: {
-            id: item.inventoryId
-          },
-          include: [db.Category]
-        });
-
-        // loop through and create LineItems:
-        const li = {
-          // Capitalized O and I to work around weird sequelize issue of sending
-          // duplicate OrderId and orderId, and InventoryId and inventoryId fields:
-          OrderId: order.id,
-          InventoryId: item.inventoryId,
-          qty: item.qty,
-          // Clone Inventory details to LineItems:
-          price: inventory.price,
-          productId: inventory.productId,
-          extendedPrice: inventory.price * item.qty,
-          name: inventory.name,
-          description: inventory.description,
-          depositfee: inventory.depositFee || 0,
-          deliveryfee: inventory.Category.deliveryFee * item.qty
-        };
-
-        const response = await db.LineItem.create(li);
-
-        // add up delivery fees
-        deliveryFeeTotal = deliveryFeeTotal + li.deliveryfee;
-        subtotal = subtotal + li.extendedPrice;
-      });
+      // Loop through lineitems and create them for order:
+      const { subtotal, deliveryFeeTotal } = await createLineItemsForOrder(
+        body
+      );
 
       // update order with totals
-      await order.update({
-        subtotal: subtotal,
-        deliveryFees: deliveryFeeTotal
+      const totaledOrder = await order.update({
+        subtotal: await subtotal,
+        deliveryFees: await deliveryFeeTotal,
+        total:
+          (await parseInt(subtotal)) +
+          (await parseInt(deliveryFeeTotal)) +
+          (await parseInt(order.tax)) +
+          (await parseInt(order.tip))
       });
 
       // TODO: Calculate tax (currently zero for all stores)
@@ -138,6 +100,59 @@ const OrdersController = () => {
       console.log(err);
       return res.status(500).json({ msg: "Internal server error" });
     }
+  };
+
+  const createLineItemsForOrder = async body => {
+    let subtotal = 0;
+    let deliveryFeeTotal = 0;
+
+    for await (const item of body.lineItems) {
+      // reject order if storeId's don't all match Order.storeId
+      if (item.storeId !== order.storeId) {
+        return res.status(500).json({
+          msg: "Error: LineItems must match storeId of Order"
+        });
+      }
+
+      // reject if item out of stock:
+      if (item.storeId !== order.storeId) {
+        return res.status(500).json({
+          msg: `Error: ${item.name} is out of stock, please resubmit order without that item.`
+        });
+      }
+
+      inventory = await db.Inventory.findOne({
+        where: {
+          id: item.inventoryId
+        },
+        include: [db.Category]
+      });
+
+      // loop through and create LineItems:
+      const li = {
+        // Capitalized O and I to work around weird sequelize issue of sending
+        // duplicate OrderId and orderId, and InventoryId and inventoryId fields:
+        OrderId: order.id,
+        InventoryId: item.inventoryId,
+        qty: item.qty,
+        // Clone Inventory details to LineItems:
+        price: inventory.price,
+        productId: inventory.productId,
+        extendedPrice: inventory.price * item.qty,
+        name: inventory.name,
+        description: inventory.description,
+        depositfee: inventory.depositFee || 0,
+        deliveryfee: inventory.Category.deliveryFee * item.qty
+      };
+
+      const response = await db.LineItem.create(li);
+
+      // add up delivery fees
+      deliveryFeeTotal = deliveryFeeTotal + response.deliveryfee;
+      subtotal = subtotal + response.extendedPrice;
+    }
+
+    return { subtotal, deliveryFeeTotal };
   };
 
   return { placeOrder, getAll, getOne };
