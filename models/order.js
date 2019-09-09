@@ -18,7 +18,22 @@ module.exports = (sequelize, DataTypes) => {
           return this.setDataValue("deliveryAddress", JSON.stringify(value));
         }
       },
-      status: DataTypes.INTEGER,
+      status: {
+        type: DataTypes.INTEGER,
+        get: function() {
+          switch (this.getDataValue("status")) {
+            case 0:
+              return { code: 0, name: "AwaitingPayment" };
+            case 1:
+              return { code: 1, name: "Paid" };
+            default:
+              return { code: null, name: null };
+          }
+        },
+        set: function(value) {
+          return this.setDataValue("status", value);
+        }
+      },
       failedStatus: DataTypes.INTEGER,
       penalty: DataTypes.INTEGER,
       deliveredAt: DataTypes.DATE,
