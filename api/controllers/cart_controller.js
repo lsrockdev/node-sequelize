@@ -6,8 +6,6 @@ const Store = require("../../models").Store;
 const CartController = () => {
   const getAll = async (req, res) => {
     try {
-      Inventory.hasMany(Cart, { foreignKey: "inventoryId" });
-      Cart.belongsTo(Inventory, { foreignKey: "inventoryId" });
       const carts = await Cart.findAll({
         where: {
           deleted: false || null
@@ -70,9 +68,6 @@ const CartController = () => {
   };
 
   const getCartById = async id => {
-    // Inventory.hasMany(Cart, { foreignKey: "inventoryId" });
-    // Cart.belongsTo(Inventory, { foreignKey: "inventoryId" });
-
     try {
       let cart = await Cart.findOne({
         where: {
@@ -80,9 +75,6 @@ const CartController = () => {
         },
         include: [Customer, Inventory]
       });
-      // cart.Inventory = await Inventory.findOne({
-      //   where: { id: cart.inventoryId }
-      // });
       return cart;
     } catch (err) {
       console.log(err);
@@ -92,11 +84,6 @@ const CartController = () => {
 
   const getCartByCustomer = async customerId => {
     try {
-      Customer.hasMany(Cart, { foreignKey: "customerId" });
-      Cart.belongsTo(Customer, { foreignKey: "customerId" });
-      Store.hasOne(Inventory, { foreignKey: "storeId" });
-      Inventory.belongsTo(Store, { foreignKey: "storeId" });
-
       const carts = await Cart.findAll({
         where: {
           customerId: customerId

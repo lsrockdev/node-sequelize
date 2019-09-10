@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
       targetKey: "storeId"
     });
     Store.belongsToMany(models.Product, { through: models.Inventory });
-    Store.hasMany(models.Inventory);
+    Store.hasMany(models.Inventory, { foreignKey: "storeId" });
   };
   return Store;
 };

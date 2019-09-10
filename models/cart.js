@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     {}
   );
   Cart.associate = function(models) {
-    Cart.belongsTo(models.Customer);
+    Cart.belongsTo(models.Customer, { foreignKey: "customerId" });
     Cart.belongsTo(models.Inventory, { foreignKey: "inventoryId" });
   };
   return Cart;

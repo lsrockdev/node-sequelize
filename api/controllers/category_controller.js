@@ -5,11 +5,6 @@ const Size = require("../../models").Size;
 const CategoryController = () => {
   const getAll = async (req, res) => {
     try {
-      Category.hasMany(CatergorySizes, { foreignKey: "categoryId" });
-      CatergorySizes.belongsTo(Category, { foreignKey: "categoryId" });
-
-      Size.hasOne(CatergorySizes, { foreignKey: "sizeId" });
-      CatergorySizes.belongsTo(Size, { foreignKey: "sizeId" });
       const categories = await Category.findAll({
         where: {
           isDeleted: false || null,
