@@ -7,8 +7,6 @@ const FavoritesController = () => {
   const getFavoriteProducts = async (req, res) => {
     const { body } = req;
     try {
-      Store.hasMany(Product, { foreignKey: "storeId" });
-      Product.belongsTo(Store, { foreignKey: "storeId" });
       const favoriteProducts = await Product.findAll({
         include: [Store],
         where: {
