@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
     });
     Product.belongsToMany(models.Store, { through: models.Inventory });
     Product.belongsTo(models.Favorites, {
-      foreignKey: "productId"
+      foreignKey: "id",
     });
     Product.hasMany(models.Favorites);
   };
