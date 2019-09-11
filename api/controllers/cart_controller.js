@@ -8,13 +8,13 @@ const CartController = () => {
     try {
       const carts = await Cart.findAll({
         where: {
-          deleted: false || null
+          isDeleted: false
         },
         include: [Inventory]
       });
       return res.status(200).json({
         carts,
-        message: "Cart Added Succesfully",
+        message: "success",
         StatusCode: 1
       });
     } catch (err) {
@@ -42,7 +42,7 @@ const CartController = () => {
   const deleteOne = async (req, res) => {
     const { cartId } = req.body;
     try {
-      await Cart.update({ deleted: 1 }, { where: { id: cartId } });
+      await Cart.update({ isDeleted: 1 }, { where: { id: cartId } });
       return res.status(200).json({
         message: "Cart Deleted Succesfully",
         StatusCode: 1
@@ -56,7 +56,7 @@ const CartController = () => {
   const deleteByCustomerId = async (req, res) => {
     const customerId = req.token.id;
     try {
-      await Cart.update({ deleted: 1 }, { where: { customerId } });
+      await Cart.update({ isDeleted: 1 }, { where: { customerId } });
       return res.status(200).json({
         message: "Cart Deleted Succesfully",
         StatusCode: 1

@@ -21,7 +21,9 @@ module.exports = (sequelize, DataTypes) => {
     {}
   );
   UserLocation.associate = function(models) {
-    // associations can be defined here
+    UserLocation.belongsTo(models.Customer, {
+      foreignKey: "customerId"
+    });
   };
   return UserLocation;
 };

@@ -17,7 +17,6 @@ module.exports = (sequelize, DataTypes) => {
       firstName: DataTypes.STRING,
       lastName: DataTypes.STRING,
       userName: DataTypes.STRING,
-      address: DataTypes.JSON,
       isActive: DataTypes.BOOLEAN,
       lastLogin: DataTypes.DATE,
       gender: DataTypes.INTEGER,
@@ -42,6 +41,7 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "id",
       targetKey: "customerId"
     });
+    Customer.hasMany(models.UserLocation, { as: "addresses" });
     Customer.hasMany(models.Cart, { foreignKey: "customerId" });
   };
   return Customer;

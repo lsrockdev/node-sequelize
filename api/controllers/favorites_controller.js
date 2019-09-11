@@ -7,7 +7,7 @@ const FavoritesController = () => {
   const getFavoriteProducts = async (req, res) => {
     const { body } = req;
     try {
-      const favoriteProducts = await Product.findAll({
+      const favoriteProducts = await Favorites.findAll({
         include: [Store],
         where: {
           storeId: {

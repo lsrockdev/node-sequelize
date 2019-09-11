@@ -5,7 +5,7 @@ const SizeController = () => {
     try {
       const sizes = await Size.findAll({
         where: {
-          isDeleted: false || null
+          isDeleted: false
         }
       });
       return res.status(200).json({

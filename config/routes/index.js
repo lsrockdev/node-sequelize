@@ -7,10 +7,12 @@ const customerStoreRoutes = require("./customer/customer_store_routes");
 const customerCategoryRoutes = require("./customer/customer_categroy_routes");
 const customerAddressRoutes = require("./customer/customer_address_routes");
 const customerOrderRoutes = require("./customer/customer_order_routes");
+const customerProductRoutes = require("./customer/customer_product_routes");
 
 const adminAuthRoutes = require("./dashboard/admin_auth_routes");
 const adminSizeRoutes = require("./dashboard/admin_size_route");
 const adminCategoryRoutes = require("./dashboard/admin_category_routes");
+const adminProductRoutes = require("./dashboard/admin_product_routes");
 
 router.use("/customer", customerAuthRoutes);
 router.use("/customer", customerCartRoutes);
@@ -18,9 +20,11 @@ router.use("/customer", customerStoreRoutes);
 router.use("/customer", customerCategoryRoutes);
 router.use("/customer", customerAddressRoutes);
 router.use("/customer", customerOrderRoutes);
+router.use("/customer", customerProductRoutes);
 
 router.use("/admin", adminAuthRoutes);
 router.use("/admin", adminSizeRoutes);
 router.use("/admin", adminCategoryRoutes);
+router.use("/admin", adminProductRoutes);
 
 module.exports = router;

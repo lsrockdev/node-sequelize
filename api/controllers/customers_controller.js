@@ -12,6 +12,8 @@ var _ = require("lodash");
 const CustomerController = () => {
   const register = async (req, res) => {
     const { body } = req;
+    const address = body.address;
+    delete body.address;
     try {
       const existing = await Customer.findOne({
         where: {
@@ -28,16 +30,18 @@ const CustomerController = () => {
           } was already used in other accounts`
         });
       }
-      await Customer.create({
+      const customer = await Customer.create({
         ...body,
         email: body.email.toLowerCase(),
         password: bcryptService().password(body)
       });
-      var customer = await Customer.findOne({
-        where: {
-          email: body.email.toLowerCase()
-        }
-      });
+      if (address) {
+        await UserLocation.create({
+          ...address,
+          customerId: customer.id,
+          isActive: true
+        });
+      }
       delete customer.password;
       const token = authService().issue({ id: customer.id });
       return res.status(200).json({
@@ -60,7 +64,13 @@ const CustomerController = () => {
         let customer = await Customer.findOne({
           where: {
             email: email
-          }
+          },
+          include: [
+            {
+              model: UserLocation,
+              as: "addresses"
+            }
+          ]
         });
         if (!customer) {
           return res.status(400).json({ msg: "Bad Request: User not found" });
