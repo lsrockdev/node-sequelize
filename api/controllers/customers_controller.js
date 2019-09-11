@@ -64,7 +64,13 @@ const CustomerController = () => {
         let customer = await Customer.findOne({
           where: {
             email: email
-          }
+          },
+          include: [
+            {
+              model: UserLocation,
+              as: "addresses"
+            }
+          ]
         });
         if (!customer) {
           return res.status(400).json({ msg: "Bad Request: User not found" });

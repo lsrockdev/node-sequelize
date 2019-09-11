@@ -41,6 +41,7 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "id",
       targetKey: "customerId"
     });
+    Customer.hasMany(models.UserLocation, { as: "addresses" });
     Customer.hasMany(models.Cart, { foreignKey: "customerId" });
   };
   return Customer;
