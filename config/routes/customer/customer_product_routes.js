@@ -5,7 +5,7 @@ const productsController = require("../../../api/controllers/products_controller
 
 const authPolicy = require("../../../api/policies/auth.policy");
 
-router.post("/getProductsByCategory", authPolicy, function(req, res) {
+router.get("/getProductsByCategory", authPolicy, function(req, res) {
   return productsController().getByCategory(req, res);
 });
 
