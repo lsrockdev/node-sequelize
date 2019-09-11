@@ -37,7 +37,9 @@ const CustomerController = () => {
       });
       if (address) {
         await UserLocation.create({
-          ...address,
+          longitude,
+          latitude,
+          address1: address,
           customerId: customer.id,
           isActive: true
         });
