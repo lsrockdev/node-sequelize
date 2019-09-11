@@ -102,6 +102,9 @@ const OrdersController = () => {
   // TODO: Stripe routes:
   const createPaymentIntent = async (req, res) => {
     const { currency } = req.body;
+    const order = await db.Order.findOne({
+      where: { id: orderId }
+    });
 
     // Required if we want to transfer part of the payment to a store
     // A transfer group is a unique ID that lets you associate transfers with the original payment
@@ -109,7 +112,7 @@ const OrdersController = () => {
 
     // Create a PaymentIntent with the order amount and currency
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: calculateOrderAmount(false),
+      amount: order.total,
       currency: currency,
       transfer_group: transferGroup
     });
@@ -138,7 +141,7 @@ const OrdersController = () => {
 
     // Update the PaymentIntent with the new amount and metedata
     const updatedPaymentIntent = await stripe.paymentIntents.update(id, {
-      amount: calculateOrderAmount(isDonating),
+      amount: order.total,
       metadata: metadata
     });
 
@@ -147,6 +150,10 @@ const OrdersController = () => {
 
   // Webhook handler for asynchronous events.
   const stripeWebhook = async (req, res) => {
+    const order = await db.Order.findOne({
+      where: { id: orderId }
+    });
+
     // Check if webhook signing is configured.
     if (env.parsed.STRIPE_WEBHOOK_SECRET) {
       // Retrieve the event by verifying the signature using the raw body and secret.
@@ -172,22 +179,32 @@ const OrdersController = () => {
     }
 
     if (eventType === "payment_intent.succeeded") {
-      if (data.object.metadata.orderId) {
-        // Customer placed an order
-        // Use Stripe Connect to transfer funds to organization's Stripe account
-        const transfer = await stripe.transfers.create({
-          amount: data.object.metadata.orderId,
-          currency: "usd",
-          destination: data.object.metadata.organizationAccountId,
-          transfer_group: data.object.transfer_group
-        });
+      // Customer placed an order and payment succeeded
+      // Use Stripe Connect to transfer funds to store's Stripe account
 
-        console.log(
-          `😀 Customer donated ${transfer.amount} to ${transfer.destination} send them a thank you email at ${data.object.receipt_email}!`
-        );
-      } else {
-        console.log("😶 Payment received -- customer did not donate.");
-      }
+      const order = await db.Order.findOne({
+        where: {
+          id: data.object.metadata.orderId
+        },
+        include: [db.Store]
+      });
+
+      const transfer = await stripe.transfers.create({
+        amount: data.object.metadata.totalPaidToStore,
+        currency: "usd",
+        destination: data.object.metadata.storeAccountId,
+        transfer_group: data.object.transfer_group
+      });
+
+      // Mark order as paid:
+      await order.update({
+        status: 1,
+        paymentCompleted: true
+      });
+
+      console.log(
+        `Payment success: OrderId: ${data.object.metadata.orderId} charged and paid out to store: ${transfer.destination}. Customer email: ${data.object.receipt_email}`
+      );
     } else if (eventType === "payment_intent.payment_failed") {
       console.log("❌ Payment failed.");
     }
