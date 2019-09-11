@@ -70,7 +70,7 @@ const StoreController = () => {
     Store.belongsTo(StoreUser, { foreignKey: "userId" });
     const allStores = Store.findAll({
       where: {
-        isDeleted: false || null
+        isDeleted: false
       },
       include: [StoreUser]
     });

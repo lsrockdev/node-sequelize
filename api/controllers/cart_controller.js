@@ -8,7 +8,7 @@ const CartController = () => {
     try {
       const carts = await Cart.findAll({
         where: {
-          deleted: false || null
+          isDeleted: false
         },
         include: [Inventory]
       });

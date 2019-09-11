@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
       price: DataTypes.DOUBLE,
       customerId: DataTypes.INTEGER,
       inventoryId: DataTypes.INTEGER,
-      deleted: DataTypes.BOOLEAN
+      isDeleted: DataTypes.BOOLEAN
     },
     {}
   );
