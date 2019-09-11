@@ -4,9 +4,38 @@ const getCurrentUser = require("../helpers/current_user_helper");
 var _ = require("lodash");
 
 const CustomerController = () => {
+  const setActiveCustomerAddress = async (req, res) => {
+    const { body } = req;
+    const customerId = req.token.id;
+    try {
+      await UserLocation.update({
+        isActive: false,
+      }, {
+        where: {
+          customerId: customerId,
+        },
+      });
+      await UserLocation.update({
+        isActive: true,
+      }, {
+        where: {
+          customerId: customerId,
+          id: body.id,
+        },
+      });
+      return res.status(200).json({
+        message: "Successfully set active address address",
+        address: body.id
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ msg: "Internal server error" });
+    }
+  };
+
   const addCustomerAddress = async (req, res) => {
     const { body } = req;
-    customerId = req.token.id;
+    const customerId = req.token.id;
     // const currentUser = await getCurrentUser("Customer", customerId);
 
     try {
@@ -23,7 +52,13 @@ const CustomerController = () => {
       ]);
 
       console.log(filteredAttributes);
-
+      await UserLocation.update({
+        isActive: false,
+      }, {
+        where: {
+          customerId: customerId,
+        },
+      });
       const address = await UserLocation.create({
         ...filteredAttributes,
         customerId: customerId
@@ -89,6 +124,7 @@ const CustomerController = () => {
   };
 
   return {
+    setActiveCustomerAddress,
     addCustomerAddress,
     getCustomerAddresses,
     deleteCustomerAddress
