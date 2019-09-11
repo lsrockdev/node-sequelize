@@ -1,6 +1,7 @@
 const Category = require("../../models").Category;
 const CatergorySizes = require("../../models").CatergorySizes;
 const Size = require("../../models").Size;
+const Product = require("../../models").Product;
 
 const CategoryController = () => {
   const getAll = async (req, res) => {
@@ -18,8 +19,15 @@ const CategoryController = () => {
                 model: Size
               }
             ]
-          }
-        ]
+          },
+          {
+            model: Product,
+            limit: 20,
+            order: [
+              ['createdAt', 'DESC']
+            ],
+          },
+        ],
       });
       return res.status(200).json({
         categories,
