@@ -22,8 +22,7 @@ module.exports = (sequelize, DataTypes) => {
   );
   UserLocation.associate = function(models) {
     UserLocation.belongsTo(models.Customer, {
-      foreignKey: "customerId",
-      as: "address"
+      foreignKey: "customerId"
     });
   };
   return UserLocation;

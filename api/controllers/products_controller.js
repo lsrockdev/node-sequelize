@@ -77,7 +77,7 @@ const ProductController = () => {
   const updateOne = async (req, res) => {
     const { body } = req;
     try {
-      await Product.update(body);
+      await Product.update(body, { where: { id: body.id } });
       return res.status(200).json({
         message: "Your product successfully updated.",
         StatusCode: 1
