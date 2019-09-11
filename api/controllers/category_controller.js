@@ -1,5 +1,5 @@
 const Category = require("../../models").Category;
-const CatergorySizes = require("../../models").CatergorySizes;
+const CategorySizes = require("../../models").CategorySizes;
 const Size = require("../../models").Size;
 const Product = require("../../models").Product;
 
@@ -8,7 +8,7 @@ const CategoryController = () => {
     try {
       const categories = await Category.findAll({
         where: {
-          isDeleted: false || null,
+          isDeleted: false,
           isActive: true
         },
         include: [
@@ -52,7 +52,7 @@ const CategoryController = () => {
           categoryId: category.id
         };
       });
-      await CatergorySizes.bulkCreate(categorySizes);
+      await CategorySizes.bulkCreate(categorySizes);
       return res.status(200).json({
         message: "Your category successfully saved.",
         StatusCode: 1
@@ -100,13 +100,13 @@ const CategoryController = () => {
 
   const updateSizes = async (categoryId, sizeIds) => {
     try {
-      await CatergorySizes.destroy({
+      await CategorySizes.destroy({
         where: { categoryId }
       });
       const categorySizes = sizeIds.map(sizeId => {
         return { sizeId, categoryId };
       });
-      await CatergorySizes.bulkCreate(categorySizes);
+      await CategorySizes.bulkCreate(categorySizes);
       return true;
     } catch (err) {
       throw err;
