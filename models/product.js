@@ -26,6 +26,10 @@ module.exports = (sequelize, DataTypes) => {
       sourceKey: "categoryId"
     });
     Product.belongsToMany(models.Store, { through: models.Inventory });
+    Product.belongsTo(models.Favorites, {
+      foreignKey: "productId"
+    });
+    Product.hasMany(models.Favorites);
   };
   return Product;
 };

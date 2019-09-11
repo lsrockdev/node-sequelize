@@ -10,7 +10,9 @@ module.exports = (sequelize, DataTypes) => {
     {}
   );
   Favorites.associate = function(models) {
-    // associations can be defined here
+    Favorites.belongsTo(models.Product, {
+      foreignKey: "productId"
+    });
   };
   return Favorites;
 };
