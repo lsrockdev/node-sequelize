@@ -1,5 +1,6 @@
 const getCurrentUser = require("../helpers/current_user_helper");
 const db = require("../services/db.service.js");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const OrdersController = () => {
   const placeOrder = async (req, res) => {
@@ -30,6 +31,7 @@ const OrdersController = () => {
         subtotal: subtotal,
         deliveryFees: deliveryFeeTotal,
         total: subtotal + deliveryFeeTotal + order.tax + order.tip
+        // totalPaidToStore: subtotal + order.tax
       });
 
       // TODO: Calculate tax (currently zero for all stores)
@@ -97,6 +99,98 @@ const OrdersController = () => {
     }
   };
 
+  // TODO: Stripe routes:
+  const createPaymentIntent = async (req, res) => {
+    const { currency } = req.body;
+
+    // Required if we want to transfer part of the payment to a store
+    // A transfer group is a unique ID that lets you associate transfers with the original payment
+    const transferGroup = `group_${Math.floor(Math.random() * 10)}`;
+
+    // Create a PaymentIntent with the order amount and currency
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: calculateOrderAmount(false),
+      currency: currency,
+      transfer_group: transferGroup
+    });
+
+    // Send public key and PaymentIntent details to client
+    res.send({
+      publicKey: env.parsed.STRIPE_PUBLIC_KEY,
+      paymentIntent: paymentIntent
+    });
+  };
+
+  const updatePaymentIntent = async (req, res) => {
+    const { orderId, id } = req.body;
+    const paymentIntent = await stripe.paymentIntents.retrieve(id);
+
+    let metadata;
+
+    // Add metadata to track the amount being split between tapster and store
+    metadata = Object.assign(paymentIntent.metadata || {}, {
+      totalPaidToStore: 46,
+      organizationAccountId: process.env.ORGANIZATION_ACCOUNT_ID
+    });
+
+    // Update the PaymentIntent with the new amount and metedata
+    const updatedPaymentIntent = await stripe.paymentIntents.update(id, {
+      amount: calculateOrderAmount(isDonating),
+      metadata: metadata
+    });
+
+    res.send({ amount: updatedPaymentIntent.amount });
+  };
+
+  // Webhook handler for asynchronous events.
+  const stripeWebhook = async (req, res) => {
+    // Check if webhook signing is configured.
+    if (env.parsed.STRIPE_WEBHOOK_SECRET) {
+      // Retrieve the event by verifying the signature using the raw body and secret.
+      let event;
+      let signature = req.headers["stripe-signature"];
+      try {
+        event = stripe.webhooks.constructEvent(
+          req.rawBody,
+          signature,
+          env.parsed.STRIPE_WEBHOOK_SECRET
+        );
+      } catch (err) {
+        console.log(`⚠️  Webhook signature verification failed.`);
+        return res.sendStatus(400);
+      }
+      data = event.data;
+      eventType = event.type;
+    } else {
+      // Webhook signing is recommended, but if the secret is not configured in `config.js`,
+      // we can retrieve the event data directly from the request body.
+      data = req.body.data;
+      eventType = req.body.type;
+    }
+
+    if (eventType === "payment_intent.succeeded") {
+      if (data.object.metadata.orderId) {
+        // Customer placed an order
+        // Use Stripe Connect to transfer funds to organization's Stripe account
+        const transfer = await stripe.transfers.create({
+          amount: data.object.metadata.orderId,
+          currency: "usd",
+          destination: data.object.metadata.organizationAccountId,
+          transfer_group: data.object.transfer_group
+        });
+
+        console.log(
+          `😀 Customer donated ${transfer.amount} to ${transfer.destination} send them a thank you email at ${data.object.receipt_email}!`
+        );
+      } else {
+        console.log("😶 Payment received -- customer did not donate.");
+      }
+    } else if (eventType === "payment_intent.payment_failed") {
+      console.log("❌ Payment failed.");
+    }
+    res.sendStatus(200);
+  };
+
   const createLineItemsForOrder = async body => {
     let subtotal = 0;
     let deliveryFeeTotal = 0;
@@ -139,7 +233,14 @@ const OrdersController = () => {
     return { subtotal, deliveryFeeTotal };
   };
 
-  return { placeOrder, getAll, getOne };
+  return {
+    placeOrder,
+    getAll,
+    getOne,
+    createPaymentIntent,
+    updatePaymentIntent,
+    stripeWebhook
+  };
 };
 
 module.exports = OrdersController;
