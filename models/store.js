@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       isDeleted: DataTypes.BOOLEAN,
       IsFrattapStore: DataTypes.BOOLEAN,
       userId: DataTypes.INTEGER,
+      stripeToken: DataTypes.STRING,
       address: {
         type: DataTypes.TEXT,
         get: function() {

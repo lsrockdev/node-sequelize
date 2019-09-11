@@ -8,29 +8,32 @@ var replServer = repl.start({
 });
 
 // Sequelize Database Models:
-const {
-  Category,
-  CategorySizes,
-  Size,
-  Store,
-  Product,
-  Order,
-  LineItem,
-  Customer,
-  Cart,
-  Inventory
-} = require("./services/db.service.js");
+// const {
+//   Category,
+//   CategorySizes,
+//   Size,
+//   Store,
+//   Product,
+//   Order,
+//   LineItem,
+//   Customer,
+//   Cart,
+//   Inventory
+// } = require("./services/db.service.js");
 
-replServer.context.Category = Category;
-replServer.context.CategorySizes = CategorySizes;
-replServer.context.Size = Size;
-replServer.context.Store = Store;
-replServer.context.Product = Product;
-replServer.context.Order = Order;
-replServer.context.LineItem = LineItem;
-replServer.context.Customer = Customer;
-replServer.context.Cart = Cart;
-replServer.context.Inventory = Inventory;
+const db = require("./services/db.service.js");
+
+// replServer.context.Category = Category;
+// replServer.context.CategorySizes = CategorySizes;
+// replServer.context.Size = Size;
+// replServer.context.Store = Store;
+// replServer.context.Product = Product;
+// replServer.context.Order = Order;
+// replServer.context.LineItem = LineItem;
+// replServer.context.Customer = Customer;
+// replServer.context.Cart = Cart;
+// replServer.context.Inventory = Inventory;
+replServer.context.db = db;
 replServer.context._ = _;
 
 // Product.belongsTo(Category);

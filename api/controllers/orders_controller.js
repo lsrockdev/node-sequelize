@@ -124,13 +124,16 @@ const OrdersController = () => {
   const updatePaymentIntent = async (req, res) => {
     const { orderId, id } = req.body;
     const paymentIntent = await stripe.paymentIntents.retrieve(id);
-
+    const order = await db.Order.findOne({
+      where: { id: orderId },
+      include: [db.Store]
+    });
     let metadata;
 
     // Add metadata to track the amount being split between tapster and store
     metadata = Object.assign(paymentIntent.metadata || {}, {
-      totalPaidToStore: 46,
-      organizationAccountId: process.env.ORGANIZATION_ACCOUNT_ID
+      totalPaidToStore: order.totalPaidToStore,
+      storeAccountId: order.Store.stripeToken
     });
 
     // Update the PaymentIntent with the new amount and metedata
