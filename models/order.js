@@ -3,10 +3,23 @@ module.exports = (sequelize, DataTypes) => {
   const Order = sequelize.define(
     "Order",
     {
-      subtotal: DataTypes.INTEGER,
-      tax: DataTypes.INTEGER,
-      discount: DataTypes.INTEGER,
+      subtotal: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+      },
+      tax: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+      },
+      discount: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+      },
       total: DataTypes.INTEGER,
+      totalPaidToStore: DataTypes.INTEGER,
       tip: DataTypes.INTEGER,
       deliveryFees: DataTypes.INTEGER,
       deliveryAddress: {

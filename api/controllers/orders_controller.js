@@ -13,8 +13,8 @@ const OrdersController = () => {
         customerId: customerId,
         storeId: body.storeId,
         tip: body.tip,
-        tax: 0,
-        status: 0,
+        status: 0, // AwaitingPayment
+        discount: body.discount,
         deliveryAddress: await db.UserLocation.findOne({
           where: { customerId: customerId, id: body.addressId }
         })
@@ -30,8 +30,8 @@ const OrdersController = () => {
       const totaledOrder = await order.update({
         subtotal: subtotal,
         deliveryFees: deliveryFeeTotal,
-        total: subtotal + deliveryFeeTotal + order.tax + order.tip
-        // totalPaidToStore: subtotal + order.tax
+        total: subtotal - discount + deliveryFeeTotal + order.tax + order.tip,
+        totalPaidToStore: subtotal - discount + order.tax
       });
 
       // TODO: Calculate tax (currently zero for all stores)
