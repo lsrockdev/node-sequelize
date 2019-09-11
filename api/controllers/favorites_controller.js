@@ -27,10 +27,9 @@ const FavoritesController = () => {
   };
 
   const addorDeleteOne = async (req, res) => {
-    const { body } = req;
+    const { productId } = req.body;
     const customerId = req.token.id;
-    const data = { ...body, customerId };
-    console.log(data);
+    const data = { productId, customerId };
     try {
       const existing = await Favorites.findOne({ where: data });
       if (existing) {

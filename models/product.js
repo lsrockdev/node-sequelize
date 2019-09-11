@@ -14,7 +14,8 @@ module.exports = (sequelize, DataTypes) => {
       depositFee: DataTypes.INTEGER,
       // Not using deliveryFee, use Category.deliveryFee instead:
       deliveryFee: DataTypes.INTEGER,
-      price: DataTypes.INTEGER
+      price: DataTypes.INTEGER,
+      storeId: DataTypes.INTEGER
     },
     {}
   );
