@@ -12,7 +12,7 @@ const StoreController = () => {
     try {
       const addresses = await UserLocation.findAll({
         where: {
-          isActive: false || null,
+          isActive: true,
           customerId: customerId
         }
       });
