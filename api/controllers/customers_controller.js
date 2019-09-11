@@ -237,7 +237,6 @@ const CustomerController = () => {
     try {
       const addresses = await UserLocation.findAll({
         where: {
-          isActive: true,
           customerId: customerId
         }
       });
