@@ -14,7 +14,8 @@ module.exports = (sequelize, DataTypes) => {
       depositFee: DataTypes.INTEGER,
       // Not using deliveryFee, use Category.deliveryFee instead:
       deliveryFee: DataTypes.INTEGER,
-      price: DataTypes.INTEGER
+      price: DataTypes.INTEGER,
+      storeId: DataTypes.INTEGER
     },
     {}
   );
@@ -25,6 +26,10 @@ module.exports = (sequelize, DataTypes) => {
       sourceKey: "categoryId"
     });
     Product.belongsToMany(models.Store, { through: models.Inventory });
+    Product.belongsTo(models.Favorites, {
+      foreignKey: "id",
+    });
+    Product.hasMany(models.Favorites);
   };
   return Product;
 };

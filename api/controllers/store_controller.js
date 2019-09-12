@@ -12,7 +12,7 @@ const StoreController = () => {
     try {
       const addresses = await UserLocation.findAll({
         where: {
-          isActive: false || null,
+          isActive: true,
           customerId: customerId
         }
       });
@@ -75,12 +75,14 @@ const StoreController = () => {
       include: [StoreUser]
     });
     const availableStores = await allStores.filter(async store => {
-      const distance = await LocationHelper().distanceBetweenLocations(
-        address,
-        store.StoreUser.address
-      );
-      if (distance > 20) {
-        return store;
+      if (store.StoreUser) {
+        const distance = await LocationHelper().distanceBetweenLocations(
+          address,
+          store.StoreUser.address
+        );
+        if (distance > 20) {
+          return store;
+        }
       }
     });
     if (availableStores.length == 0) {

@@ -1,8 +1,10 @@
 const Product = require("../../models").Product;
+const Category = require("../../models").Category;
+const CategorySize = require("../../models").CategorySize;
+const Size = require("../../models").Size;
 
 const ProductController = () => {
   const getAll = async (req, res) => {
-    const { categoryId } = req.body;
     try {
       const products = await Product.findAll({
         where: {
@@ -21,7 +23,7 @@ const ProductController = () => {
   };
 
   const getByCategory = async (req, res) => {
-    const { categoryId } = req.body;
+    const { categoryId } = req.query;
     try {
       const products = await Product.findAll({
         where: {
@@ -41,12 +43,21 @@ const ProductController = () => {
   };
 
   const getById = async (req, res) => {
-    const { id } = req.body;
+    const { id } = req.query;
     try {
       const product = await Product.findOne({
         where: {
           id
-        }
+        },
+        include: [{
+          model: Category,
+          include: [{
+            model: CategorySize,
+            include: [{
+              model: Size,
+            }],
+          }],
+        }],
       });
       return res.status(200).json({
         product,

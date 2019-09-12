@@ -1,12 +1,18 @@
-'use strict';
+"use strict";
 module.exports = (sequelize, DataTypes) => {
-  const Favorites = sequelize.define('Favorites', {
-    productName: DataTypes.STRING,
-    customerId: DataTypes.STRING,
-    categoryId: DataTypes.STRING
-  }, {});
+  const Favorites = sequelize.define(
+    "Favorites",
+    {
+      productId: DataTypes.INTEGER,
+      customerId: DataTypes.INTEGER,
+      categoryId: DataTypes.INTEGER
+    },
+    {}
+  );
   Favorites.associate = function(models) {
-    // associations can be defined here
+    Favorites.belongsTo(models.Product, {
+      foreignKey: "productId"
+    });
   };
   return Favorites;
 };

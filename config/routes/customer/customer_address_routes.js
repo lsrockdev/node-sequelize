@@ -3,6 +3,10 @@ var router = express.Router();
 const customerAddressesController = require("../../../api/controllers/customer_addresses_controller");
 const authPolicy = require("../../../api/policies/auth.policy");
 
+router.patch('/updateCustomerAddress', authPolicy, function(req, res) {
+  return customerAddressesController().updateCustomerAddress(req, res);
+});
+
 router.post('/setActiveCustomerAddress', authPolicy, function(req, res) {
   return customerAddressesController().setActiveCustomerAddress(req, res);
 });

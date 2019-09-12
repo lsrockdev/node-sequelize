@@ -37,7 +37,9 @@ const CustomerController = () => {
       });
       if (address) {
         await UserLocation.create({
-          ...address,
+          longitude,
+          latitude,
+          address1: address,
           customerId: customer.id,
           isActive: true
         });
@@ -237,7 +239,6 @@ const CustomerController = () => {
     try {
       const addresses = await UserLocation.findAll({
         where: {
-          isActive: true,
           customerId: customerId
         }
       });

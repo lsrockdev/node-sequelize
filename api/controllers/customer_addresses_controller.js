@@ -4,6 +4,35 @@ const getCurrentUser = require("../helpers/current_user_helper");
 var _ = require("lodash");
 
 const CustomerController = () => {
+  const updateCustomerAddress = async (req, res) => {
+    const { body } = req;
+
+    let address = await UserLocation.findOne({ where:{id: body.id} });
+
+    if (address.customerId !== req.token.id) {
+      return res.status(400).json({msg: 'Customer does not own address.'});
+    }
+
+    // Whitelist allowable attributes:
+    const filteredAttributes = _.pick(body, [
+      "address1",
+      "address2",
+      "address3",
+      "longitude",
+      "latitude"
+    ]);
+
+    await address.update(filteredAttributes);
+
+    address = await UserLocation.findOne({ where:{id: address.id} });
+
+    return res.status(200).json({
+      address,
+      isvalid: true,
+      message: "Successfully address customer",
+    });
+  };
+
   const setActiveCustomerAddress = async (req, res) => {
     const { body } = req;
     const customerId = req.token.id;
@@ -124,6 +153,7 @@ const CustomerController = () => {
   };
 
   return {
+    updateCustomerAddress,
     setActiveCustomerAddress,
     addCustomerAddress,
     getCustomerAddresses,

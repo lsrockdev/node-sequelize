@@ -5,15 +5,17 @@ const Sequelize = require("sequelize");
 
 const FavoritesController = () => {
   const getFavoriteProducts = async (req, res) => {
-    const { body } = req;
+    const { storeIds } = req.body;
+    const customerId = req.token.id;
+
     try {
       const favoriteProducts = await Favorites.findAll({
-        include: [Store],
-        where: {
-          storeId: {
-            [Sequelize.Op.in]: body.StoreIds
+        where: { customerId },
+        include: [
+          {
+            model: Product
           }
-        }
+        ]
       });
       return res.status(200).json({
         favoriteProducts,
@@ -27,10 +29,9 @@ const FavoritesController = () => {
   };
 
   const addorDeleteOne = async (req, res) => {
-    const { body } = req;
+    const { productId } = req.body;
     const customerId = req.token.id;
-    const data = { ...body, customerId };
-    console.log(data);
+    const data = { productId, customerId };
     try {
       const existing = await Favorites.findOne({ where: data });
       if (existing) {
