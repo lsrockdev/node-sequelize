@@ -99,11 +99,10 @@ const CustomerController = () => {
   };
 
   const forgotPassword = async (req, res) => {
-    const { body } = req;
-    console.log(body);
+    const { otpCode, password } = req.body;
     const existing = await Customer.findOne({
       where: {
-        phone: body.phone
+        otpCode
       }
     });
     if (!existing) {
@@ -113,10 +112,7 @@ const CustomerController = () => {
         StatusCode: 0
       });
     }
-    await Customer.update(
-      { password: body.password },
-      { where: { phone: body.phone } }
-    );
+    await Customer.update({ password }, { where: { otpCode } });
     return res.status(200).json({
       Message: "Passowrd Updated Succesfully",
       StatusCode: 1
@@ -138,9 +134,9 @@ const CustomerController = () => {
           StatusCode: 0
         });
       }
-      const optCode = await otpService().create("Customer", customer.id);
+      const otpCode = await otpService().create("Customer", customer.id);
+      await customer.update({ otpCode });
       return res.status(200).json({
-        otp: optCode,
         message: "OTP generated.",
         StatusCode: 1
       });
