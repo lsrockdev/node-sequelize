@@ -99,16 +99,16 @@ const CustomerController = () => {
   };
 
   const forgotPassword = async (req, res) => {
-    const { otpCode, password } = req.body;
+    const { phone, otpCode, password } = req.body;
     const existing = await Customer.findOne({
       where: {
-        otpCode
+        otpCode,
+        phone
       }
     });
     if (!existing) {
       return res.status(200).json({
-        Message:
-          "There are no Tapster accounts associated with that phone number",
+        Message: "Invalid Code",
         StatusCode: 0
       });
     }
