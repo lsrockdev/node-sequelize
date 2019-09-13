@@ -18,7 +18,7 @@ module.exports = {
       type: Sequelize.BOOLEAN,
       defaultValue: false
     });
-    await queryInterface.changeColumn("StoreUsers", "isDeleted", {
+    await queryInterface.changeColumn("Stores", "isDeleted", {
       type: Sequelize.BOOLEAN,
       defaultValue: false
     });
