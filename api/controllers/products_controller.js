@@ -49,15 +49,21 @@ const ProductController = () => {
         where: {
           id
         },
-        include: [{
-          model: Category,
-          include: [{
-            model: CategorySize,
-            include: [{
-              model: Size,
-            }],
-          }],
-        }],
+        include: [
+          {
+            model: Category,
+            include: [
+              {
+                model: CategorySize,
+                include: [
+                  {
+                    model: Size
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       });
       return res.status(200).json({
         product,

@@ -11,9 +11,14 @@ module.exports = (sequelize, DataTypes) => {
       numberOfDays: DataTypes.INTEGER,
       uid: DataTypes.STRING,
       description: DataTypes.STRING,
-      isDeleted: DataTypes.BOOLEAN,
+      isDeleted: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: 0
+      },
       IsFrattapStore: DataTypes.BOOLEAN,
       userId: DataTypes.INTEGER,
+      stripeToken: DataTypes.STRING,
       address: {
         type: DataTypes.TEXT,
         get: function() {
