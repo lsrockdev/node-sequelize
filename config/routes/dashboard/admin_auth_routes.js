@@ -10,4 +10,8 @@ router.post("/login", function(req, res) {
   return adminController().login(req, res);
 });
 
+router.post("/updateprofile", function(req, res) {
+  return adminController().update(req, res);
+});
+
 module.exports = router;
