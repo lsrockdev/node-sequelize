@@ -2,6 +2,9 @@ const Product = require("../../models").Product;
 const Category = require("../../models").Category;
 const CategorySize = require("../../models").CategorySize;
 const Size = require("../../models").Size;
+const Favorites = require("../../models").Favorites;
+
+const Sequelize = require("sequelize");
 
 const ProductController = () => {
   const getAll = async (req, res) => {
@@ -31,8 +34,21 @@ const ProductController = () => {
           categoryId
         }
       });
+      const productIds = products.map(product => product.id);
+      const favorites = await Favorites.findAll({
+        where: {
+          productId: {[Sequelize.Op.in]: productIds},
+          customerId: req.token.id,
+        },
+        include: [
+          {
+            model: Product,
+          }
+        ]
+      });
       return res.status(200).json({
         products,
+        favorites,
         message: "success",
         StatusCode: 1
       });
@@ -65,8 +81,10 @@ const ProductController = () => {
           }
         ]
       });
+      const isCustomerFavorite = await Favorites.count({ where: {productId: id, customerId: req.token.id}}) > 0;
       return res.status(200).json({
         product,
+        isCustomerFavorite,
         message: "success",
         StatusCode: 1
       });

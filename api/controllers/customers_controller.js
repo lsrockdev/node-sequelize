@@ -98,6 +98,25 @@ const CustomerController = () => {
       .json({ msg: "Bad Request: Email or password is wrong" });
   };
 
+  const checkOtp = async (req, res) => {
+    const { otpCode } = req.body;
+    const existing = await Customer.findOne({
+      where: {
+        otpCode,
+      }
+    });
+    if (!existing) {
+      return res.status(200).json({
+        Message: "Invalid Code",
+        StatusCode: 0
+      });
+    }
+    return res.status(200).json({
+      Message: "Valid Code",
+      StatusCode: 1
+    });
+  };
+
   const forgotPassword = async (req, res) => {
     const { phone, otpCode, password } = req.body;
     const existing = await Customer.findOne({
@@ -112,7 +131,7 @@ const CustomerController = () => {
         StatusCode: 0
       });
     }
-    await Customer.update({ password }, { where: { otpCode } });
+    await Customer.update({ password: bcryptService().password(password) }, { where: { otpCode } });
     return res.status(200).json({
       Message: "Passowrd Updated Succesfully",
       StatusCode: 1
@@ -282,7 +301,8 @@ const CustomerController = () => {
     updateProfile,
     getCustomerProfile,
     generateBraintreeToken,
-    createOtp
+    createOtp,
+    checkOtp,
   };
 };
 

@@ -11,6 +11,10 @@ router.post("/login", function(req, res) {
   return customerController().login(req, res);
 });
 
+router.post("/checkOtp", function(req, res) {
+  return customerController().checkOtp(req, res);
+});
+
 router.post("/forgotPassword", function(req, res) {
   return customerController().forgotPassword(req, res);
 });
