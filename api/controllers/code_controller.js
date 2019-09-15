@@ -6,7 +6,7 @@ const db = require("../../models").sequelize;
 const CodeController = () => {
   const getAll = async (req, res) => {
     try {
-      const storeCodes = await db.query(`select c.id, c.code, s.id as store_id 
+      const storeCodes = await db.query(`select c.id, c.code, s.id as store_id, s.name as store_name
       from StoreCodes c left join Stores s on c.code = s.uid`);
       return res.status(200).json({
         storeCodes: storeCodes[0],
