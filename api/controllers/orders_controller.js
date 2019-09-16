@@ -148,6 +148,23 @@ const OrdersController = () => {
     res.send({ amount: updatedPaymentIntent.amount });
   };
 
+  // Split and have cust pay the fees like this:
+  // stripe.paymentIntents
+  //   .create(
+  //     {
+  //       payment_method_types: ["card"],
+  //       amount: 1000,
+  //       currency: "usd",
+  //       application_fee_amount: 123
+  //     },
+  //     {
+  //       stripe_account: "{{CONNECTED_STRIPE_ACCOUNT_ID}}"
+  //     }
+  //   )
+  //   .then(function(paymentIntent) {
+  //     // asynchronously called
+  //   });
+
   // Webhook handler for asynchronous events.
   const stripeWebhook = async (req, res) => {
     const order = await db.Order.findOne({
