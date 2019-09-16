@@ -98,25 +98,40 @@ const CustomerController = () => {
       .json({ msg: "Bad Request: Email or password is wrong" });
   };
 
-  const forgotPassword = async (req, res) => {
-    const { body } = req;
-    console.log(body);
+  const checkOtp = async (req, res) => {
+    const { otpCode } = req.body;
     const existing = await Customer.findOne({
       where: {
-        phone: body.phone
+        otpCode,
       }
     });
     if (!existing) {
       return res.status(200).json({
-        Message:
-          "There are no Tapster accounts associated with that phone number",
+        Message: "Invalid Code",
         StatusCode: 0
       });
     }
-    await Customer.update(
-      { password: body.password },
-      { where: { phone: body.phone } }
-    );
+    return res.status(200).json({
+      Message: "Valid Code",
+      StatusCode: 1
+    });
+  };
+
+  const forgotPassword = async (req, res) => {
+    const { phone, otpCode, password } = req.body;
+    const existing = await Customer.findOne({
+      where: {
+        otpCode,
+        phone
+      }
+    });
+    if (!existing) {
+      return res.status(200).json({
+        Message: "Invalid Code",
+        StatusCode: 0
+      });
+    }
+    await Customer.update({ password: bcryptService().password(password) }, { where: { otpCode } });
     return res.status(200).json({
       Message: "Passowrd Updated Succesfully",
       StatusCode: 1
@@ -138,9 +153,9 @@ const CustomerController = () => {
           StatusCode: 0
         });
       }
-      const optCode = await otpService().create("Customer", customer.id);
+      const otpCode = await otpService().create("Customer", customer.id);
+      await customer.update({ otpCode });
       return res.status(200).json({
-        otp: optCode,
         message: "OTP generated.",
         StatusCode: 1
       });
@@ -286,7 +301,8 @@ const CustomerController = () => {
     updateProfile,
     getCustomerProfile,
     generateBraintreeToken,
-    createOtp
+    createOtp,
+    checkOtp,
   };
 };
 
