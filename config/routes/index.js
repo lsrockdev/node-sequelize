@@ -14,6 +14,7 @@ const adminSizeRoutes = require("./dashboard/admin_size_route");
 const adminCategoryRoutes = require("./dashboard/admin_category_routes");
 const adminProductRoutes = require("./dashboard/admin_product_routes");
 const adminStoreRoutes = require("./dashboard/admin_store_routes");
+const adminStoreCodeRoutes = require("./dashboard/admin_storecode_routes");
 
 router.use("/customer", customerAuthRoutes);
 router.use("/customer", customerCartRoutes);
@@ -28,5 +29,6 @@ router.use("/admin", adminSizeRoutes);
 router.use("/admin", adminCategoryRoutes);
 router.use("/admin", adminProductRoutes);
 router.use("/admin", adminStoreRoutes);
+router.use("/admin", adminStoreCodeRoutes);
 
 module.exports = router;
