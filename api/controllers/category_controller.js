@@ -13,12 +13,8 @@ const CategoryController = () => {
         },
         include: [
           {
-            model: CategorySizes,
-            include: [
-              {
-                model: Size
-              }
-            ]
+            model: Size,
+            attributes: ["id", "name", "size", "description"]
           },
           {
             model: Product,
