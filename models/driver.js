@@ -25,7 +25,8 @@ module.exports = (sequelize, DataTypes) => {
       isActive: DataTypes.BOOLEAN,
       lastLogin: DataTypes.DATE,
       gender: DataTypes.INTEGER,
-      dob: DataTypes.DATE
+      dob: DataTypes.DATE,
+      isDeleted: DataTypes.BOOLEAN
     },
     {}
   );
