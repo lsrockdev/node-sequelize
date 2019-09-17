@@ -13,17 +13,38 @@ const CategoryController = () => {
         },
         include: [
           {
-            model: CategorySizes,
-            include: [
-              {
-                model: Size
-              }
-            ]
+            model: Size,
+            attributes: ["id", "name", "size", "description"]
           },
           {
             model: Product,
             limit: 20,
             order: [["createdAt", "DESC"]]
+          }
+        ]
+      });
+      return res.status(200).json({
+        categories,
+        message: "Get Categories Succesfully",
+        StatusCode: 1
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ msg: "Internal server error" });
+    }
+  };
+
+  const getAllNoProducts = async (req, res) => {
+    try {
+      const categories = await Category.findAll({
+        where: {
+          isDeleted: false,
+          isActive: true
+        },
+        include: [
+          {
+            model: Size,
+            attributes: ["id", "name", "size", "description"]
           }
         ]
       });
@@ -111,6 +132,6 @@ const CategoryController = () => {
     }
   };
 
-  return { getAll, addOne, updateOne, deleteOne };
+  return { getAll, getAllNoProducts, addOne, updateOne, deleteOne };
 };
 module.exports = CategoryController;
