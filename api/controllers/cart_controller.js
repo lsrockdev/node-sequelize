@@ -2,6 +2,7 @@ const Cart = require("../../models").Cart;
 const Customer = require("../../models").Customer;
 const Inventory = require("../../models").Inventory;
 const Store = require("../../models").Store;
+const Product = require("../../models").Product;
 
 const CartController = () => {
   const getAll = async (req, res) => {
@@ -10,7 +11,19 @@ const CartController = () => {
         where: {
           isDeleted: false
         },
-        include: [Inventory]
+        include: [
+          {
+            model: Inventory,
+            include: [
+              {
+                model: Store,
+              },
+              {
+                model: Product,
+              },
+            ],
+          },
+        ],
       });
       return res.status(200).json({
         carts,
@@ -26,6 +39,7 @@ const CartController = () => {
   const addOne = async (req, res) => {
     const { body } = req;
     try {
+      body.customerId = req.token.id;
       const cart = await Cart.create(body);
       const cartDetail = await getCartById(cart.id);
       return res.status(200).json({
