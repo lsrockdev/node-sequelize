@@ -62,8 +62,8 @@ const CategoryController = () => {
   const addOne = async (req, res) => {
     const { body } = req;
     try {
-      const sizeIds = body.categorySizes;
-      delete body.categorySizes;
+      const sizeIds = body.sizeIds;
+      delete body.sizeIds;
       const category = await Category.create(body);
       const categorySizes = sizeIds.map(sizeId => {
         return {
@@ -90,8 +90,8 @@ const CategoryController = () => {
           id: body.id
         }
       });
-      await updateSizes(category.id, body.categorySizes);
-      delete body.categorySizes;
+      await updateSizes(category.id, body.sizeIds);
+      delete body.sizeIds;
       await category.update(body);
       return res.status(200).json({
         message: "Your category successfully updated.",
