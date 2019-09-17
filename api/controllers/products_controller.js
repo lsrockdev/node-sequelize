@@ -1,6 +1,6 @@
 const Product = require("../../models").Product;
 const Category = require("../../models").Category;
-const CategorySize = require("../../models").CategorySize;
+const CategorySizes = require("../../models").CategorySizes;
 const Size = require("../../models").Size;
 const Favorites = require("../../models").Favorites;
 const Inventory = require("../../models").Inventory;
@@ -72,7 +72,7 @@ const ProductController = () => {
             model: Category,
             include: [
               {
-                model: CategorySize,
+                model: CategorySizes,
                 include: [
                   {
                     model: Size
