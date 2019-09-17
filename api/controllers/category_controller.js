@@ -26,6 +26,19 @@ const CategoryController = () => {
           }
         ],
       });
+      categories.forEach(category => {
+        category.products = await Product.findAll({
+          where: {
+            isDeleted: false,
+            isActive: true,
+            categoryId: category.id,
+          },
+          limit: 20,
+          order: [
+            ['createdAt', 'DESC'],
+          ],
+        });
+      });
       return res.status(200).json({
         categories,
         message: "Get Categories Succesfully",
