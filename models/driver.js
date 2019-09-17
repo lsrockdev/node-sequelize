@@ -2,12 +2,6 @@
 
 const bcryptService = require("../api/services/bcrypt.service");
 
-// const hooks = {
-//   beforeCreate(customer) {
-//     customer.password = bcryptService().password(customer);
-//   }
-// };
-
 module.exports = (sequelize, DataTypes) => {
   const Driver = sequelize.define(
     "Driver",
