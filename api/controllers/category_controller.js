@@ -34,6 +34,31 @@ const CategoryController = () => {
     }
   };
 
+  const getAllNoProducts = async (req, res) => {
+    try {
+      const categories = await Category.findAll({
+        where: {
+          isDeleted: false,
+          isActive: true
+        },
+        include: [
+          {
+            model: Size,
+            attributes: ["id", "name", "size", "description"]
+          }
+        ]
+      });
+      return res.status(200).json({
+        categories,
+        message: "Get Categories Succesfully",
+        StatusCode: 1
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ msg: "Internal server error" });
+    }
+  };
+
   const addOne = async (req, res) => {
     const { body } = req;
     try {
@@ -107,6 +132,6 @@ const CategoryController = () => {
     }
   };
 
-  return { getAll, addOne, updateOne, deleteOne };
+  return { getAll, getAllNoProducts, addOne, updateOne, deleteOne };
 };
 module.exports = CategoryController;
