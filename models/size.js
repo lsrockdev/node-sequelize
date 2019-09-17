@@ -11,8 +11,10 @@ module.exports = (sequelize, DataTypes) => {
     {}
   );
   Size.associate = function(models) {
-    Size.hasOne(models.CategorySizes, { foreignKey: "sizeId" });
-
+    Size.belongsToMany(models.Category, {
+      through: models.CategorySizes,
+      foreignKey: "sizeId"
+    });
     // associations can be defined here
   };
   return Size;
