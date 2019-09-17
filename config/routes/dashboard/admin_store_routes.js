@@ -24,4 +24,8 @@ router.post("/updateStore", authPolicy, function(req, res) {
   return storesController().updateOne(req, res);
 });
 
+router.get("/getOrdersByStoreId", authPolicy, function(req, res) {
+  return storesController().getOrdersByStoreId(req, res);
+});
+
 module.exports = router;
