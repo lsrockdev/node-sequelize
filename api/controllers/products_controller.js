@@ -1,8 +1,10 @@
 const Product = require("../../models").Product;
 const Category = require("../../models").Category;
-const CategorySize = require("../../models").CategorySize;
+const CategorySizes = require("../../models").CategorySizes;
 const Size = require("../../models").Size;
 const Favorites = require("../../models").Favorites;
+const Inventory = require("../../models").Inventory;
+const Store = require("../../models").Store;
 
 const Sequelize = require("sequelize");
 
@@ -70,7 +72,7 @@ const ProductController = () => {
             model: Category,
             include: [
               {
-                model: CategorySize,
+                model: CategorySizes,
                 include: [
                   {
                     model: Size
@@ -81,9 +83,23 @@ const ProductController = () => {
           }
         ]
       });
+      const inventories = await Inventory.findAll({
+        where: {
+          productId: id,
+        },
+        include: [
+          {
+            model: Store,
+          },
+          {
+            model: Product,
+          },
+        ],
+      });
       const isCustomerFavorite = await Favorites.count({ where: {productId: id, customerId: req.token.id}}) > 0;
       return res.status(200).json({
         product,
+        inventories,
         isCustomerFavorite,
         message: "success",
         StatusCode: 1

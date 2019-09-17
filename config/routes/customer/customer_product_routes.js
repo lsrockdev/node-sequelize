@@ -17,4 +17,8 @@ router.get("/getFavoriteProducts", authPolicy, function(req, res) {
   return favoritesController().getFavoriteProducts(req, res);
 });
 
+router.get("/getProductById", authPolicy, function(req, res) {
+  return productsController().getById(req, res);
+});
+
 module.exports = router;
