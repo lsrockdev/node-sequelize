@@ -22,7 +22,6 @@ const CategoryController = () => {
           },
           {
             model: Product,
-            raw: true,
             limit: 20,
             order: [
               ['createdAt', 'DESC'],
