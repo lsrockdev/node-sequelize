@@ -22,13 +22,10 @@ const CategoryController = () => {
           },
           {
             model: Product,
-            raw: true,
             limit: 20,
-            order: [
-              ['createdAt', 'DESC'],
-            ],
+            order: [["createdAt", "DESC"]]
           }
-        ],
+        ]
       });
       return res.status(200).json({
         categories,
