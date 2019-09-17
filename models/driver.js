@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
       lastLogin: DataTypes.DATE,
       gender: DataTypes.INTEGER,
       dob: DataTypes.DATE,
-      isDeleted: DataTypes.BOOLEAN
+      isDeleted: { type: DataTypes.BOOLEAN, defaultValue: false }
     },
     {}
   );
