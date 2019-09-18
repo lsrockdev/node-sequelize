@@ -37,6 +37,22 @@ const DriversController = () => {
   const addOne = async (req, res) => {
     const { body } = req;
     try {
+      const existing = await db.Driver.findOne({
+        where: {
+          [Sequelize.Op.or]: [
+            { email: body.email.toLowerCase() },
+            { phone: body.phone }
+          ]
+        }
+      });
+      if (!!existing) {
+        return res.status(400).json({
+          msg: `${body.email.toLowerCase()} or ${
+            body.phone
+          } was already used in other accounts`
+        });
+      }
+
       const driver = await db.Driver.create(body);
       return res.status(200).json({
         driver: driver,

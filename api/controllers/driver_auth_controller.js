@@ -1,18 +1,17 @@
-const StoreUser = require("../../models").StoreUser;
+const Driver = require("../../models").Driver;
 const bcryptService = require("../services/bcrypt.service");
 const authService = require("../services/auth.service");
 
-const DriverController = () => {
+const DriverAuthController = () => {
   const authenticate = async (req, res) => {
     const body = req.body;
     const code = body.code,
       password = body.password;
     try {
-      let driver = await StoreUser.findOne({
+      let driver = await Driver.findOne({
         where: {
           code,
-          isActive: true,
-          roleId: 2
+          isActive: true
         }
       });
       if (!driver) {
@@ -39,12 +38,11 @@ const DriverController = () => {
     const code = body.code,
       password = body.password;
     try {
-      let driver = await StoreUser.findOne({
+      let driver = await Driver.findOne({
         where: {
           code,
           isActive: true,
-          isDeleted: false,
-          roleId: 2
+          isDeleted: false
         }
       });
       if (!driver) {
@@ -69,7 +67,7 @@ const DriverController = () => {
   const getProfile = async (req, res) => {
     const { code } = req.body;
     try {
-      let user = await StoreUser.findOne({
+      let user = await Driver.findOne({
         where: { code }
       });
       return res.status(200).json({
@@ -85,7 +83,7 @@ const DriverController = () => {
   const updateProfile = async (req, res) => {
     const { body } = req;
     try {
-      let user = await StoreUser.findOne({
+      let user = await Driver.findOne({
         where: {
           id: body.id
         }
@@ -112,4 +110,4 @@ const DriverController = () => {
   };
 };
 
-module.exports = DriverController;
+module.exports = DriverAuthController;
