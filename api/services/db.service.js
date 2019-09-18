@@ -12,7 +12,7 @@ db.Customer = require("../../models").Customer;
 db.UserLocation = require("../../models").UserLocation;
 db.Category = require("../../models").Category;
 db.Size = require("../../models").Size;
-db.CatergorySizes = require("../../models").CatergorySizes;
+db.CategorySizes = require("../../models").CategorySizes;
 db.Cart = require("../../models").Cart;
 db.Setting = require("../../models").Setting;
 

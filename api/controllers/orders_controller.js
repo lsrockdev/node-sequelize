@@ -86,7 +86,36 @@ const OrdersController = () => {
           customerId,
           id
         },
-        include: [db.LineItem]
+        include: [
+          {
+            model: db.LineItem,
+            include: [
+              {
+                model: db.Inventory,
+                include: [
+                  {
+                    model: db.CategorySizes,
+                    include: [
+                      {
+                        model: db.Size,
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            model: db.Customer,
+            include: [
+              {
+                model: db.UserLocation,
+                where: { isActive: true },
+                limit: 1,
+              },
+            ],
+          },
+        ]
       });
       return res.status(200).json({
         order,
