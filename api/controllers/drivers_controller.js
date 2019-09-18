@@ -1,4 +1,5 @@
 const db = require("../services/db.service.js");
+const Sequelize = require("sequelize");
 
 const DriversController = () => {
   const getAll = async (req, res) => {
