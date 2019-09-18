@@ -11,4 +11,12 @@ router.post("/signup", function(req, res) {
   return driverController().signUp(req, res);
 });
 
+router.post("/getDriverProfile", function(req, res) {
+  return driverController().getProfile(req, res);
+});
+
+router.post("/updateProfile", function(req, res) {
+  return driverController().updateProfile(req, res);
+});
+
 module.exports = router;
