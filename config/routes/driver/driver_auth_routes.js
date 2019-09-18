@@ -11,7 +11,7 @@ router.post("/signup", function(req, res) {
   return driverAuthController().signUp(req, res);
 });
 
-router.post("/getDriverProfile", function(req, res) {
+router.get("/getDriverProfile", function(req, res) {
   return driverAuthController().getProfile(req, res);
 });
 
