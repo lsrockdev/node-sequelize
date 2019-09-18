@@ -1,14 +1,14 @@
 var express = require("express");
 var router = express.Router();
-const customerController = require("../../../api/controllers/customers_controller");
-const authPolicy = require("../../../api/policies/auth.policy");
-
-router.post("/signup", function(req, res) {
-  return customerController().register(req, res);
-});
+const driverController = require("../../../api/controllers/driver_controller");
+// const authPolicy = require("../../../api/policies/auth.policy");
 
 router.post("/login", function(req, res) {
-  return customerController().login(req, res);
+  return driverController().authenticate(req, res);
+});
+
+router.post("/signup", function(req, res) {
+  return driverController().signUp(req, res);
 });
 
 module.exports = router;
