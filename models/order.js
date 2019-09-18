@@ -42,6 +42,7 @@ module.exports = (sequelize, DataTypes) => {
             default:
               return { code: null, name: null };
           }
+          // Add statuses for AwaitingDriverAssignment, AwaitingPickup, AwaitingDelivery, Delivered, AwaitingReturn, Completed
         },
         set: function(value) {
           return this.setDataValue("status", value);

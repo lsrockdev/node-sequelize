@@ -6,6 +6,9 @@ const UserLocation = require("../../models").UserLocation;
 const LocationHelper = require("../helpers/location_helper");
 const cartController = require("./cart_controller");
 
+// At some point can replace Store, StoreUser, and UserLocation references with db.Store, db.StoreUser, etc:
+const db = require("../services/db.service.js");
+
 const StoreController = () => {
   const getByCustomerId = async (req, res) => {
     const customerId = req.token.id;
@@ -179,6 +182,25 @@ const StoreController = () => {
     }
   };
 
+  const getOrdersByStoreId = async (req, res) => {
+    const { storeId } = req.body;
+    try {
+      const orders = await db.Order.findAll({
+        where: {
+          storeId
+        }
+      });
+      return res.status(200).json({
+        orders,
+        message: "success",
+        StatusCode: 1
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ msg: "Internal server error" });
+    }
+  };
+
   return {
     getByCustomerId,
     getByLocation,
@@ -187,7 +209,8 @@ const StoreController = () => {
     getById,
     deleteOne,
     addOne,
-    updateOne
+    updateOne,
+    getOrdersByStoreId
   };
 };
 
