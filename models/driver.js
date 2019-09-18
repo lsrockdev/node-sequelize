@@ -29,7 +29,9 @@ module.exports = (sequelize, DataTypes) => {
       isDeleted: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
-      }
+      },
+      code: DataTypes.STRING,
+      otpCode: DataTypes.STRING
     },
     {}
   );
