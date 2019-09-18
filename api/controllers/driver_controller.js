@@ -35,10 +35,30 @@ const DriverController = () => {
   };
 
   const signUp = async (req, res) => {
+    const body = req.body;
+    const code = body.code,
+      password = body.password;
     try {
+      let driver = await StoreUser.findOne({
+        where: {
+          code,
+          isActive: true,
+          isDeleted: false,
+          roleId: 2
+        }
+      });
+      if (!driver) {
+        return res.status(400).json({ msg: "Bad Request: Driver not found" });
+      }
+      await driver.update({
+        password: bcryptService().password(body)
+      });
+      const token = authService().issue({ id: driver.id });
       return res.status(200).json({
-        message: "success",
-        StatusCode: 1
+        message: "signUp Success",
+        StatusCode: 1,
+        driver,
+        token
       });
     } catch (err) {
       console.log(err);

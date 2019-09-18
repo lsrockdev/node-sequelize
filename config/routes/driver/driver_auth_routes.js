@@ -3,7 +3,7 @@ var router = express.Router();
 const driverController = require("../../../api/controllers/driver_controller");
 // const authPolicy = require("../../../api/policies/auth.policy");
 
-router.post("/login", function(req, res) {
+router.post("/authenticate", function(req, res) {
   return driverController().authenticate(req, res);
 });
 
