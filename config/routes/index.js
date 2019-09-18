@@ -17,6 +17,8 @@ const adminStoreRoutes = require("./dashboard/admin_store_routes");
 const adminStoreCodeRoutes = require("./dashboard/admin_storecode_routes");
 const adminSettingRoutes = require("./dashboard/admin_setting_routes");
 
+const driverAuthRoutes = require("./driver/driver_auth_routes");
+
 router.use("/customer", customerAuthRoutes);
 router.use("/customer", customerCartRoutes);
 router.use("/customer", customerStoreRoutes);
@@ -32,5 +34,7 @@ router.use("/admin", adminProductRoutes);
 router.use("/admin", adminStoreRoutes);
 router.use("/admin", adminStoreCodeRoutes);
 router.use("/admin", adminSettingRoutes);
+
+router.use("/driver", driverAuthRoutes);
 
 module.exports = router;
