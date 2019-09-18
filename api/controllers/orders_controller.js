@@ -78,7 +78,7 @@ const OrdersController = () => {
 
   const getOne = async (req, res) => {
     const customerId = req.token.id;
-    const { id } = req.body;
+    const { id } = req.query;
 
     try {
       const order = await db.Order.findOne({
@@ -112,6 +112,7 @@ const OrdersController = () => {
                 model: db.UserLocation,
                 where: { isActive: true },
                 limit: 1,
+                as: 'addresses',
               },
             ],
           },
