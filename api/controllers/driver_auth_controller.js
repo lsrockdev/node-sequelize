@@ -65,7 +65,7 @@ const DriverAuthController = () => {
   };
 
   const getProfile = async (req, res) => {
-    const { code } = req.body;
+    const { code } = req.query;
     try {
       let user = await Driver.findOne({
         where: { code }
