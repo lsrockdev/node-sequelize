@@ -9,6 +9,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
-  CategorySizes.associate = function(models) {};
+  CategorySizes.associate = function(models) {
+    CategorySizes.belongsTo(models.Size);
+  };
   return CategorySizes;
 };

@@ -78,7 +78,7 @@ const OrdersController = () => {
 
   const getOne = async (req, res) => {
     const customerId = req.token.id;
-    const { id } = req.body;
+    const { id } = req.query;
 
     try {
       const order = await db.Order.findOne({
@@ -86,7 +86,37 @@ const OrdersController = () => {
           customerId,
           id
         },
-        include: [db.LineItem]
+        include: [
+          {
+            model: db.LineItem,
+            include: [
+              {
+                model: db.Inventory,
+                include: [
+                  {
+                    model: db.CategorySizes,
+                    include: [
+                      {
+                        model: db.Size,
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            model: db.Customer,
+            include: [
+              {
+                model: db.UserLocation,
+                where: { isActive: true },
+                limit: 1,
+                as: 'addresses',
+              },
+            ],
+          },
+        ]
       });
       return res.status(200).json({
         order,
