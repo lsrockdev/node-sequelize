@@ -42,7 +42,8 @@ const DriversController = () => {
           [Sequelize.Op.or]: [
             { email: body.email.toLowerCase() },
             { phone: body.phone }
-          ]
+          ],
+          isDeleted: false
         }
       });
       if (!!existing) {
@@ -52,7 +53,6 @@ const DriversController = () => {
           } was already used in other accounts`
         });
       }
-
       const driver = await db.Driver.create(body);
       return res.status(200).json({
         driver: driver,
