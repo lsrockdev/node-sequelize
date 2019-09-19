@@ -3,6 +3,7 @@ const authService = require("../services/auth.service");
 const bcryptService = require("../services/bcrypt.service");
 const otpService = require("../services/otp.service");
 const Sequelize = require("sequelize");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const BrainTreeHelper = require("../helpers/braintree_helper");
 const getCurrentUser = require("../helpers/current_user_helper");
@@ -36,12 +37,27 @@ const CustomerController = () => {
         password: bcryptService().password(body)
       });
       if (address) {
+        const { longitude, latitude, address1, address2, address3 } = address;
         await UserLocation.create({
           ...address,
+          address1,
+          longitude,
+          latitude,
           isActive: true,
           customerId: customer.id
         });
       }
+
+      // Create stripeCusId
+      const stripeCus = await stripe.customers.create({
+        description: `Tapster customer id: ${customer.id}, name: ${customer.firstName} ${customer.lastName}, email: ${customer.email}`,
+        name: `${customer.firstName} ${customer.lastName}`,
+        email: customer.email
+      });
+
+      // Store stripeCusId in customer record:
+      customer.update({ stripeCusId: stripeCus.id });
+
       delete customer.password;
       const token = authService().issue({ id: customer.id });
       return res.status(200).json({
