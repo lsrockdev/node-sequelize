@@ -24,7 +24,10 @@ module.exports = (sequelize, DataTypes) => {
       secondaryContact: DataTypes.STRING,
       secondaryContactName: DataTypes.STRING,
       stateId: DataTypes.INTEGER,
-      otpCode: DataTypes.STRING
+      otpCode: DataTypes.STRING,
+      stripeCusId: DataTypes.STRING,
+      stripeLast4: DataTypes.STRING,
+      stripeCardType: DataTypes.STRING
     },
     {}
   );
