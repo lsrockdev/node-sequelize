@@ -71,7 +71,10 @@ module.exports = (sequelize, DataTypes) => {
           return this.setDataValue("billingAddress", JSON.stringify(value));
         }
       },
-      stripeToken: DataTypes.STRING
+      stripeToken: DataTypes.STRING,
+      stripeLast4: DataTypes.STRING,
+      stripeCardType: DataTypes.STRING,
+      stripePaymentAmount: DataTypes.INTEGER
     },
     {}
   );
