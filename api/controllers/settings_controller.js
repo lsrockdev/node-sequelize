@@ -37,7 +37,14 @@ const SettingsController = () => {
   const updateOne = async (req, res) => {
     const { body } = req;
     try {
-      await db.Setting.update(body, { where: { id: body.id } });
+      const setting = await db.Setting.findOne({
+        where: { name: body.name }
+      });
+      if (setting) {
+        await setting.update({ value: body.value });
+      } else {
+        await db.Setting.create(body);
+      }
       return res.status(200).json({
         message: "success",
         StatusCode: 1
