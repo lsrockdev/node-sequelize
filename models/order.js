@@ -83,7 +83,8 @@ module.exports = (sequelize, DataTypes) => {
         set: function(value) {
           return this.setDataValue("instructions", JSON.stringify(value));
         }
-      }
+      },
+      stripeChargeId: DataTypes.STRING
     },
     {}
   );
