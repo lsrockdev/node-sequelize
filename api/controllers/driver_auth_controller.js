@@ -41,15 +41,18 @@ const DriverAuthController = () => {
       let driver = await Driver.findOne({
         where: {
           code,
-          isActive: true,
           isDeleted: false
         }
       });
       if (!driver) {
-        return res.status(400).json({ msg: "Bad Request: Driver not found" });
+        return res.status(401).json({ msg: "Bad Request: Driver not found" });
+      }
+      if (driver.isActive) {
+        return res.status(400).json({ msg: "This code was already used" });
       }
       await driver.update({
-        password: bcryptService().password(body)
+        password: bcryptService().password(body),
+        isActive: true
       });
       const token = authService().issue({ id: driver.id });
       return res.status(200).json({
@@ -85,7 +88,7 @@ const DriverAuthController = () => {
     try {
       let user = await Driver.findOne({
         where: {
-          id: body.id
+          code: body.code
         }
       });
       if (!user) {
