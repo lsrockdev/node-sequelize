@@ -37,11 +37,9 @@ const CustomerController = () => {
       });
       if (address) {
         await UserLocation.create({
-          longitude,
-          latitude,
-          address1: address,
-          customerId: customer.id,
-          isActive: true
+          ...address,
+          isActive: true,
+          customerId: customer.id
         });
       }
       delete customer.password;
@@ -102,7 +100,7 @@ const CustomerController = () => {
     const { otpCode } = req.body;
     const existing = await Customer.findOne({
       where: {
-        otpCode,
+        otpCode
       }
     });
     if (!existing) {
@@ -131,7 +129,10 @@ const CustomerController = () => {
         StatusCode: 0
       });
     }
-    await Customer.update({ password: bcryptService().password(password) }, { where: { otpCode } });
+    await Customer.update(
+      { password: bcryptService().password(password) },
+      { where: { otpCode } }
+    );
     return res.status(200).json({
       Message: "Passowrd Updated Succesfully",
       StatusCode: 1
@@ -302,7 +303,7 @@ const CustomerController = () => {
     getCustomerProfile,
     generateBraintreeToken,
     createOtp,
-    checkOtp,
+    checkOtp
   };
 };
 
