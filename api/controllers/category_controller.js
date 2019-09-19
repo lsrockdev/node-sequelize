@@ -117,6 +117,63 @@ const CategoryController = () => {
     }
   };
 
+  const checkIsCategoryAssigned = async (req, res) => {
+    const { id } = req.body;
+    try {
+      const category = await Category.findOne({
+        where: {
+          id
+        },
+        include: [
+          {
+            model: Size,
+            attributes: ["id", "name", "size", "description"]
+          },
+          {
+            model: Product,
+            limit: 20,
+            order: [["createdAt", "DESC"]]
+          }
+        ]
+      });
+      if (!category) {
+        return res.status(200).json({
+          message: "Unable to delete your selected category.",
+          StatusCode: 0
+        });
+      }
+      let message = `Your Deleted category ${category.name} is Reference to `;
+      let isAssigned = false;
+      if (category.Sizes && category.Sizes.length > 0) {
+        message += "Category Sizes, ";
+        isAssigned = true;
+      }
+      if (category.deliveryFee) {
+        message += "Delivery Fees, ";
+        isAssigned = true;
+      }
+      if (category.Products && category.Products.length > 0) {
+        message += "Products, ";
+        isAssigned = true;
+      }
+      if (isAssigned) {
+        return res.status(200).json({
+          message: (message +=
+            "If you want to delete all references,Click on 'Continue' or click on 'Cancel' prevent deletion."),
+          StatusCode: 1
+        });
+      } else {
+        return res.status(200).json({
+          message: "",
+          StatusCode: 0
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ msg: "Internal server error" });
+    }
+  };
+
   const updateSizes = async (categoryId, sizeIds) => {
     try {
       await CategorySizes.destroy({
@@ -132,6 +189,13 @@ const CategoryController = () => {
     }
   };
 
-  return { getAll, getAllNoProducts, addOne, updateOne, deleteOne };
+  return {
+    getAll,
+    getAllNoProducts,
+    addOne,
+    updateOne,
+    deleteOne,
+    checkIsCategoryAssigned
+  };
 };
 module.exports = CategoryController;

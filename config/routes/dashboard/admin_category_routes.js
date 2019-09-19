@@ -18,4 +18,8 @@ router.post("/deleteCategory", authPolicy, function(req, res) {
   return categoryController().deleteOne(req, res);
 });
 
+router.post("/checkIsCategoryAssigned", authPolicy, function(req, res) {
+  return categoryController().checkIsCategoryAssigned(req, res);
+});
+
 module.exports = router;
