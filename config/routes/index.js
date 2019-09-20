@@ -19,6 +19,7 @@ const adminSettingRoutes = require("./dashboard/admin_setting_routes");
 const adminDriverRoutes = require("./dashboard/admin_driver_routes");
 
 const driverAuthRoutes = require("./driver/driver_auth_routes");
+const driverOrderRoutes = require("./driver/driver_order_routes");
 
 router.use("/customer", customerAuthRoutes);
 router.use("/customer", customerCartRoutes);
@@ -38,5 +39,6 @@ router.use("/admin", adminSettingRoutes);
 router.use("/admin", adminDriverRoutes);
 
 router.use("/driver", driverAuthRoutes);
+router.use("/driver", driverOrderRoutes);
 
 module.exports = router;

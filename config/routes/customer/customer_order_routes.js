@@ -1,30 +1,32 @@
 var express = require("express");
 var router = express.Router();
-const ordersController = require("../../../api/controllers/orders_controller");
+const ordersCreateController = require("../../../api/controllers/orders/orders_create_controller");
+const ordersQueryController = require("../../../api/controllers/orders/orders_query_controller");
+
 const authPolicy = require("../../../api/policies/auth.policy");
 
 router.post("/placeOrder", authPolicy, function(req, res) {
-  return ordersController().placeOrder(req, res);
+  return ordersCreateController().placeOrder(req, res);
 });
 
 router.get("/getOrders", authPolicy, function(req, res) {
-  return ordersController().getAll(req, res);
+  return ordersQueryController().getCustomerOrders(req, res);
 });
 
 router.get("/getOrderById", authPolicy, function(req, res) {
-  return ordersController().getOne(req, res);
+  return ordersQueryController().getbyId(req, res);
 });
 
 router.post("/createPaymentIntent", authPolicy, function(req, res) {
-  return ordersController().createPaymentIntent(req, res);
+  return ordersCreateController().createPaymentIntent(req, res);
 });
 
 router.post("/updatePaymentIntent", authPolicy, function(req, res) {
-  return ordersController().updatePaymentIntent(req, res);
+  return ordersCreateController().updatePaymentIntent(req, res);
 });
 
 router.post("/stripeWebhook-9929347", function(req, res) {
-  return ordersController().stripeWebhook(req, res);
+  return ordersCreateController().stripeWebhook(req, res);
 });
 
 module.exports = router;

@@ -40,10 +40,7 @@ module.exports = (sequelize, DataTypes) => {
 
   Customer.associate = function(models) {
     // return models;
-    Customer.hasMany(models.Order, {
-      foreignKey: "id",
-      targetKey: "customerId"
-    });
+    Customer.hasMany(models.Order);
     Customer.hasMany(models.UserLocation, { as: "addresses" });
     Customer.hasMany(models.Cart, { foreignKey: "customerId" });
   };
