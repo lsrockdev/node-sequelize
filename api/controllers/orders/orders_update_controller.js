@@ -26,7 +26,8 @@ const OrderUpdateController = () => {
     const body = req.body;
     try {
       const order = await updateOne(body.orderId, {
-        status: OrderStatus.ClaimPickUp
+        status: OrderStatus.ClaimPickUp,
+        returnedBy: body.driverId
       });
       return res.status(200).json({
         order: order,
@@ -43,8 +44,7 @@ const OrderUpdateController = () => {
     const body = req.body;
     try {
       const order = await updateOne(body.orderId, {
-        status: OrderStatus.ClaimDeliver,
-        deliveredBy: body.driverId
+        status: OrderStatus.Declain
       });
       return res.status(200).json({
         order: order,
@@ -61,8 +61,9 @@ const OrderUpdateController = () => {
     const body = req.body;
     try {
       const order = await updateOne(body.orderId, {
-        status: OrderStatus.ClaimDeliver,
-        deliveredBy: body.driverId
+        status: OrderStatus.Delivered,
+        deliveredBy: body.driverId,
+        deliveredAt: Date.now()
       });
       return res.status(200).json({
         order: order,
@@ -79,8 +80,9 @@ const OrderUpdateController = () => {
     const body = req.body;
     try {
       const order = await updateOne(body.orderId, {
-        status: OrderStatus.ClaimDeliver,
-        deliveredBy: body.driverId
+        status: OrderStatus.DeliverFailed,
+        deliveredBy: body.driverId,
+        deliveredAt: Date.now()
       });
       return res.status(200).json({
         order: order,
@@ -97,8 +99,7 @@ const OrderUpdateController = () => {
     const body = req.body;
     try {
       const order = await updateOne(body.orderId, {
-        status: OrderStatus.ClaimDeliver,
-        deliveredBy: body.driverId
+        status: OrderStatus.Pickup
       });
       return res.status(200).json({
         order: order,
@@ -115,8 +116,9 @@ const OrderUpdateController = () => {
     const body = req.body;
     try {
       const order = await updateOne(body.orderId, {
-        status: OrderStatus.ClaimDeliver,
-        deliveredBy: body.driverId
+        status: OrderStatus.PickupFailed,
+        returnedBy: body.driverId,
+        returnedAt: Date.now()
       });
       return res.status(200).json({
         order: order,

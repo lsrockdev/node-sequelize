@@ -15,10 +15,31 @@ router.get("/getOrderHistory", authPolicy, function(req, res) {
   return orderQueryController().getDriverOrderHistory(req, res);
 });
 router.post("/claimOrderforDeliver", authPolicy, function(req, res) {
+  return orderUpdateController().claimOrderforDeliver(req, res);
+});
+
+router.post("/deliveredOrder", authPolicy, function(req, res) {
+  return orderUpdateController().deliveredOrder(req, res);
+});
+
+router.post("/claimOrdeforPickup", authPolicy, function(req, res) {
   return orderUpdateController().claimOrderforPickup(req, res);
 });
-router.post("/claimOrdeforPickup", authPolicy, function(req, res) {
-  return orderUpdateController().claimOrdeforPickup(req, res);
+
+router.post("/declainOrder", authPolicy, function(req, res) {
+  return orderUpdateController().declainOrder(req, res);
+});
+
+router.post("/deliverFailed", authPolicy, function(req, res) {
+  return orderUpdateController().deliverFailed(req, res);
+});
+
+router.post("/pickUpOrder", authPolicy, function(req, res) {
+  return orderUpdateController().pickUpOrder(req, res);
+});
+
+router.post("/pickUpFailed", authPolicy, function(req, res) {
+  return orderUpdateController().pickUpFailed(req, res);
 });
 
 module.exports = router;
