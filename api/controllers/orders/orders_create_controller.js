@@ -1,5 +1,5 @@
 // const getCurrentUser = require("../helpers/current_user_helper");
-const db = require("../services/db.service.js");
+const db = require("../../../api/services/db.service");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const OrdersController = () => {
@@ -194,80 +194,6 @@ const OrdersController = () => {
     }
   };
 
-  const getAll = async (req, res) => {
-    const customerId = req.token.id;
-
-    try {
-      const orders = await db.Order.findAll({
-        where: {
-          customerId
-        },
-        include: [db.LineItem]
-      });
-      return res.status(200).json({
-        orders,
-        message: "Successfully returned Orders",
-        StatusCode: 1
-      });
-    } catch (err) {
-      console.log(err);
-      return res.status(500).json({ msg: "Internal server error" });
-    }
-  };
-
-  const getOne = async (req, res) => {
-    const customerId = req.token.id;
-    const { id } = req.query;
-
-    try {
-      const order = await db.Order.findOne({
-        where: {
-          customerId,
-          id
-        },
-        include: [
-          {
-            model: db.LineItem,
-            include: [
-              {
-                model: db.Inventory,
-                include: [
-                  {
-                    model: db.CategorySizes,
-                    include: [
-                      {
-                        model: db.Size
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            model: db.Customer,
-            include: [
-              {
-                model: db.UserLocation,
-                where: { isActive: true },
-                limit: 1,
-                as: "addresses"
-              }
-            ]
-          }
-        ]
-      });
-      return res.status(200).json({
-        order,
-        message: "Successfully returned Order",
-        StatusCode: 1
-      });
-    } catch (err) {
-      console.log(err);
-      return res.status(500).json({ msg: "Internal server error" });
-    }
-  };
-
   // const createPaymentIntent = async (req, res) => {
   //   const { currency } = req.body;
   //   const order = await db.Order.findOne({
@@ -435,9 +361,7 @@ const OrdersController = () => {
   };
 
   return {
-    placeOrder,
-    getAll,
-    getOne
+    placeOrder
   };
 };
 

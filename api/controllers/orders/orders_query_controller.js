@@ -1,13 +1,24 @@
-const StoreCode = require("../../models").StoreCode;
-const Store = require("../../models").Store;
 const Sequelize = require("sequelize");
-const db = require("../../models");
-const OrderStatus = require("../constant/enum").OrderStatus;
+const db = require("../../../api/services/db.service");
+const OrderStatus = require("../../constant/enum").OrderStatus;
 
 const OrderQueryController = () => {
+  const getCustomerOrders = async (req, res) => {
+    try {
+      const customerId = req.token.id;
+      return res.status(200).json({
+        orders: await getAllBy({ customerId }),
+        message: "Successfully returned Orders",
+        StatusCode: 1
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ msg: "Internal server error" });
+    }
+  };
+
   const getNewOrders = async (req, res) => {
     try {
-      console.log(OrderStatus);
       const condition = {
         status: {
           [Sequelize.Op.in]: [
@@ -17,7 +28,7 @@ const OrderQueryController = () => {
         }
       };
       return res.status(200).json({
-        orders: await this.getAllBy(condition),
+        orders: await getAllBy(condition),
         message: "Successfully returned Orders",
         StatusCode: 1
       });
@@ -43,17 +54,9 @@ const OrderQueryController = () => {
   };
 
   const getAllBy = async condition => {
-    console.log(condition);
     try {
       return await db.Order.findAll({
-        where: {
-          status: {
-            [Sequelize.Op.in]: [
-              OrderStatus.KEG_READY,
-              OrderStatus.SCHEDULED4PICKUP
-            ]
-          }
-        },
+        where: condition,
         include: [db.LineItem]
       });
     } catch (err) {
@@ -71,17 +74,17 @@ const OrderQueryController = () => {
             model: db.LineItem,
             include: [
               {
-                model: db.Inventory
-                // include: [
-                //   {
-                //     model: db.CategorySizes,
-                //     include: [
-                //       {
-                //         model: db.Size
-                //       }
-                //     ]
-                //   }
-                // ]
+                model: db.Inventory,
+                include: [
+                  {
+                    model: db.CategorySizes
+                    // include: [
+                    //   {
+                    //     model: db.Size
+                    //   }
+                    // ]
+                  }
+                ]
               }
             ]
           },
