@@ -1,25 +1,23 @@
 const OrderStatus = {
+  //Use for Customer
   AwaitingPayment: 0,
   Paid: 1,
-  Keg_Ready: 2, // Store
-  ClaimDeliver: 3, // Driver   ClaimOrderforDeliver
-  DELIVERED: 4, //Driver
 
-  SCHEDULED4PICKUP: 5, // ~Customer  SchedulePickUp
-  ClaimPickUp: 6, // Driver  ClaimOrderforPickUp
-  RETURNED: 7, //Driver
+  //Use for Store
+  Keg_Ready: 2,
+  ScheduledPickup: 3,
 
-  PARTIALPICKUP: 8, //Driver
-  PICKUPFAILED: 9, //Driver
-  DELIVERYFAILED: 10
+  // Use for Driver app
+  ClaimDeliver: 4,
+  ClaimPickUp: 5,
+  Declain: 6,
+  Delivered: 7,
+  DeliverFailed: 8,
+  Pickup: 9,
+  PickupFailed: 10,
+  Returned: 11
 };
 
-const OrderFailedStatus = {
-  NONE: 0,
-  DELIVERFAILED: 1,
-  PICKUPFAILED: 2
-};
 module.exports = {
-  OrderStatus,
-  OrderFailedStatus
+  OrderStatus
 };
