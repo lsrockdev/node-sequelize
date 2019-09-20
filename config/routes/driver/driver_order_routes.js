@@ -10,4 +10,8 @@ router.get("/getOrders", authPolicy, function(req, res) {
 router.get("/getOrderById", authPolicy, function(req, res) {
   return orderQueryController().getbyId(req, res);
 });
+router.get("/getOrderHistory", authPolicy, function(req, res) {
+  return orderQueryController().getDriverOrderHistory(req, res);
+});
+
 module.exports = router;

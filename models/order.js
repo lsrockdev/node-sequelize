@@ -84,7 +84,8 @@ module.exports = (sequelize, DataTypes) => {
           return this.setDataValue("instructions", JSON.stringify(value));
         }
       },
-      stripeChargeId: DataTypes.STRING
+      stripeChargeId: DataTypes.STRING,
+      deliveredBy: DataTypes.INTEGER
     },
     {}
   );
@@ -92,6 +93,10 @@ module.exports = (sequelize, DataTypes) => {
     Order.belongsTo(models.Customer, {
       foreignKey: "customerId"
     });
+    Order.belongsTo(models.Driver, {
+      foreignKey: "deliveredBy"
+    });
+
     Order.belongsTo(models.Store, {
       foreignKey: "id",
       sourceKey: "storeId"
