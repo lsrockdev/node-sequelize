@@ -60,10 +60,11 @@ const OrderQueryController = () => {
         },
         createdAt: {
           [Sequelize.Op.lte]: query.endDate
-        }
+        },
+        "$Driver.code$": query.code
       };
       return res.status(200).json({
-        orders: await getDriverAllBy(condition, query.code),
+        orders: await getAllBy(condition),
         message: "Successfully returned Orders",
         StatusCode: 1
       });
@@ -92,25 +93,7 @@ const OrderQueryController = () => {
     try {
       return await db.Order.findAll({
         where: condition,
-        include: [db.LineItem]
-      });
-    } catch (err) {
-      console.log(err);
-      throw new Error("Internal server error");
-    }
-  };
-
-  const getDriverAllBy = async (condition, code) => {
-    try {
-      return await db.Order.findAll({
-        where: condition,
-        include: [
-          db.LineItem,
-          {
-            model: db.Driver,
-            where: { code }
-          }
-        ]
+        include: [db.LineItem, db.Driver]
       });
     } catch (err) {
       console.log(err);

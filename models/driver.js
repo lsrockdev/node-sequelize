@@ -43,7 +43,7 @@ module.exports = (sequelize, DataTypes) => {
   };
 
   Driver.associate = function(models) {
-    Driver.hasMany(models.Order);
+    Driver.hasMany(models.Order, { foreignKey: "deliveredBy" });
   };
   return Driver;
 };
