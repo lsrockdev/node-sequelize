@@ -12,8 +12,6 @@ module.exports = (sequelize, DataTypes) => {
       name: DataTypes.STRING,
       quantity: DataTypes.INTEGER,
       description: DataTypes.TEXT,
-      // Not using deliveryFee, use Category.deliveryFee instead:
-      deliveryFee: DataTypes.INTEGER,
       createdBy: DataTypes.INTEGER,
       modifiedBy: DataTypes.INTEGER,
       isActive: DataTypes.BOOLEAN,
@@ -25,7 +23,6 @@ module.exports = (sequelize, DataTypes) => {
       storeTapId: DataTypes.INTEGER,
       kegtypeId: DataTypes.INTEGER,
       isKeg: DataTypes.BOOLEAN,
-      depositFee: DataTypes.INTEGER,
       price: DataTypes.INTEGER
     },
     {}
