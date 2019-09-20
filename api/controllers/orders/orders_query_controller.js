@@ -3,6 +3,7 @@ const db = require("../../../api/services/db.service");
 const OrderStatus = require("../../constant/enum").OrderStatus;
 
 const OrderQueryController = () => {
+  // customer app
   const getCustomerOrders = async (req, res) => {
     try {
       const customerId = req.token.id;
@@ -13,10 +14,10 @@ const OrderQueryController = () => {
       });
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ msg: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
   };
-
+  // driver app
   const getNewOrders = async (req, res) => {
     try {
       const condition = {
@@ -34,7 +35,42 @@ const OrderQueryController = () => {
       });
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ msg: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
+  const getDriverOrderHistory = async (req, res) => {
+    try {
+      query = req.query;
+      const condition = {
+        status: {
+          [Sequelize.Op.in]: [
+            OrderStatus.ASSIGNED2DRIVER4DELIVERY,
+            OrderStatus.DELIVERED,
+            OrderStatus.ASSIGNED2DRIVER4PICKUP,
+            OrderStatus.SCHEDULED4PICKUP,
+            OrderStatus.RETURNED,
+            OrderStatus.DELIVERYFAILED,
+            OrderStatus.PICKUPFAILED,
+            OrderStatus.PARTIALPICKUP
+          ]
+        },
+        createdAt: {
+          [Sequelize.Op.gte]: query.startDate
+        },
+        createdAt: {
+          [Sequelize.Op.lte]: query.endDate
+        },
+        "$Driver.code$": query.code
+      };
+      return res.status(200).json({
+        orders: await getAllBy(condition),
+        message: "Successfully returned Orders",
+        StatusCode: 1
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: "Internal server error" });
     }
   };
 
@@ -49,7 +85,7 @@ const OrderQueryController = () => {
       });
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ msg: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
   };
 
@@ -57,7 +93,7 @@ const OrderQueryController = () => {
     try {
       return await db.Order.findAll({
         where: condition,
-        include: [db.LineItem]
+        include: [db.LineItem, db.Driver]
       });
     } catch (err) {
       console.log(err);
@@ -110,6 +146,8 @@ const OrderQueryController = () => {
 
   return {
     getNewOrders,
+    getDriverOrderHistory,
+    getCustomerOrders,
     getbyId
   };
 };

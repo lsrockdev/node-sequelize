@@ -10,7 +10,7 @@ const CustomerController = () => {
     let address = await UserLocation.findOne({ where:{id: body.id} });
 
     if (address.customerId !== req.token.id) {
-      return res.status(400).json({msg: 'Customer does not own address.'});
+      return res.status(400).json({message: 'Customer does not own address.'});
     }
 
     // Whitelist allowable attributes:
@@ -58,7 +58,7 @@ const CustomerController = () => {
       });
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ msg: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
   };
 
@@ -99,7 +99,7 @@ const CustomerController = () => {
       });
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ msg: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
   };
 
@@ -121,7 +121,7 @@ const CustomerController = () => {
       });
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ msg: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
   };
 
@@ -140,7 +140,7 @@ const CustomerController = () => {
 
       if (!dbOperation) {
         return res.status(400).json({
-          msg: `There was a problem deleting address with id ${body.id}`
+          message: `There was a problem deleting address with id ${body.id}`
         });
       }
       return res.status(200).json({
@@ -148,7 +148,7 @@ const CustomerController = () => {
       });
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ msg: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
   };
 

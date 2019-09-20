@@ -16,7 +16,7 @@ const DriversController = () => {
       });
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ msg: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
   };
 
@@ -31,7 +31,7 @@ const DriversController = () => {
       });
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ msg: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
   };
 
@@ -49,7 +49,7 @@ const DriversController = () => {
       });
       if (!!existing) {
         return res.status(400).json({
-          msg: `${body.email.toLowerCase()} or ${
+          message: `${body.email.toLowerCase()} or ${
             body.phone
           } was already used in other accounts`
         });
@@ -62,7 +62,7 @@ const DriversController = () => {
       });
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ msg: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
   };
 
@@ -76,7 +76,7 @@ const DriversController = () => {
       });
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ msg: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
   };
 

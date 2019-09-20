@@ -32,21 +32,23 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       status: {
-        type: DataTypes.INTEGER,
-        get: function() {
-          switch (this.getDataValue("status")) {
-            case 0:
-              return { code: 0, name: "AwaitingPayment" };
-            case 1:
-              return { code: 1, name: "Paid" };
-            default:
-              return { code: null, name: null };
-          }
-          // Add statuses for AwaitingDriverAssignment, AwaitingPickup, AwaitingDelivery, Delivered, AwaitingReturn, Completed
-        },
-        set: function(value) {
-          return this.setDataValue("status", value);
-        }
+        type: DataTypes.INTEGER
+        // get: function() {
+        //   const value = this.getDataValue("status")
+
+        //   switch (this.getDataValue("status")) {
+        //     case 0:
+        //       return { code: 0, name: "AwaitingPayment" };
+        //     case 1:
+        //       return { code: 1, name: "Paid" };
+        //     default:
+        //       return { code: null, name: null };
+        //   }
+        //   // Add statuses for AwaitingDriverAssignment, AwaitingPickup, AwaitingDelivery, Delivered, AwaitingReturn, Completed
+        // },
+        // set: function(value) {
+        //   return this.setDataValue("status", value);
+        // }
       },
       failedStatus: DataTypes.INTEGER,
       penalty: DataTypes.INTEGER,
@@ -84,7 +86,8 @@ module.exports = (sequelize, DataTypes) => {
           return this.setDataValue("instructions", JSON.stringify(value));
         }
       },
-      stripeChargeId: DataTypes.STRING
+      stripeChargeId: DataTypes.STRING,
+      deliveredBy: DataTypes.INTEGER
     },
     {}
   );
@@ -92,6 +95,10 @@ module.exports = (sequelize, DataTypes) => {
     Order.belongsTo(models.Customer, {
       foreignKey: "customerId"
     });
+    Order.belongsTo(models.Driver, {
+      foreignKey: "deliveredBy"
+    });
+
     Order.belongsTo(models.Store, {
       foreignKey: "id",
       sourceKey: "storeId"
