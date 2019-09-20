@@ -67,10 +67,41 @@ const OrderQueryController = () => {
 
   const getOneBy = async condition => {
     try {
-      return await db.Order.findOne({
+      const order = await db.Order.findOne({
         where: condition,
-        include: [LineItem]
+        include: [
+          {
+            model: db.LineItem,
+            include: [
+              {
+                model: db.Inventory
+                // include: [
+                //   {
+                //     model: db.CategorySizes,
+                //     include: [
+                //       {
+                //         model: db.Size
+                //       }
+                //     ]
+                //   }
+                // ]
+              }
+            ]
+          },
+          {
+            model: db.Customer,
+            include: [
+              {
+                model: db.UserLocation,
+                where: { isActive: true },
+                limit: 1,
+                as: "addresses"
+              }
+            ]
+          }
+        ]
       });
+      return order;
     } catch (err) {
       console.log(err);
       throw new Error("Internal server error");
