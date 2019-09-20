@@ -74,7 +74,17 @@ module.exports = (sequelize, DataTypes) => {
       stripeToken: DataTypes.STRING,
       stripeLast4: DataTypes.STRING,
       stripeCardType: DataTypes.STRING,
-      stripePaymentAmount: DataTypes.INTEGER
+      stripePaymentAmount: DataTypes.INTEGER,
+      instructions: {
+        type: DataTypes.TEXT,
+        get: function() {
+          return JSON.parse(this.getDataValue("instructions"));
+        },
+        set: function(value) {
+          return this.setDataValue("instructions", JSON.stringify(value));
+        }
+      },
+      stripeChargeId: DataTypes.STRING
     },
     {}
   );
