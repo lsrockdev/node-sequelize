@@ -32,21 +32,23 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       status: {
-        type: DataTypes.INTEGER,
-        get: function() {
-          switch (this.getDataValue("status")) {
-            case 0:
-              return { code: 0, name: "AwaitingPayment" };
-            case 1:
-              return { code: 1, name: "Paid" };
-            default:
-              return { code: null, name: null };
-          }
-          // Add statuses for AwaitingDriverAssignment, AwaitingPickup, AwaitingDelivery, Delivered, AwaitingReturn, Completed
-        },
-        set: function(value) {
-          return this.setDataValue("status", value);
-        }
+        type: DataTypes.INTEGER
+        // get: function() {
+        //   const value = this.getDataValue("status")
+
+        //   switch (this.getDataValue("status")) {
+        //     case 0:
+        //       return { code: 0, name: "AwaitingPayment" };
+        //     case 1:
+        //       return { code: 1, name: "Paid" };
+        //     default:
+        //       return { code: null, name: null };
+        //   }
+        //   // Add statuses for AwaitingDriverAssignment, AwaitingPickup, AwaitingDelivery, Delivered, AwaitingReturn, Completed
+        // },
+        // set: function(value) {
+        //   return this.setDataValue("status", value);
+        // }
       },
       failedStatus: DataTypes.INTEGER,
       penalty: DataTypes.INTEGER,

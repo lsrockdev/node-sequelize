@@ -15,7 +15,7 @@ const AdminController = () => {
           }
         });
         if (!user) {
-          return res.status(400).json({ msg: "Bad Request: User not found" });
+          return res.status(400).json({ message: "Bad Request: User not found" });
         }
         if (bcryptService().comparePassword(password, user.password)) {
           const token = authService().issue({ id: user.id });
@@ -26,16 +26,16 @@ const AdminController = () => {
             token
           });
         }
-        return res.status(401).json({ msg: "Unauthorized" });
+        return res.status(401).json({ message: "Unauthorized" });
       } catch (err) {
         console.log(err);
-        return res.status(500).json({ msg: "Internal server error" });
+        return res.status(500).json({ message: "Internal server error" });
       }
     }
 
     return res
       .status(400)
-      .json({ msg: "Bad Request: Email or password is wrong" });
+      .json({ message: "Bad Request: Email or password is wrong" });
   };
 
   const update = async (req, res) => {
@@ -47,7 +47,7 @@ const AdminController = () => {
         }
       });
       if (!user) {
-        return res.status(400).json({ msg: "Bad Request: User not found" });
+        return res.status(400).json({ message: "Bad Request: User not found" });
       }
       await user.update(body);
       return res.status(200).json({
@@ -56,7 +56,7 @@ const AdminController = () => {
         user
       });
     } catch (err) {
-      return res.status(500).json({ msg: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
   };
 

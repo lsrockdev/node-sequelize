@@ -29,7 +29,7 @@ const StoreController = () => {
       return getStoresByLocation(await getStoresByLocation(activeAddress));
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ msg: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
   };
 
@@ -115,7 +115,7 @@ const StoreController = () => {
       });
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ msg: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
   };
 
@@ -134,7 +134,7 @@ const StoreController = () => {
       });
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ msg: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
   };
 
@@ -149,7 +149,7 @@ const StoreController = () => {
       });
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ msg: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
   };
 
@@ -164,7 +164,7 @@ const StoreController = () => {
       });
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ msg: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
   };
 
@@ -178,7 +178,7 @@ const StoreController = () => {
       });
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ msg: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
   };
 
@@ -197,7 +197,7 @@ const StoreController = () => {
       });
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ msg: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
   };
 
