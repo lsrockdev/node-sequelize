@@ -15,7 +15,9 @@ const DriverAuthController = () => {
         }
       });
       if (!driver) {
-        return res.status(400).json({ message: "Bad Request: Driver not found" });
+        return res
+          .status(400)
+          .json({ message: "Bad Request: Driver not found" });
       }
       if (bcryptService().comparePassword(password, driver.password)) {
         const token = authService().issue({ id: driver.id });
@@ -35,8 +37,7 @@ const DriverAuthController = () => {
 
   const signUp = async (req, res) => {
     const body = req.body;
-    const code = body.code,
-      password = body.password;
+    const code = body.code;
     try {
       let driver = await Driver.findOne({
         where: {
@@ -45,7 +46,9 @@ const DriverAuthController = () => {
         }
       });
       if (!driver) {
-        return res.status(401).json({ message: "Bad Request: Driver not found" });
+        return res
+          .status(401)
+          .json({ message: "Bad Request: Driver not found" });
       }
       if (driver.isActive) {
         return res.status(400).json({ message: "This code was already used" });
@@ -77,7 +80,9 @@ const DriverAuthController = () => {
         }
       });
       if (!driver) {
-        return res.status(401).json({ message: "Bad Request: Driver not found" });
+        return res
+          .status(401)
+          .json({ message: "Bad Request: Driver not found" });
       }
       return res.status(200).json({
         message: "Profile get Successfully",
