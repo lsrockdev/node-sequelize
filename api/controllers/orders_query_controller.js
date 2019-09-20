@@ -4,9 +4,6 @@ const Sequelize = require("sequelize");
 const db = require("../../models");
 const OrderStatus = require("../constant/enum").OrderStatus;
 
-const Order = require("../../models").Order;
-const LineItem = require("../../models").LineItem;
-
 const OrderQueryController = () => {
   const getNewOrders = async (req, res) => {
     try {
