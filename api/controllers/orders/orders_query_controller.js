@@ -23,8 +23,8 @@ const OrderQueryController = () => {
       const condition = {
         status: {
           [Sequelize.Op.in]: [
-            OrderStatus.KEG_READY,
-            OrderStatus.SCHEDULED4PICKUP
+            OrderStatus.Keg_Ready,
+            OrderStatus.ScheduledPickup
           ]
         }
       };
@@ -45,14 +45,14 @@ const OrderQueryController = () => {
       const condition = {
         status: {
           [Sequelize.Op.in]: [
-            OrderStatus.ASSIGNED2DRIVER4DELIVERY,
-            OrderStatus.DELIVERED,
-            OrderStatus.ASSIGNED2DRIVER4PICKUP,
-            OrderStatus.SCHEDULED4PICKUP,
-            OrderStatus.RETURNED,
-            OrderStatus.DELIVERYFAILED,
-            OrderStatus.PICKUPFAILED,
-            OrderStatus.PARTIALPICKUP
+            OrderStatus.ClaimDeliver,
+            OrderStatus.ClaimPickUp,
+            OrderStatus.Declain,
+            OrderStatus.Delivered,
+            OrderStatus.DeliverFailed,
+            OrderStatus.Pickup,
+            OrderStatus.PickupFailed,
+            OrderStatus.Returned
           ]
         },
         createdAt: {
