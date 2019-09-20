@@ -7,18 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     "Driver",
     {
       email: DataTypes.STRING,
-      password: {
-        type: DataTypes.STRING,
-        get: function() {
-          return this.getDataValue("password");
-        },
-        set: function(value) {
-          this.setDataValue(
-            "password",
-            bcryptService().passwordString("welcome")
-          );
-        }
-      },
+      password: DataTypes.STRING,
       phone: DataTypes.STRING,
       firstName: DataTypes.STRING,
       lastName: DataTypes.STRING,
