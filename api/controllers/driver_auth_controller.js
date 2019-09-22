@@ -48,7 +48,7 @@ const DriverAuthController = () => {
       if (!driver) {
         return res
           .status(401)
-          .json({ message: "Bad Request: Driver not found" });
+          .json({ message: "Bad Request: can't find the code" });
       }
       if (driver.isActive) {
         return res.status(400).json({ message: "This code was already used" });
