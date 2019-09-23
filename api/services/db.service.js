@@ -16,5 +16,7 @@ db.Size = require("../../models").Size;
 db.CategorySizes = require("../../models").CategorySizes;
 db.Cart = require("../../models").Cart;
 db.Setting = require("../../models").Setting;
+db.Slot = require("../../models").Slot;
+db.DriverSlot = require("../../models").DriverSlot;
 
 module.exports = db;
