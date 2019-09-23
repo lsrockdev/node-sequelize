@@ -10,7 +10,7 @@ const OrderStatus = {
   // Use for Driver app
   ClaimDeliver: 4,
   ClaimPickUp: 5,
-  Declain: 6,
+  Declaim: 6,
   Delivered: 7,
   DeliverFailed: 8,
   Pickup: 9,

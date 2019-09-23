@@ -4,22 +4,23 @@ const Store = require("../../models").Store;
 const db = require("../../models").sequelize;
 
 const CodeController = () => {
-  const getAll = async (req, res) => {
+  const getAll = async () => {
     try {
-      const storeCodes = await db.query(`select c.id, c.code, s.id as store_id, s.name as store_name
-      from StoreCodes c left join Stores s on c.code = s.uid`);
-      return res.status(200).json({
-        storeCodes: storeCodes[0],
-        message: "success",
-        StatusCode: 1
+      const codes = await StoreCode.findAll({
+        include: [
+          {
+            model: Store
+          }
+        ]
       });
+      return codes;
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ message: "Internal server error" });
+      throw new Error("Internal server error");
     }
   };
 
-  const createOne = async (req, res) => {
+  const createOne = async () => {
     try {
       const maxId = await StoreCode.max("id");
       let code;
@@ -35,37 +36,47 @@ const CodeController = () => {
         code = "FRTPSTR5000";
       }
       let storeCode = await StoreCode.create({ code });
-      return res.status(200).json({
-        storeCode: storeCode,
-        message: "Code Added Succesfully",
-        StatusCode: 1
-      });
+      return storeCode;
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ message: "Internal server error" });
+      throw new Error("Internal server error");
     }
   };
 
-  const deleteOne = async (req, res) => {
-    const { id } = req.body;
+  const deleteOne = async id => {
     try {
       await StoreCode.destroy({
         where: { id }
       });
-      return res.status(200).json({
-        message: "StoreCode Deleted Succesfully",
-        StatusCode: 1
-      });
+      return true;
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ message: "Internal server error" });
+      throw new Error("Internal server error");
+    }
+  };
+
+  const getByCode = async code => {
+    try {
+      const code = await StoreCode.findOne({
+        where: { code },
+        include: [
+          {
+            model: Store
+          }
+        ]
+      });
+      return code;
+    } catch (err) {
+      console.log(err);
+      throw new Error("Internal server error");
     }
   };
 
   return {
     getAll,
     createOne,
-    deleteOne
+    deleteOne,
+    getByCode
   };
 };
 
