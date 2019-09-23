@@ -59,15 +59,44 @@ const StoreAuthController = () => {
   };
 
   const login = async (req, res) => {
-    const { body } = req;
-    try {
-      return res.status(200).json({
-        message: "Login Successful",
-        StatusCode: 1
-      });
-    } catch (err) {
-      return res.status(500).json({ message: "Internal server error" });
+    const { password } = req.body;
+    const email = req.body.email.toLowerCase();
+    if (email && password) {
+      try {
+        let storeUser = await models.StoreUser.findOne({
+          where: {
+            email: email
+          },
+          include: [
+            {
+              model: models.Store
+            }
+          ]
+        });
+        if (!storeUser) {
+          return res
+            .status(400)
+            .json({ message: "Bad Request: User not found" });
+        }
+        if (bcryptService().comparePassword(password, storeUser.password)) {
+          const token = authService().issue({ id: storeUser.id });
+          return res.status(200).json({
+            message: "Login Success",
+            StatusCode: 1,
+            storeUser,
+            token
+          });
+        }
+        return res.status(401).json({ message: "Unauthorized" });
+      } catch (err) {
+        console.log(err);
+        return res.status(500).json({ message: "Internal server error" });
+      }
     }
+
+    return res
+      .status(400)
+      .json({ message: "Bad Request: Email or password is wrong" });
   };
 
   return {

@@ -18,6 +18,8 @@ module.exports = (sequelize, DataTypes) => {
     {}
   );
   StoreUser.associate = function(models) {
+    StoreUser.hasOne(models.Store, { foreignKey: "userId" });
+
     // associations can be defined here
   };
   return StoreUser;

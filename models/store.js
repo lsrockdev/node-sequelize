@@ -40,6 +40,7 @@ module.exports = (sequelize, DataTypes) => {
     Store.belongsToMany(models.Product, { through: models.Inventory });
     Store.hasMany(models.Inventory, { foreignKey: "storeId" });
     Store.belongsTo(models.StoreCode, { foreignKey: "id" });
+    Store.belongsTo(models.StoreUser, { foreignKey: "userId" });
   };
   return Store;
 };
