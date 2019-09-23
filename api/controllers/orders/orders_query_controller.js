@@ -93,7 +93,7 @@ const OrderQueryController = () => {
     try {
       return await db.Order.findAll({
         where: condition,
-        include: [db.LineItem, db.Driver]
+        include: [db.LineItem, db.Driver, db.Store, db.Customer]
       });
     } catch (err) {
       console.log(err);
