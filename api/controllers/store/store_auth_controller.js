@@ -45,11 +45,21 @@ const StoreAuthController = () => {
         userId: storeUser.id
       });
 
+      const createdUser = await models.StoreUser.findOne({
+        where: {
+          id: storeUser.id
+        },
+        include: [
+          {
+            model: models.Store
+          }
+        ]
+      });
       const token = authService().issue({ id: store.id });
       return res.status(200).json({
         message: "Successfully Registered",
         StatusCode: 1,
-        store,
+        storeUser: createdUser,
         token
       });
     } catch (err) {
