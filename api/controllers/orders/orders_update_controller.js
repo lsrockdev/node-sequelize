@@ -40,11 +40,11 @@ const OrderUpdateController = () => {
     }
   };
 
-  const declainOrder = async (req, res) => {
+  const declaimOrder = async (req, res) => {
     const body = req.body;
     try {
       const order = await updateOne(body.orderId, {
-        status: OrderStatus.Declain
+        status: OrderStatus.Declaim
       });
       return res.status(200).json({
         order: order,
@@ -147,7 +147,7 @@ const OrderUpdateController = () => {
   return {
     claimOrderforDeliver,
     claimOrderforPickup,
-    declainOrder,
+    declaimOrder,
     deliveredOrder,
     deliverFailed,
     pickUpOrder,

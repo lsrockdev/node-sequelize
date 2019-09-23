@@ -26,8 +26,8 @@ router.post("/claimOrdeforPickup", authPolicy, function(req, res) {
   return orderUpdateController().claimOrderforPickup(req, res);
 });
 
-router.post("/declainOrder", authPolicy, function(req, res) {
-  return orderUpdateController().declainOrder(req, res);
+router.post("/declaimOrder", authPolicy, function(req, res) {
+  return orderUpdateController().declaimOrder(req, res);
 });
 
 router.post("/deliverFailed", authPolicy, function(req, res) {

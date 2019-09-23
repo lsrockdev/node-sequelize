@@ -9,6 +9,11 @@ module.exports = (sequelize, DataTypes) => {
     {}
   );
   StoreCode.associate = function(models) {
+    models.StoreCode.hasMany(models.Store, {
+      foreignKey: "uid",
+      sourceKey: "code"
+    });
+
     // associations can be defined here
   };
   return StoreCode;
