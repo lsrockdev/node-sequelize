@@ -55,10 +55,10 @@ const CodeController = () => {
     }
   };
 
-  const getByCode = async code => {
+  const getByCode = async storeCode => {
     try {
       const code = await StoreCode.findOne({
-        where: { code },
+        where: { code: storeCode },
         include: [
           {
             model: Store

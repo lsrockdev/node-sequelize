@@ -1,5 +1,8 @@
 const models = require("../../../models");
 const codeController = require("../code_controller");
+const Sequelize = require("sequelize");
+const authService = require("../../services/auth.service");
+const bcryptService = require("../../services/bcrypt.service");
 
 const StoreAuthController = () => {
   const register = async (req, res) => {
@@ -7,15 +10,15 @@ const StoreAuthController = () => {
     const address = body.address;
     delete body.address;
     try {
-      const existingCode = await codeController.getByCode(body.code);
+      const existingCode = await codeController().getByCode(body.uid);
       if (!existingCode) {
         return res.status(401).json(`Tapster Code doesn't Exist.`);
       }
-      if (existingCode.Store) {
+      if (existingCode.Stores.length > 0) {
         return res.status(402).json(`Tapster Code already used.`);
       }
 
-      const existing = await models.Store.findOne({
+      const existing = await models.StoreUser.findOne({
         where: {
           [Sequelize.Op.or]: [
             { email: body.email.toLowerCase() },
@@ -25,18 +28,24 @@ const StoreAuthController = () => {
       });
       if (!!existing) {
         return res.status(400).json({
-          message: `${body.email.toLowerCase()} or ${body.phone} or ${
-            body.uid
+          message: `${body.email.toLowerCase()} or ${
+            body.phone
           } was already used in other accounts`
         });
       }
-      const store = await models.Store.create({
-        ...body,
+      const storeUser = await models.StoreUser.create({
         email: body.email.toLowerCase(),
         password: bcryptService().password(body)
       });
-      delete store.password;
-      const token = authService().issue({ id: customer.id });
+
+      delete body.email;
+      delete body.password;
+      const store = await models.Store.create({
+        ...body,
+        userId: storeUser.id
+      });
+
+      const token = authService().issue({ id: store.id });
       return res.status(200).json({
         message: "Successfully Registered",
         StatusCode: 1,

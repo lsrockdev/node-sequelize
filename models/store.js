@@ -20,13 +20,13 @@ module.exports = (sequelize, DataTypes) => {
       userId: DataTypes.INTEGER,
       stripeToken: DataTypes.STRING,
       address: {
-        type: DataTypes.TEXT,
-        get: function() {
-          return JSON.parse(this.getDataValue("address"));
-        },
-        set: function(value) {
-          return this.setDataValue("address", JSON.stringify(value));
-        }
+        type: DataTypes.TEXT
+        // get: function() {
+        //   return JSON.parse(this.getDataValue("address"));
+        // },
+        // set: function(value) {
+        //   return this.setDataValue("address", JSON.stringify(value));
+        // }
       }
     },
     {}
