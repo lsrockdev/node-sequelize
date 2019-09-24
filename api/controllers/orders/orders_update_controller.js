@@ -99,7 +99,8 @@ const OrderUpdateController = () => {
     const body = req.body;
     try {
       const order = await updateOne(body.orderId, {
-        status: OrderStatus.Pickup
+        status: OrderStatus.Pickup,
+        pickupAt: Date.now()
       });
       return res.status(200).json({
         order: order,
@@ -118,7 +119,8 @@ const OrderUpdateController = () => {
       const order = await updateOne(body.orderId, {
         status: OrderStatus.PickupFailed,
         returnedBy: body.driverId,
-        returnedAt: Date.now()
+        returnedAt: Date.now(),
+        pickupAt: Date.now()
       });
       return res.status(200).json({
         order: order,

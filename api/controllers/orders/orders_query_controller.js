@@ -37,6 +37,39 @@ const OrderQueryController = () => {
     }
   };
 
+  // store dashboard
+
+  const getOrdersByStoreId = async (req, res) => {
+    try {
+      const storeId = req.query.storeId;
+      const orders = await db.Order.findAll({
+        where: { storeId },
+        attributes: [
+          "id",
+          "status",
+          "createdAt",
+          "deliveredAt",
+          "returnedAt",
+          "pickupAt",
+          "total",
+          "penalty",
+          "kegsDeliveredQty",
+          "tapsDeliveredQty",
+          "kegsReturnedQty",
+          "tapsReturnedQty"
+        ]
+      });
+      return res.status(200).json({
+        orders,
+        message: "Successfully returned Orders",
+        StatusCode: 1
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
   const getDriverOrderHistory = async (req, res) => {
     try {
       query = req.query;
@@ -161,6 +194,7 @@ const OrderQueryController = () => {
     getOrdersByStatus,
     getDriverOrderHistory,
     getCustomerOrders,
+    getOrdersByStoreId,
     getbyId
   };
 };
