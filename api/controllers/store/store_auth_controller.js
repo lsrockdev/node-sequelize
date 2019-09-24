@@ -55,7 +55,7 @@ const StoreAuthController = () => {
           }
         ]
       });
-      const token = authService().issue({ id: store.id });
+      const token = authService().issue({ id: createdUser.id });
       return res.status(200).json({
         message: "Successfully Registered",
         StatusCode: 1,

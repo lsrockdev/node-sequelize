@@ -37,6 +37,24 @@ const OrderQueryController = () => {
     }
   };
 
+  // store dashboard
+
+  const getOrdersByStoreId = async (req, res) => {
+    try {
+      const storeId = req.query.storeId;
+      console.log(storeId);
+      const condition = { storeId };
+      return res.status(200).json({
+        orders: await getAllBy(condition),
+        message: "Successfully returned Orders",
+        StatusCode: 1
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
   const getDriverOrderHistory = async (req, res) => {
     try {
       query = req.query;
@@ -161,6 +179,7 @@ const OrderQueryController = () => {
     getOrdersByStatus,
     getDriverOrderHistory,
     getCustomerOrders,
+    getOrdersByStoreId,
     getbyId
   };
 };
