@@ -72,12 +72,7 @@ const ProductController = () => {
             model: Category,
             include: [
               {
-                model: CategorySizes,
-                include: [
-                  {
-                    model: Size
-                  }
-                ]
+                model: Size,
               }
             ]
           }
