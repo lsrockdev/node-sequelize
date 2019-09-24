@@ -12,10 +12,10 @@ const StoreAuthController = () => {
     try {
       const existingCode = await codeController().getByCode(body.uid);
       if (!existingCode) {
-        return res.status(401).json(`Tapster Code doesn't Exist.`);
+        return res.status(404).json({ message: "Tapster Code doesn't Exist." });
       }
       if (existingCode.Stores.length > 0) {
-        return res.status(402).json(`Tapster Code already used.`);
+        return res.status(404).json({ message: "Tapster Code already used." });
       }
 
       const existing = await models.StoreUser.findOne({
@@ -27,7 +27,7 @@ const StoreAuthController = () => {
         }
       });
       if (!!existing) {
-        return res.status(400).json({
+        return res.status(404).json({
           message: `${body.email.toLowerCase()} or ${
             body.phone
           } was already used in other accounts`
