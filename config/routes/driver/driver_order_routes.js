@@ -5,7 +5,7 @@ const orderUpdateController = require("../../../api/controllers/orders/orders_up
 const authPolicy = require("../../../api/policies/auth.policy");
 
 router.get("/getOrders", authPolicy, function(req, res) {
-  return orderQueryController().getNewOrders(req, res);
+  return orderQueryController().getOrdersByStatus(req, res);
 });
 
 router.get("/getOrderById", authPolicy, function(req, res) {

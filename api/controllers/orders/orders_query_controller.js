@@ -18,14 +18,12 @@ const OrderQueryController = () => {
     }
   };
   // driver app
-  const getNewOrders = async (req, res) => {
+  const getOrdersByStatus = async (req, res) => {
     try {
+      const statusValues = JSON.parse(req.query.status);
       const condition = {
         status: {
-          [Sequelize.Op.in]: [
-            OrderStatus.Keg_Ready,
-            OrderStatus.ScheduledPickup
-          ]
+          [Sequelize.Op.in]: statusValues
         }
       };
       return res.status(200).json({
@@ -93,7 +91,22 @@ const OrderQueryController = () => {
     try {
       return await db.Order.findAll({
         where: condition,
-        include: [db.LineItem, db.Driver, db.Store, db.Customer]
+        include: [
+          db.LineItem,
+          db.Driver,
+          db.Store,
+          {
+            model: db.Customer,
+            include: [
+              {
+                model: db.UserLocation,
+                where: { isActive: true },
+                limit: 1,
+                as: "addresses"
+              }
+            ]
+          }
+        ]
       });
     } catch (err) {
       console.log(err);
@@ -145,7 +158,7 @@ const OrderQueryController = () => {
   };
 
   return {
-    getNewOrders,
+    getOrdersByStatus,
     getDriverOrderHistory,
     getCustomerOrders,
     getbyId
