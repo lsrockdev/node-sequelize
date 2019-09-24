@@ -42,10 +42,25 @@ const OrderQueryController = () => {
   const getOrdersByStoreId = async (req, res) => {
     try {
       const storeId = req.query.storeId;
-      console.log(storeId);
-      const condition = { storeId };
+      const orders = await db.Order.findAll({
+        where: { storeId },
+        attributes: [
+          "id",
+          "status",
+          "createdAt",
+          "deliveredAt",
+          "returnedAt",
+          "pickupAt",
+          "total",
+          "penalty",
+          "kegsDeliveredQty",
+          "tapsDeliveredQty",
+          "kegsReturnedQty",
+          "tapsReturnedQty"
+        ]
+      });
       return res.status(200).json({
-        orders: await getAllBy(condition),
+        orders,
         message: "Successfully returned Orders",
         StatusCode: 1
       });
