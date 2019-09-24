@@ -47,11 +47,11 @@ const DriverAuthController = () => {
       });
       if (!driver) {
         return res
-          .status(401)
+          .status(404)
           .json({ message: "Bad Request: can't find the code" });
       }
       if (driver.isActive) {
-        return res.status(400).json({ message: "This code was already used" });
+        return res.status(404).json({ message: "This code was already used" });
       }
       await driver.update({
         password: bcryptService().password(body),
