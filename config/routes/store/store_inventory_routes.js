@@ -49,11 +49,32 @@ router.post("/addInventory", authPolicy, async function(req, res) {
 });
 
 router.post("/updateInventory", authPolicy, async function(req, res) {
-  return inventoryController().updateOne(req, res);
+  try {
+    const data = req.body;
+    const inventory = await inventoryController().updateOne(data);
+    return res.status(200).json({
+      inventory,
+      message: "success",
+      StatusCode: 1
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 });
 
 router.post("/deleteInventory", authPolicy, async function(req, res) {
-  return inventoryController().deleteOne(req, res);
+  try {
+    const { id } = req.body;
+    await inventoryController().deleteOne(id);
+    return res.status(200).json({
+      message: "success",
+      StatusCode: 1
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 });
 
 module.exports = router;
