@@ -29,6 +29,7 @@ module.exports = (sequelize, DataTypes) => {
     Inventory.belongsTo(models.Product);
     Inventory.belongsTo(models.Store, { foreignKey: "storeId" });
     Inventory.belongsTo(models.Category);
+    Inventory.belongsTo(models.Size);
     Inventory.hasMany(models.Cart, { foreignKey: "inventoryId" });
     // Inventory.belongsTo(models.CategorySizes, { foreignKey: "categorySizeId" });
     // Inventory.hasMany(models.Store);

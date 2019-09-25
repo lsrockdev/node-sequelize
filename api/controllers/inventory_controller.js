@@ -4,7 +4,9 @@ const InventoryController = () => {
   const getAllByStoreId = async storeId => {
     try {
       const inventories = await db.Inventory.findAll({
-        where: { storeId }
+        where: { storeId },
+        include: [db.Product, db.Category, db.Size],
+        attributes: ["id", "price"]
       });
       return inventories;
     } catch (err) {
