@@ -56,6 +56,7 @@ const OrdersController = () => {
         if (!cart.Inventory.price)
           throw new Error("Inventory items must have a price");
         const itemTotal = cart.Inventory.price * cart.quantity;
+
         const deliveryFeeTotal =
           parseInt(cart.Inventory.Category.deliveryFee) *
           parseInt(cart.quantity);
@@ -75,10 +76,6 @@ const OrdersController = () => {
       const transferGroup = `group_${Date.now()}`;
       const stripeAmount =
         storeTotals.all.subtotal + storeTotals.all.deliveryFeeTotal + tip;
-
-      console.log("--------------sa", stripeAmount);
-      console.log(storeTotals);
-      console.log(tip);
 
       const charge = await stripe.charges.create({
         amount: stripeAmount,
@@ -105,11 +102,6 @@ const OrdersController = () => {
         );
 
         stripeProcessingFees = stripeProcessingFees + 30;
-
-        console.log("==============spf==========", stripeProcessingFees);
-        console.log("subtotal", subtotal);
-        console.log("discount", discount);
-        // console.log((subtotal - discount + deliveryFeeTotal) * 0.029);
 
         const order = await db.Order.create({
           customerId: customerId,
@@ -152,7 +144,6 @@ const OrdersController = () => {
 
         // STRIPE TRANSFER TO STORE
 
-        console.log(".//////////////store", order);
         const store = await db.Store.findOne({ where: { id: order.storeId } });
         if (!store.stripeToken)
           throw new Error("Store does not have stripe account!");
@@ -170,8 +161,6 @@ const OrdersController = () => {
           destination: store.stripeToken,
           transfer_group: transferGroup
         });
-
-        console.log(transfer);
       }
 
       // Remove all carts for this customer
