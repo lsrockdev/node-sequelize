@@ -16,10 +16,10 @@ module.exports = (sequelize, DataTypes) => {
       modifiedBy: DataTypes.INTEGER,
       isActive: DataTypes.BOOLEAN,
       isDeleted: DataTypes.BOOLEAN,
-      categorySizeId: DataTypes.INTEGER,
+      sizeId: DataTypes.INTEGER,
       productId: DataTypes.INTEGER,
-      storeId: DataTypes.INTEGER,
       categoryId: DataTypes.INTEGER,
+      storeId: DataTypes.INTEGER,
       storeTapId: DataTypes.INTEGER,
       kegtypeId: DataTypes.INTEGER
     },
@@ -29,8 +29,9 @@ module.exports = (sequelize, DataTypes) => {
     Inventory.belongsTo(models.Product);
     Inventory.belongsTo(models.Store, { foreignKey: "storeId" });
     Inventory.belongsTo(models.Category);
+    Inventory.belongsTo(models.Size);
     Inventory.hasMany(models.Cart, { foreignKey: "inventoryId" });
-    Inventory.belongsTo(models.CategorySizes, { foreignKey: "categorySizeId" });
+    // Inventory.belongsTo(models.CategorySizes, { foreignKey: "categorySizeId" });
     // Inventory.hasMany(models.Store);
     // Inventory.hasMany(models.LineItem);
     // Inventory.belongsToMany(models.Order, { through: models.LineItem });
