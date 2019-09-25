@@ -57,6 +57,12 @@ const OrderQueryController = () => {
           "tapsDeliveredQty",
           "kegsReturnedQty",
           "tapsReturnedQty"
+        ],
+        include:[
+          {
+            model: db.Customer,
+            attributes: ["email", "phone", "firstName", "lastName"]
+          }
         ]
       });
       return res.status(200).json({
