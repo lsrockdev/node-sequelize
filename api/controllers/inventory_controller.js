@@ -1,30 +1,50 @@
-const db = require("../../models").sequelize;
+const db = require("../../models");
 
 const InventoryController = () => {
-  const getAll = async () => {
-    // try {
-    //   const codes = await StoreCode.findAll({
-    //     include: [
-    //       {
-    //         model: Store
-    //       }
-    //     ]
-    //   });
-    //   return codes;
-    // } catch (err) {
-    //   console.log(err);
-    //   throw new Error("Internal server error");
-    // }
+  const getAllByStoreId = async storeId => {
+    try {
+      const inventories = await db.Inventory.findAll({
+        where: { storeId }
+      });
+      return inventories;
+    } catch (err) {
+      console.log(err);
+      throw new Error("Internal server error");
+    }
   };
 
-  const addOne = async () => {};
+  const getOneById = async id => {
+    try {
+      const inventory = await db.Inventory.findOne({
+        where: { id }
+      });
+      return inventory;
+    } catch (err) {
+      console.log(err);
+      throw new Error("Internal server error");
+    }
+  };
+
+  const addOne = async data => {
+    try {
+      const inventory = await db.Inventory.create({
+        ...data,
+        isActive: true
+      });
+      return inventory;
+    } catch (err) {
+      console.log(err);
+      throw new Error("Internal server error");
+    }
+  };
 
   const updateOne = async id => {};
 
   const deleteOne = async id => {};
 
   return {
-    getAll,
+    getAllByStoreId,
+    getOneById,
     addOne,
     updateOne,
     deleteOne

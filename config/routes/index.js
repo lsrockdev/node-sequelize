@@ -23,6 +23,7 @@ const driverOrderRoutes = require("./driver/driver_order_routes");
 
 const storeAuthRoutes = require("./store/store_auth_routes");
 const storeOrderRoutes = require("./store/store_order_routes");
+const storeInventoryRoutes = require("./store/store_inventory_routes");
 
 router.use("/customer", customerAuthRoutes);
 router.use("/customer", customerCartRoutes);
@@ -46,5 +47,6 @@ router.use("/driver", driverOrderRoutes);
 
 router.use("/store", storeAuthRoutes);
 router.use("/store", storeOrderRoutes);
+router.use("/store", storeInventoryRoutes);
 
 module.exports = router;
