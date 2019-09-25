@@ -16,10 +16,9 @@ module.exports = (sequelize, DataTypes) => {
       modifiedBy: DataTypes.INTEGER,
       isActive: DataTypes.BOOLEAN,
       isDeleted: DataTypes.BOOLEAN,
-      categorySizeId: DataTypes.INTEGER,
+      sizeId: DataTypes.INTEGER,
       productId: DataTypes.INTEGER,
       storeId: DataTypes.INTEGER,
-      categoryId: DataTypes.INTEGER,
       storeTapId: DataTypes.INTEGER,
       kegtypeId: DataTypes.INTEGER
     },
