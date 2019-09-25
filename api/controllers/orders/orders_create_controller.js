@@ -53,6 +53,8 @@ const OrdersController = () => {
         if (!storeTotals.hasOwnProperty(storeId)) {
           storeTotals[storeId] = { subtotal: 0, deliveryFeeTotal: 0 };
         }
+        if (!cart.Inventory.price)
+          throw new Error("Inventory items must have a price");
         const itemTotal = cart.Inventory.price * cart.quantity;
         const deliveryFeeTotal =
           parseInt(cart.Inventory.Category.deliveryFee) *
@@ -74,6 +76,10 @@ const OrdersController = () => {
       const stripeAmount =
         storeTotals.all.subtotal + storeTotals.all.deliveryFeeTotal + tip;
 
+      console.log("--------------sa", stripeAmount);
+      console.log(storeTotals);
+      console.log(tip);
+
       const charge = await stripe.charges.create({
         amount: stripeAmount,
         currency: "usd",
@@ -93,9 +99,21 @@ const OrdersController = () => {
       for (let storeId of Object.keys(storeItems)) {
         const { subtotal, deliveryFeeTotal } = storeTotals[storeId];
 
+        // Add up stripe fees: 2.9% + 30 cents:
+        let stripeProcessingFees = Math.ceil(
+          (subtotal - discount + deliveryFeeTotal) * 0.029
+        );
+
+        stripeProcessingFees = stripeProcessingFees + 30;
+
+        console.log("==============spf==========", stripeProcessingFees);
+        console.log("subtotal", subtotal);
+        console.log("discount", discount);
+        // console.log((subtotal - discount + deliveryFeeTotal) * 0.029);
+
         const order = await db.Order.create({
           customerId: customerId,
-          storeId: body.storeId,
+          storeId: storeId,
           subtotal: subtotal,
           deliveryFees: deliveryFeeTotal,
           total: driverTipped
@@ -111,6 +129,7 @@ const OrdersController = () => {
           stripePaymentAmount: charge.payment_method_details.card.amount,
           stripeLast4: charge.payment_method_details.card.last4,
           stripeChargeId: charge.id,
+          stripeProcessingFees,
           billingAddress: charge.billing_details.address,
           paymentCompleted: true,
           deliveryAddress: await db.UserLocation.findOne({
@@ -130,6 +149,29 @@ const OrdersController = () => {
 
         // Loop through lineitems and create them for order:
         await createLineItemsForOrder(order.id, storeItems[storeId]);
+
+        // STRIPE TRANSFER TO STORE
+
+        console.log(".//////////////store", order);
+        const store = await db.Store.findOne({ where: { id: order.storeId } });
+        if (!store.stripeToken)
+          throw new Error("Store does not have stripe account!");
+
+        // Create a Transfer to the store's connected account:
+        const transfer = await stripe.transfers.create({
+          amount: order.totalPaidToStore - order.stripeProcessingFees,
+          currency: "usd",
+          metadata: {
+            orderTotal: order.totalPaidToStore,
+            processingFees: order.stripeProcessingFees
+          },
+          description: `Order #${order.id} for Tapster customer: ${customerId}`,
+          source_transaction: order.stripeChargeId, // Makes sure transfer waits for payment to clear
+          destination: store.stripeToken,
+          transfer_group: transferGroup
+        });
+
+        console.log(transfer);
       }
 
       // Remove all carts for this customer
@@ -149,37 +191,6 @@ const OrdersController = () => {
       });
 
       // TODO: Scheduling add slotStart, slotEnd
-      // TODO: Use Transfer group to split to each connected account (store)
-
-      // // Create a Charge:
-      // stripe.charges.create({
-      //   amount: 10000,
-      //   currency: "usd",
-      //   source: "tok_visa",
-      //   transfer_group: transferGroup,
-      // }).then(function (charge) {
-      //   // asynchronously called
-      // });
-
-      // // Create a Transfer to the connected account (later):
-      // stripe.transfers.create({
-      //   amount: 7000,
-      //   currency: "usd",
-      //   destination: "{{CONNECTED_STRIPE_ACCOUNT_ID}}",
-      //   transfer_group: transferGroup,
-      // }).then(function (transfer) {
-      //   // asynchronously called
-      // });
-
-      // // Create a second Transfer to another connected account (later):
-      // stripe.transfers.create({
-      //   amount: 2000,
-      //   currency: "usd",
-      //   destination: "{OTHER_CONNECTED_STRIPE_ACCOUNT_ID}",
-      //   transfer_group: transferGroup,
-      // }).then(function (second_transfer) {
-      //   // asynchronously called
-      // });
 
       return res.status(200).json({
         Message: "Order successfully created",
@@ -193,134 +204,6 @@ const OrdersController = () => {
       return res.status(500).json({ message: err });
     }
   };
-
-  // const createPaymentIntent = async (req, res) => {
-  //   const { currency } = req.body;
-  //   const order = await db.Order.findOne({
-  //     where: { id: orderId }
-  //   });
-
-  //   // Required if we want to transfer part of the payment to a store
-  //   // A transfer group is a unique ID that lets you associate transfers with the original payment
-  //   const transferGroup = `group_${Math.floor(Math.random() * 10)}`;
-
-  //   // Create a PaymentIntent with the order amount and currency
-  //   const paymentIntent = await stripe.paymentIntents.create({
-  //     amount: order.total,
-  //     currency: currency,
-  //     transfer_group: transferGroup
-  //   });
-
-  //   // Send public key and PaymentIntent details to client
-  //   res.send({
-  //     publicKey: env.parsed.STRIPE_PUBLIC_KEY,
-  //     paymentIntent: paymentIntent
-  //   });
-  // };
-
-  // const updatePaymentIntent = async (req, res) => {
-  //   const { orderId, id } = req.body;
-  //   const paymentIntent = await stripe.paymentIntents.retrieve(id);
-  //   const order = await db.Order.findOne({
-  //     where: { id: orderId },
-  //     include: [db.Store]
-  //   });
-  //   let metadata;
-
-  //   // Add metadata to track the amount being split between tapster and store
-  //   metadata = Object.assign(paymentIntent.metadata || {}, {
-  //     totalPaidToStore: order.totalPaidToStore,
-  //     storeAccountId: order.Store.stripeToken
-  //   });
-
-  //   // Update the PaymentIntent with the new amount and metedata
-  //   const updatedPaymentIntent = await stripe.paymentIntents.update(id, {
-  //     amount: order.total,
-  //     metadata: metadata
-  //   });
-
-  //   res.send({ amount: updatedPaymentIntent.amount });
-  // };
-
-  // // Split and have cust pay the fees like this:
-  // // stripe.paymentIntents
-  // //   .create(
-  // //     {
-  // //       payment_method_types: ["card"],
-  // //       amount: 1000,
-  // //       currency: "usd",
-  // //       application_fee_amount: 123
-  // //     },
-  // //     {
-  // //       stripe_account: "{{CONNECTED_STRIPE_ACCOUNT_ID}}"
-  // //     }
-  // //   )
-  // //   .then(function(paymentIntent) {
-  // //     // asynchronously called
-  // //   });
-
-  // // Webhook handler for asynchronous events.
-  // const stripeWebhook = async (req, res) => {
-  //   const order = await db.Order.findOne({
-  //     where: { id: orderId }
-  //   });
-
-  //   // Check if webhook signing is configured.
-  //   if (env.parsed.STRIPE_WEBHOOK_SECRET) {
-  //     // Retrieve the event by verifying the signature using the raw body and secret.
-  //     let event;
-  //     let signature = req.headers["stripe-signature"];
-  //     try {
-  //       event = stripe.webhooks.constructEvent(
-  //         req.rawBody,
-  //         signature,
-  //         env.parsed.STRIPE_WEBHOOK_SECRET
-  //       );
-  //     } catch (err) {
-  //       console.log(`⚠️  Webhook signature verification failed.`);
-  //       return res.sendStatus(400);
-  //     }
-  //     data = event.data;
-  //     eventType = event.type;
-  //   } else {
-  //     // Webhook signing is recommended, but if the secret is not configured in `config.js`,
-  //     // we can retrieve the event data directly from the request body.
-  //     data = req.body.data;
-  //     eventType = req.body.type;
-  //   }
-
-  //   if (eventType === "payment_intent.succeeded") {
-  //     // Customer placed an order and payment succeeded
-  //     // Use Stripe Connect to transfer funds to store's Stripe account
-
-  //     const order = await db.Order.findOne({
-  //       where: {
-  //         id: data.object.metadata.orderId
-  //       },
-  //       include: [db.Store]
-  //     });
-
-  //     const transfer = await stripe.transfers.create({
-  //       amount: data.object.metadata.totalPaidToStore,
-  //       currency: "usd",
-  //       destination: data.object.metadata.storeAccountId,
-  //       transfer_group: data.object.transfer_group
-  //     });
-
-  //     // Mark order as paid:
-  //     await order.update({
-  //       status: 1,
-  //       paymentCompleted: true
-  //     });
-
-  //     console.log(
-  //       `Payment success: OrderId: ${data.object.metadata.orderId} charged and paid out to store: ${transfer.destination}. Customer email: ${data.object.receipt_email}`
-  //     );
-  //   } else if (eventType === "payment_intent.payment_failed") {
-  //     console.log("❌ Payment failed.");
-  //   }
-  //   res.sendStatus(200);
-  // };
 
   const createLineItemsForOrder = async (orderId, lineItems) => {
     let subtotal = 0;
