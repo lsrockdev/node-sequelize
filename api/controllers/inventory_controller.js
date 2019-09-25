@@ -44,10 +44,10 @@ const InventoryController = () => {
     try {
       const inventory = await db.Inventory.findOne({
         where: {
-          id: body.id
+          id: data.id
         }
       });
-      await inventory.update(body);
+      await inventory.update(data);
       return inventory;
     } catch (err) {
       console.log(err);
