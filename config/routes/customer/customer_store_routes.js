@@ -7,7 +7,7 @@ router.get("/getStoresByCustomerId", authPolicy, function(req, res) {
   return storeQueryController().getByCustomerId(req, res);
 });
 
-router.post("/getStoresByLocation", authPolicy, function(req, res) {
+router.get("/getStoresByLocation", authPolicy, function(req, res) {
   return storeQueryController().getByLocation(req, res);
 });
 

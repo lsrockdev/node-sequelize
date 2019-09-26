@@ -16,14 +16,14 @@ const CartController = () => {
             model: Inventory,
             include: [
               {
-                model: Store,
+                model: Store
               },
               {
-                model: Product,
-              },
-            ],
-          },
-        ],
+                model: Product
+              }
+            ]
+          }
+        ]
       });
       return res.status(200).json({
         carts,
@@ -122,14 +122,14 @@ const CartController = () => {
   };
 
   const getActiveStore = async customerId => {
-    const carts = await getCartByCustomer(id);
+    const carts = await getCartByCustomer(customerId);
     const activeCarts = carts.filter(
       cart =>
         cart.Inventory &&
         cart.Inventory.Store &&
         !cart.Inventory.Store.IsFrattapStore
     );
-    if (activeCarts.length > 0) {
+    if (activeCarts.length > 0 && activeCarts[0].Inventory.Store.id) {
       return activeCarts[0].Inventory.Store;
     }
     return null;

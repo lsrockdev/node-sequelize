@@ -8,10 +8,14 @@ const LocationHelper = () => {
         resolve(null);
       }
       var origins = [
-        `${address1.address1}, ${address1.city}, ${address1.state}`
+        `${address1.address1},${address1.city ? address1.city : ""},${
+          address1.state ? address1.state : ""
+        }`
       ];
       var destinations = [
-        `${address2.address1}, ${address2.city}, ${address2.state}`
+        `${address2.address1},${address2.city ? address2.city : ""},${
+          address2.state ? address2.state : ""
+        }`
       ];
       distance.mode("driving");
       distance.matrix(origins, destinations, function(err, distances) {
