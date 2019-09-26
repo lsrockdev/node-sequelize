@@ -100,7 +100,9 @@ module.exports = (sequelize, DataTypes) => {
     Order.belongsTo(models.Driver, {
       foreignKey: "deliveredBy"
     });
-
+    Order.belongsTo(models.Slot, {
+      foreignKey: "id"
+    });
     Order.belongsTo(models.Store, {
       foreignKey: "id",
       sourceKey: "storeId"
