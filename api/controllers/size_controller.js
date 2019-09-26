@@ -1,6 +1,29 @@
 const Size = require("../../models").Size;
+const CategorySizes = require("../../models").CategorySizes;
 
 const SizeController = () => {
+  const getAllByCategoryId = async (req, res) => {
+    const { categoryId } = req.query;
+    try {
+      const categorySizes = await CategorySizes.findAll({
+        where: {
+          isDeleted: false,
+          categoryId
+        },
+        include: [Size]
+      });
+      const sizes = categorySizes.map(categorySize => categorySize.Size);
+      return res.status(200).json({
+        sizes,
+        message: `Sizes count is: ${sizes.length}`,
+        StatusCode: 1
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
   const getAll = async (req, res) => {
     try {
       const sizes = await Size.findAll({
@@ -70,6 +93,7 @@ const SizeController = () => {
 
   return {
     getAll,
+    getAllByCategoryId,
     addOne,
     updateOne,
     deleteOne

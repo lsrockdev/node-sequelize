@@ -1,7 +1,5 @@
 const distance = require("google-distance-matrix");
-const env = process.env.NODE_ENV || "development";
-const config = require("../../config/config.js")[env];
-distance.key(config.googleApiKey);
+distance.key(process.env.googleApiKey);
 
 const LocationHelper = () => {
   const distanceBetweenLocations = async (address1, address2) => {
@@ -9,21 +7,26 @@ const LocationHelper = () => {
       if (!address1 || !address1.address1 || !address2 || !address2.address1) {
         resolve(null);
       }
-      var origins = address1.address1;
-      var destinations = address2.address1;
+      var origins = [
+        `${address1.address1},${address1.city ? address1.city : ""},${
+          address1.state ? address1.state : ""
+        }`
+      ];
+      var destinations = [
+        `${address2.address1},${address2.city ? address2.city : ""},${
+          address2.state ? address2.state : ""
+        }`
+      ];
       distance.mode("driving");
       distance.matrix(origins, destinations, function(err, distances) {
-        if (err) {
-          console.log(err);
-          resolve(null);
-        }
-        if (!distances) {
-          resolve(null);
-        }
         if (distances.status == "OK") {
           for (var i = 0; i < origins.length; i++) {
             for (var j = 0; j < destinations.length; j++) {
-              if (distances.rows[0].elements[j].status == "OK") {
+              if (
+                distances.rows[i] &&
+                distances.rows[i].elements[j] &&
+                distances.rows[i].elements[j].status == "OK"
+              ) {
                 var distance = distances.rows[i].elements[j].distance;
                 resolve(distance.value / 1000);
               } else {
@@ -32,9 +35,11 @@ const LocationHelper = () => {
             }
           }
         }
+        resolve(null);
       });
     });
   };
+
   return {
     distanceBetweenLocations
   };
