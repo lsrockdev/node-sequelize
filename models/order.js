@@ -77,6 +77,7 @@ module.exports = (sequelize, DataTypes) => {
       stripeLast4: DataTypes.STRING,
       stripeCardType: DataTypes.STRING,
       stripePaymentAmount: DataTypes.INTEGER,
+      stripeProcessingFees: DataTypes.INTEGER,
       instructions: {
         type: DataTypes.TEXT,
         get: function() {
