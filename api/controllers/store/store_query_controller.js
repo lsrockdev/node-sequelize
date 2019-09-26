@@ -26,7 +26,8 @@ const StoreQueryController = () => {
         });
       }
       const activeAddress = addresses[0];
-      return getStoresByLocation(await getStoresByLocation(activeAddress));
+
+      return res.status(200).json(await getStoresByLocation(activeAddress));
     } catch (err) {
       console.log(err);
       return res.status(500).json({ message: "Internal server error" });
@@ -71,23 +72,26 @@ const StoreQueryController = () => {
   const getStoresByLocation = async address => {
     StoreUser.hasOne(Store, { foreignKey: "userId" });
     Store.belongsTo(StoreUser, { foreignKey: "userId" });
-    const allStores = Store.findAll({
+    const allStores = await Store.findAll({
       where: {
         isDeleted: false
       },
       include: [StoreUser]
     });
-    const availableStores = await allStores.filter(async store => {
-      if (store.StoreUser) {
-        const distance = await LocationHelper().distanceBetweenLocations(
-          address,
-          store.StoreUser.address
-        );
-        if (distance > 20) {
-          return store;
-        }
+    const availableStores = [];
+    for (const store of allStores) {
+      console.log("store address", store.address);
+
+      const distance = await LocationHelper().distanceBetweenLocations(
+        address,
+        store.address
+      );
+      console.log("distance", distance);
+      if (distance != null && distance < 20) {
+        availableStores.push(store);
       }
-    });
+    }
+
     if (availableStores.length == 0) {
       return {
         message: `This address is currently out of range of all Tapster stores. We'll be coming to you soon!`,
@@ -95,8 +99,8 @@ const StoreQueryController = () => {
       };
     }
     return {
-      stores,
-      message: `Available stores count:${count}`,
+      stores: availableStores,
+      message: `Available stores count:${availableStores.length}`,
       StatusCode: 1
     };
   };
