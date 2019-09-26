@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 const inventoryController = require("../../../api/controllers/inventory_controller");
 const sizeController = require("../../../api/controllers/size_controller");
+const productController = require("../../../api/controllers/products_controller");
 
 const authPolicy = require("../../../api/policies/auth.policy");
 
@@ -81,6 +82,10 @@ router.post("/deleteInventory", authPolicy, async function(req, res) {
 
 router.get("/getCategorySizes", authPolicy, async function(req, res) {
   return sizeController().getAllByCategoryId(req, res);
+});
+
+router.get("/getActiveProducts", authPolicy, async function(req, res) {
+  return productController().allActiveProduct(req, res);
 });
 
 module.exports = router;

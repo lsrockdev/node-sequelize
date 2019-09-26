@@ -9,6 +9,25 @@ const Store = require("../../models").Store;
 const Sequelize = require("sequelize");
 
 const ProductController = () => {
+  const allActiveProduct = async (req, res) => {
+    try {
+      const products = await Product.findAll({
+        where: {
+          isDeleted: false,
+          isActive: true
+        }
+      });
+      return res.status(200).json({
+        products,
+        message: "success",
+        StatusCode: 1
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
   const getAll = async (req, res) => {
     try {
       const products = await Product.findAll({
@@ -39,12 +58,12 @@ const ProductController = () => {
       const productIds = products.map(product => product.id);
       const favorites = await Favorites.findAll({
         where: {
-          productId: {[Sequelize.Op.in]: productIds},
-          customerId: req.token.id,
+          productId: { [Sequelize.Op.in]: productIds },
+          customerId: req.token.id
         },
         include: [
           {
-            model: Product,
+            model: Product
           }
         ]
       });
@@ -72,7 +91,7 @@ const ProductController = () => {
             model: Category,
             include: [
               {
-                model: Size,
+                model: Size
               }
             ]
           }
@@ -80,18 +99,21 @@ const ProductController = () => {
       });
       const inventories = await Inventory.findAll({
         where: {
-          productId: id,
+          productId: id
         },
         include: [
           {
-            model: Store,
+            model: Store
           },
           {
-            model: Product,
-          },
-        ],
+            model: Product
+          }
+        ]
       });
-      const isCustomerFavorite = await Favorites.count({ where: {productId: id, customerId: req.token.id}}) > 0;
+      const isCustomerFavorite =
+        (await Favorites.count({
+          where: { productId: id, customerId: req.token.id }
+        })) > 0;
       return res.status(200).json({
         product,
         inventories,
@@ -149,6 +171,7 @@ const ProductController = () => {
   };
 
   return {
+    allActiveProduct,
     getAll,
     getByCategory,
     getById,
