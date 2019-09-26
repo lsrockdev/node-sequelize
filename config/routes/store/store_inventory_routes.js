@@ -1,6 +1,8 @@
 var express = require("express");
 var router = express.Router();
 const inventoryController = require("../../../api/controllers/inventory_controller");
+const sizeController = require("../../../api/controllers/size_controller");
+
 const authPolicy = require("../../../api/policies/auth.policy");
 
 router.get("/getInventories", authPolicy, async function(req, res) {
@@ -75,6 +77,10 @@ router.post("/deleteInventory", authPolicy, async function(req, res) {
     console.log(err);
     return res.status(500).json({ message: "Internal server error" });
   }
+});
+
+router.get("/getCategorySizes", authPolicy, async function(req, res) {
+  return sizeController().getAllByCategoryId(req, res);
 });
 
 module.exports = router;
