@@ -145,6 +145,77 @@ const OrderQueryController = () => {
     }
   };
 
+  const getbyIdForDriver = async (req, res) => {
+    try {
+      const { id } = req.query;
+      const order = await db.Order.findOne({
+        where: { id },
+        include: [
+          {
+            model: db.LineItem,
+            include: [
+              {
+                model: db.Inventory,
+                include: [
+                  {
+                    model: db.Size,
+                    attributes: ["id", "name", "size", "description"]
+                  },
+                  {
+                    model: db.Product,
+                    attributes: ["id", "name", "description"]
+                  },
+                  {
+                    model: db.Store,
+                    attributes: ["id", "name"]
+                  }
+                ],
+                attributes: ["id"]
+              }
+            ],
+            attributes: ["id", "price"]
+          },
+          {
+            model: db.Customer,
+            include: [
+              {
+                model: db.UserLocation,
+                where: { isActive: true },
+                limit: 1,
+                as: "addresses",
+                attributes: [
+                  "address1",
+                  "address2",
+                  "latitude",
+                  "longitude",
+                  "address3"
+                ]
+              }
+            ],
+            attributes: [
+              "id",
+              "firstName",
+              "lastName",
+              "userName",
+              "phone",
+              "secondaryContact",
+              "secondaryContactName"
+            ]
+          }
+        ],
+        attributes: ["id"]
+      });
+      return res.status(200).json({
+        order,
+        message: "Successfully returned Orders",
+        StatusCode: 1
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
   const getbyId = async (req, res) => {
     try {
       const { id } = req.query;
@@ -248,6 +319,7 @@ const OrderQueryController = () => {
     getDriverOrderHistory,
     getCustomerOrders,
     getOrdersByStoreId,
+    getbyIdForDriver,
     getbyId
   };
 };
