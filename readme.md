@@ -19,6 +19,7 @@ TWILIO_AUTH_TOKEN=yourtwilioauthtoken
 - Make sure mysql server is running locally.
 - Download and use [MySQL Workbench](https://dev.mysql.com/downloads/workbench/) to manage and browse your local db server
 - Create a schema (database) called `tapster`
+- Initialize sequelize: `sequelize init`
 - Run migrations to update the schema: `npx sequelize-cli db:migrate`
 - Seed the database:
   - `sequelize db:seed --seed 20190904234255-categories.js`
@@ -26,6 +27,11 @@ TWILIO_AUTH_TOKEN=yourtwilioauthtoken
   - `sequelize db:seed --seed 20190904234312-products.js`
   - `sequelize db:seed --seed 20190909074116-inventories.js`
   - `sequelize db:seed --seed 20190916175336-settings.js`
+- Create delivery slots for the upcoming 7 days:
+  - Create a scheduled task to run every 24 hours that runs: `npm run slots`
+    - Use heroku scheduler in production
+    - Can run manually or use cron locally
+  - This task creates slots for 7 days out and can be run as often as you want without risk of creating any duplicates.
 - `npm run dev` to start the server and make sure it runs with no errors.
 
 ## Node console:
