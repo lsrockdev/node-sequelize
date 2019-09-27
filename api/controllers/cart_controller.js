@@ -3,6 +3,7 @@ const Customer = require("../../models").Customer;
 const Inventory = require("../../models").Inventory;
 const Store = require("../../models").Store;
 const Product = require("../../models").Product;
+const Category = require("../../models").Category;
 
 const CartController = () => {
   const getAll = async (req, res) => {
@@ -103,6 +104,9 @@ const CartController = () => {
               },
               {
                 model: Category,
+              },
+              {
+                model: Store,
               },
             ],
           },
