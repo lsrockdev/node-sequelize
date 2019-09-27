@@ -26,8 +26,42 @@ const OrderQueryController = () => {
           [Sequelize.Op.in]: statusValues
         }
       };
+      const orders = await db.Order.findAll({
+        where: condition,
+        include: [
+          db.LineItem,
+          db.Store,
+          {
+            model: db.Customer,
+            include: [
+              {
+                model: db.UserLocation,
+                where: { isActive: true },
+                limit: 1,
+                attributes: [
+                  "address1",
+                  "address2",
+                  "address3",
+                  "latitude",
+                  "longitude"
+                ],
+                as: "addresses"
+              }
+            ],
+            attributes: [
+              "id",
+              "email",
+              "phone",
+              "firstName",
+              "userName",
+              "gender"
+            ]
+          }
+        ]
+      });
+
       return res.status(200).json({
-        orders: await getAllBy(condition),
+        orders,
         message: "Successfully returned Orders",
         StatusCode: 1
       });
@@ -58,7 +92,7 @@ const OrderQueryController = () => {
           "kegsReturnedQty",
           "tapsReturnedQty"
         ],
-        include:[
+        include: [
           {
             model: db.Customer,
             attributes: ["email", "phone", "firstName", "lastName"]
@@ -141,8 +175,23 @@ const OrderQueryController = () => {
                 model: db.UserLocation,
                 where: { isActive: true },
                 limit: 1,
+                attributes: [
+                  "address1",
+                  "address2",
+                  "address3",
+                  "latitude",
+                  "longitude"
+                ],
                 as: "addresses"
               }
+            ],
+            attributes: [
+              "id",
+              "email",
+              "phone",
+              "firstName",
+              "userName",
+              "gender"
             ]
           }
         ]
@@ -173,7 +222,7 @@ const OrderQueryController = () => {
                     // ]
                   },
                   {
-                    model: db.Product,
+                    model: db.Product
                   }
                 ]
               }
