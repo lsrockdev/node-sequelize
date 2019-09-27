@@ -214,12 +214,7 @@ const OrderQueryController = () => {
                 model: db.Inventory,
                 include: [
                   {
-                    model: db.CategorySizes
-                    // include: [
-                    //   {
-                    //     model: db.Size
-                    //   }
-                    // ]
+                    model: db.Size
                   },
                   {
                     model: db.Product
