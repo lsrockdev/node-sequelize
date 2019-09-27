@@ -1,6 +1,7 @@
 const Favorites = require("../../models").Favorites;
 const Product = require("../../models").Product;
 const Store = require("../../models").Store;
+const Inventory = require("../../models").Inventory;
 const Sequelize = require("sequelize");
 
 const FavoritesController = () => {
@@ -13,7 +14,13 @@ const FavoritesController = () => {
         where: { customerId },
         include: [
           {
-            model: Product
+            model: Product,
+            include: [
+              {
+                model: Inventory,
+                attributes: ["id", "price", "storeId"],
+              }
+            ]
           }
         ]
       });
