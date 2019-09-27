@@ -5,7 +5,10 @@ module.exports = (sequelize, DataTypes) => {
     "Slot",
     {
       start: { type: DataTypes.DATE, unique: true },
-      finish: { type: DataTypes.DATE, unique: true }
+      finish: { type: DataTypes.DATE, unique: true },
+      isMaxedOut: { type: DataTypes.BOOLEAN, default: false },
+      isSelectable: { type: DataTypes.BOOLEAN, default: true },
+      maxDeliveriesAllowed: { type: DataTypes.INTEGER, default: 10 }
     },
     {}
   );

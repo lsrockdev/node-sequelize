@@ -7,12 +7,15 @@ seedSlotRecordsIntoDb();
 async function seedSlotRecordsIntoDb() {
   let days = 7;
   let minutesInterval = 30;
-  let slots = await generateSlots(days, minutesInterval);
+  let maxDeliveriesPerSlot = await db.Setting.findOne({where: {name: "maxDeliveriesPerSlot"}})
+  maxDeliveriesPerSlot = parseInt(maxDeliveriesPerSlot.value) || 10
+
+  let slots = await generateSlots(days, minutesInterval, maxDeliveriesPerSlot);
 
   return await db.Slot.bulkCreate(slots);
 }
 
-async function generateSlots(days, minutesInterval) {
+async function generateSlots(days, minutesInterval, maxDeliveriesAllowed) {
   let dateFormat = "YYYY-MM-DD HH:mm:ss";
   let minutesInWeek = 60 * 24 * days;
   let slotsCount = minutesInWeek / minutesInterval;
@@ -25,6 +28,9 @@ async function generateSlots(days, minutesInterval) {
     let slot = {
       start: start.format(dateFormat),
       finish: finish.format(dateFormat),
+      maxDeliveriesAllowed,
+      isMaxedOut: false,
+      isSelectable: true,
       createdAt: new Date(),
       updatedAt: new Date()
     };
