@@ -20,11 +20,14 @@ const CartController = () => {
                 model: Store
               },
               {
-                model: Product
-              }
-            ]
-          }
-        ]
+                model: Product,
+              },
+              {
+                model: Category,
+              },
+            ],
+          },
+        ],
       });
       return res.status(200).json({
         carts,
@@ -88,7 +91,22 @@ const CartController = () => {
         where: {
           id: id
         },
-        include: [Customer, Inventory]
+        include: [
+          {
+            model: Customer,
+          },
+          {
+            model: Inventory,
+            include: [
+              {
+                model: Product,
+              },
+              {
+                model: Category,
+              },
+            ],
+          },
+        ]
       });
       return cart;
     } catch (err) {
