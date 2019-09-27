@@ -47,8 +47,43 @@ const SlotController = () => {
     }
   };
 
-  const saveBlockedSlot = async (req, res) => {
+  const addDriverToSlots = async (req, res) => {
     // TODO: create slot(s) for a given start-->end range of hours, driver and day
+    const { driverId, start, end } = req.body;
+    // const requestedDate = dayjs(day);
+
+    try {
+      const slots = await db.Slot({
+        where: {
+          start: {
+            [Op.and]: [
+              { [Op.gte]: dayjs(start).toDate() },
+              { [Op.lt]: dayjs(end).toDate() }
+            ]
+          }
+        }
+      });
+
+      // loop through and create driverSlots for each slot:
+      for (let slot of slots) {
+        db.DriverSlot.create({
+          driverId,
+          slotId
+        });
+      }
+      const slots = await db.Slot({
+        where: { start: { $between: [start, end] } }
+      });
+
+      return res.status(200).json({
+        slots: slots,
+        message: "success",
+        StatusCode: 1
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
   };
 
   const deleteBlockedSlot = async (req, res) => {
@@ -90,7 +125,7 @@ const SlotController = () => {
   return {
     getDriverBlockedSlots,
     deleteAllDriverSlots,
-    saveBlockedSlot
+    addDriverToSlots
   };
 };
 

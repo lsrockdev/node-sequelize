@@ -12,8 +12,8 @@ router.post("/deleteAllDriverSlots", authPolicy, function(req, res) {
   return slotsController().deleteAllDriverSlots(req, res);
 });
 
-router.post("/saveBlockedSlot", authPolicy, function(req, res) {
-  return slotsController().saveBlockedSlot(req, res);
+router.post("/addDriverToSlots", authPolicy, function(req, res) {
+  return slotsController().addDriverToSlots(req, res);
 });
 
 module.exports = router;
