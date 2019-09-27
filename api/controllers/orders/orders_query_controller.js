@@ -208,6 +208,7 @@ const OrderQueryController = () => {
           "status",
           "createdAt",
           "deliveredAt",
+          "deliveryAddress",
           "returnedAt",
           "pickupAt",
           "total",
