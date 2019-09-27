@@ -9,7 +9,8 @@ const CartController = () => {
     try {
       const carts = await Cart.findAll({
         where: {
-          isDeleted: false
+          isDeleted: false,
+          customerId: req.token.id,
         },
         include: [
           {
