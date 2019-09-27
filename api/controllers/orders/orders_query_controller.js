@@ -171,6 +171,9 @@ const OrderQueryController = () => {
                     //     model: db.Size
                     //   }
                     // ]
+                  },
+                  {
+                    model: db.Product,
                   }
                 ]
               }
