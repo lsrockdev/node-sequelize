@@ -203,7 +203,20 @@ const OrderQueryController = () => {
             ]
           }
         ],
-        attributes: ["id", "status"]
+        attributes: [
+          "id",
+          "status",
+          "createdAt",
+          "deliveredAt",
+          "returnedAt",
+          "pickupAt",
+          "total",
+          "penalty",
+          "kegsDeliveredQty",
+          "tapsDeliveredQty",
+          "kegsReturnedQty",
+          "tapsReturnedQty"
+        ]
       });
       return res.status(200).json({
         order,
