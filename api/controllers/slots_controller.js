@@ -1,14 +1,13 @@
-var Sequelize = require('sequelize');
+var Sequelize = require("sequelize");
 const Op = Sequelize.Op;
-const dayjs = require('dayjs');
+const dayjs = require("dayjs");
 
 const db = require("../services/db.service.js");
 
 const SlotController = () => {
-
   const getDriverBlockedSlots = async (req, res) => {
-    let driverId = parseInt(req.query.driverId)
-    let requestedDate = dayjs(req.query.day)
+    let driverId = parseInt(req.query.driverId);
+    let requestedDate = dayjs(req.query.day);
 
     try {
       const slots = await db.Slot.findAll({
@@ -20,7 +19,7 @@ const SlotController = () => {
         slots: slots,
         message: "success",
         StatusCode: 1
-      })
+      });
     } catch (err) {
       console.log(err);
       return res.status(500).json({ message: "Internal server error" });
@@ -28,11 +27,11 @@ const SlotController = () => {
   };
 
   const deleteAllDriverSlots = async (req, res) => {
-    let driverId = parseInt(req.query.driverId)
-    let requestedDate = dayjs(req.query.day)
+    const { driverId, day } = req.body;
+    const requestedDate = dayjs(day);
 
     try {
-      const slots = await DriverSlot.bulkDelete({
+      const slots = await db.DriverSlot.destroy({
         where: { driverId: driverId },
         include: [{ model: db.Slot, where: startsOnDay(requestedDate) }]
       });
@@ -41,7 +40,7 @@ const SlotController = () => {
         slots: slots,
         message: "success",
         StatusCode: 1
-      })
+      });
     } catch (err) {
       console.log(err);
       return res.status(500).json({ message: "Internal server error" });
@@ -53,8 +52,8 @@ const SlotController = () => {
   };
 
   const deleteBlockedSlot = async (req, res) => {
-    let driverId = parseInt(req.query.driverId)
-    let slotId = dayjs(req.query.slotId)
+    let driverId = parseInt(req.query.driverId);
+    let slotId = dayjs(req.query.slotId);
 
     try {
       const slots = await DriverSlot.destroy({
@@ -66,7 +65,7 @@ const SlotController = () => {
         slots: slots,
         message: "success",
         StatusCode: 1
-      })
+      });
     } catch (err) {
       console.log(err);
       return res.status(500).json({ message: "Internal server error" });
@@ -74,18 +73,18 @@ const SlotController = () => {
   };
 
   function startsOnDay(day) {
-    let requestedDate = dayjs(day)
-    let nextDate = requestedDate.add(1, 'day')
-    let dateFormat = 'YYYY-MM-DD'
+    let requestedDate = dayjs(day);
+    let nextDate = requestedDate.add(1, "day");
+    let dateFormat = "YYYY-MM-DD";
     let conditions = {
       start: {
         [Op.and]: [
-          {[Op.gte]: requestedDate.format(dateFormat)},
-          {[Op.lt]: nextDate.format(dateFormat)}
+          { [Op.gte]: requestedDate.format(dateFormat) },
+          { [Op.lt]: nextDate.format(dateFormat) }
         ]
       }
-    }
-    return conditions
+    };
+    return conditions;
   }
 
   return {
@@ -96,4 +95,3 @@ const SlotController = () => {
 };
 
 module.exports = SlotController;
-

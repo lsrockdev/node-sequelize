@@ -4,6 +4,7 @@ dependencies:
   cookie-parser: 1.4.4
   core-js: 2.6.9
   cors: 2.8.5
+  dayjs: 1.8.16
   debug: 2.6.9
   dotenv: 8.1.0
   express: 4.16.4
@@ -811,6 +812,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-jyCETtSl3VMZMWeRo7iY1FL19ges1t55hMo5yaam4Jrsm5EPL89UQkoQRyiI+Yf4k8r2ZpdngkV8hr1lIdjb3Q==
+  /dayjs/1.8.16:
+    dev: false
+    resolution:
+      integrity: sha512-XPmqzWz/EJiaRHjBqSJ2s6hE/BUoCIHKgdS2QPtTQtKcS9E4/Qn0WomoH1lXanWCzri+g7zPcuNV4aTZ8PMORQ==
   /debug/2.6.9:
     dependencies:
       ms: 2.0.0
@@ -3683,6 +3688,7 @@ specifiers:
   core-js: ^2.6.9
   cors: ^2.8.5
   cross-env: ^5.2.0
+  dayjs: ^1.8.16
   debug: ~2.6.9
   dotenv: ^8.1.0
   express: ~4.16.1
