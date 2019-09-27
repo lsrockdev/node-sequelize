@@ -170,7 +170,7 @@ const OrderQueryController = () => {
                     attributes: ["id", "name"]
                   }
                 ],
-                attributes: ["id"]
+                attributes: ["id", "qty"]
               }
             ],
             attributes: ["id", "price"]
