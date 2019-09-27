@@ -80,7 +80,7 @@ const ProductController = () => {
   };
 
   const getById = async (req, res) => {
-    const { id } = req.query;
+    const { id, storeIds } = req.query;
     try {
       const product = await Product.findOne({
         where: {
@@ -97,10 +97,15 @@ const ProductController = () => {
           }
         ]
       });
+
+      const condition = storeIds
+        ? {
+            productId: id,
+            storeId: { [Sequelize.Op.in]: JSON.parse(storeIds) }
+          }
+        : { productId: id };
       const inventories = await Inventory.findAll({
-        where: {
-          productId: id
-        },
+        where: condition,
         include: [
           {
             model: Store
