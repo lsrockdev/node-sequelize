@@ -103,6 +103,7 @@ const OrdersController = () => {
       // For each store:
       for (let storeId of Object.keys(storeItems)) {
         const { subtotal, deliveryFeeTotal } = storeTotals[storeId];
+        const store = await db.Store.findOne({ where: { id: storeId } });
 
         // Add up stripe fees: 2.9% + 30 cents:
         let stripeProcessingFees = Math.ceil(
