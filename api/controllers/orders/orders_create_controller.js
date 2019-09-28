@@ -47,7 +47,6 @@ const OrdersController = () => {
         const storeId = cart.Inventory.Store.id;
         const store = await db.Store.findOne({ where: { id: storeId } });
         if (!store.stripeToken)
-          response
           throw new Error("Store does not have stripe account!");
       }
 
@@ -194,7 +193,7 @@ const OrdersController = () => {
       });
     } catch (err) {
       console.log(err);
-      return res.status(400).json({ message: err });
+      return res.status(400).json({ message: err.message });
     }
   };
 
