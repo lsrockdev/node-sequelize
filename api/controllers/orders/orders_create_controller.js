@@ -42,6 +42,15 @@ const OrdersController = () => {
       const storeItems = {};
       const storeTotals = { all: { subtotal: 0, deliveryFeeTotal: 0 } };
 
+      // verify that all stores have stripe tokens
+      for (let cart of carts) {
+        const storeId = cart.Inventory.Store.id;
+        const store = await db.Store.findOne({ where: { id: storeId } });
+        if (!store.stripeToken)
+          response
+          throw new Error("Store does not have stripe account!");
+      }
+
       for (let cart of carts) {
         const storeId = cart.Inventory.Store.id;
         if (!storeItems.hasOwnProperty(storeId)) {
@@ -143,11 +152,6 @@ const OrdersController = () => {
         await createLineItemsForOrder(order.id, storeItems[storeId]);
 
         // STRIPE TRANSFER TO STORE
-
-        const store = await db.Store.findOne({ where: { id: order.storeId } });
-        if (!store.stripeToken)
-          throw new Error("Store does not have stripe account!");
-
         // Create a Transfer to the store's connected account:
         const transfer = await stripe.transfers.create({
           amount: order.totalPaidToStore - order.stripeProcessingFees,
@@ -190,7 +194,7 @@ const OrdersController = () => {
       });
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ message: err });
+      return res.status(400).json({ message: err });
     }
   };
 
