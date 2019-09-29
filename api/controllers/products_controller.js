@@ -53,7 +53,13 @@ const ProductController = () => {
         where: {
           isDeleted: false,
           categoryId
-        }
+        },
+        include: [
+          {
+            model: Inventory,
+            attributes: ["id", "price", "storeId"],
+          }
+        ]
       });
       const productIds = products.map(product => product.id);
       const favorites = await Favorites.findAll({
@@ -63,7 +69,7 @@ const ProductController = () => {
         },
         include: [
           {
-            model: Product
+            model: Product,
           }
         ]
       });
