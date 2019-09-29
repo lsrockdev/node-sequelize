@@ -85,7 +85,7 @@ const OrdersController = () => {
         storeTotals.all.subtotal + storeTotals.all.deliveryFeeTotal + tip;
 
       const charge = await stripe.charges.create({
-        amount: stripeAmount,
+        amount: Math.ceil(stripeAmount),
         currency: "usd",
         description: `Order for Tapster customer: ${customerId}`,
         source: body.stripeToken,
