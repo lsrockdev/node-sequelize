@@ -15,8 +15,10 @@ module.exports = (sequelize, DataTypes) => {
 
   Slot.associate = function(models) {
     Slot.hasMany(models.Order);
-    Slot.hasMany(models.DriverSlot);
-    Slot.belongsToMany(models.Driver, { through: models.DriverSlot });
+    Slot.belongsToMany(models.Driver, {
+      through: models.DriverSlot,
+      foreignKey: "slotId"
+    });
   };
 
   return Slot;
