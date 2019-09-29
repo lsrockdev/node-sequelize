@@ -22,6 +22,12 @@ const CartController = () => {
               },
               {
                 model: Product,
+                include: [
+                  {
+                    model: Category,
+                    attributes: ["id", "deliveryFee"],
+                  }
+                ]
               },
               {
                 model: Category,
@@ -101,6 +107,12 @@ const CartController = () => {
             include: [
               {
                 model: Product,
+                include: [
+                  {
+                    model: Category,
+                    attributes: ["id", "deliveryFee"],
+                  }
+                ]
               },
               {
                 model: Category,
@@ -131,9 +143,21 @@ const CartController = () => {
             model: Inventory,
             include: [
               {
-                model: Store
-              }
-            ]
+                model: Product,
+                include: [
+                  {
+                    model: Category,
+                    attributes: ["id", "deliveryFee"],
+                  }
+                ]
+              },
+              {
+                model: Category,
+              },
+              {
+                model: Store,
+              },
+            ],
           }
         ]
       });
