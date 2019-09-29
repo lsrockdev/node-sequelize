@@ -75,9 +75,8 @@ const OrdersController = () => {
           parseInt(cart.Inventory.Category.deliveryFee);
 
         // update storeTotals[all]
-        storeTotals.all.subtotal = storeTotals.all.subtotal + itemTotal;
-        storeTotals.all.deliveryFeeTotal =
-          storeTotals.all.deliveryFeeTotal + deliveryFeeTotal;
+        storeTotals.all.subtotal += Number(itemTotal);
+        storeTotals.all.deliveryFeeTotal += Number(deliveryFeeTotal);
       }
 
       // STRIPE CHARGE:
