@@ -29,7 +29,13 @@ const OrdersController = () => {
                 model: db.Store
               },
               {
-                model: db.Product
+                model: db.Product,
+                include: [
+                  {
+                    model: db.Category,
+                    attributes: ["id", "deliveryFee"],
+                  }
+                ]
               },
               {
                 model: db.Category
@@ -66,13 +72,13 @@ const OrdersController = () => {
         const itemTotal = cart.Inventory.price * cart.quantity;
 
         const deliveryFeeTotal =
-          parseInt(cart.Inventory.Category.deliveryFee) *
+          parseInt(cart.Inventory.Product.Category.deliveryFee) *
           parseInt(cart.quantity);
         storeTotals[storeId]["subtotal"] =
           storeTotals[storeId]["subtotal"] + itemTotal;
         storeTotals[storeId]["deliveryFeeTotal"] =
           storeTotals[storeId]["deliveryFeeTotal"] +
-          parseInt(cart.Inventory.Category.deliveryFee);
+          parseInt(cart.Inventory.Product.Category.deliveryFee);
 
         // update storeTotals[all]
         storeTotals.all.subtotal += Number(itemTotal);
@@ -225,7 +231,7 @@ const OrdersController = () => {
         name: item.Inventory.name,
         description: item.Inventory.description,
         depositfee: item.Inventory.depositFee || 0,
-        deliveryfee: item.Inventory.Category.deliveryFee * item.quantity
+        deliveryfee: item.Inventory.Product.Category.deliveryFee * item.quantity
       };
       const response = await db.LineItem.create(li);
       // add up delivery fees
