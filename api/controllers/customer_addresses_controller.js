@@ -1,6 +1,10 @@
 const Customer = require("../../models").Customer;
 const UserLocation = require("../../models").UserLocation;
+const Store = require("../../models").Store;
+const StoreUser = require("../../models").StoreUser;
 const getCurrentUser = require("../helpers/current_user_helper");
+const LocationHelper = require("../helpers/location_helper");
+const storeQueryController = require("./store/store_query_controller");
 var _ = require("lodash");
 
 const CustomerController = () => {
@@ -52,9 +56,12 @@ const CustomerController = () => {
           id: body.id,
         },
       });
+      const details = await UserLocation.findOne({ where:{id: body.id} });
+      const stores = await getStoresByLocation(details);
       return res.status(200).json({
         message: "Successfully set active address address",
-        address: body.id
+        address: body.id,
+        stores,
       });
     } catch (err) {
       console.log(err);
@@ -162,3 +169,36 @@ const CustomerController = () => {
 };
 
 module.exports = CustomerController;
+
+const getStoresByLocation = async address => {
+  StoreUser.hasOne(Store, { foreignKey: "userId" });
+  Store.belongsTo(StoreUser, { foreignKey: "userId" });
+  const allStores = await Store.findAll({
+    where: {
+      isDeleted: false
+    },
+    include: [StoreUser]
+  });
+  const availableStores = [];
+  for (const store of allStores) {
+    const distance = await LocationHelper().distanceBetweenLocations(
+      address,
+      store.address
+    );
+    if (distance != null && distance < 20) {
+      availableStores.push(store);
+    }
+  }
+
+  if (availableStores.length == 0) {
+    return {
+      message: `This address is currently out of range of all Tapster stores. We'll be coming to you soon!`,
+      StatusCode: 0
+    };
+  }
+  return {
+    stores: availableStores,
+    message: `Available stores count:${availableStores.length}`,
+    StatusCode: 1
+  };
+};

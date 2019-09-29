@@ -1,11 +1,9 @@
 const Product = require("../../models").Product;
 const Category = require("../../models").Category;
-const CategorySizes = require("../../models").CategorySizes;
 const Size = require("../../models").Size;
 const Favorites = require("../../models").Favorites;
 const Inventory = require("../../models").Inventory;
 const Store = require("../../models").Store;
-
 const Sequelize = require("sequelize");
 
 const ProductController = () => {
@@ -58,6 +56,9 @@ const ProductController = () => {
           {
             model: Inventory,
             attributes: ["id", "price", "storeId"],
+            where: {
+              storeId: { [Sequelize.Op.in]: JSON.parse(req.query.storeIds) },
+            }
           }
         ]
       });
