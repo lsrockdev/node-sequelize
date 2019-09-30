@@ -14,12 +14,4 @@ router.post("/register", function(req, res) {
   return storeAuthController().register(req, res);
 });
 
-router.get("/getStoreDetails", authPolicy, function(req, res) {
-  return storeQueryController().getById(req, res);
-});
-
-router.post("/updateStore", authPolicy, function(req, res) {
-  return storeUpdateController().updateOne(req, res);
-});
-
 module.exports = router;
