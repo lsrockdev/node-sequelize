@@ -252,18 +252,87 @@ const OrderQueryController = () => {
     }
   };
 
-  const getbyId = async (req, res) => {
+  const getbyIdForStore = async condition => {
     try {
-      const { id } = req.query;
-      const order = await getOneBy({ id });
-      return res.status(200).json({
-        order,
-        message: "Successfully returned Orders",
-        StatusCode: 1
+      const order = await db.Order.findOne({
+        where: condition,
+        include: [
+          {
+            model: db.LineItem,
+            include: [
+              {
+                model: db.Inventory,
+                include: [
+                  {
+                    model: db.Size,
+                    attributes: ["id", "name", "size", "description"]
+                  },
+                  {
+                    model: db.Product,
+                    attributes: ["id", "name", "description"]
+                  },
+                  {
+                    model: db.Store,
+                    attributes: ["id", "name"]
+                  }
+                ],
+                attributes: ["id"]
+              }
+            ],
+            attributes: ["id", "price", "qty"]
+          },
+          {
+            model: db.Customer,
+            include: [
+              {
+                model: db.UserLocation,
+                where: { isActive: true },
+                limit: 1,
+                as: "addresses",
+                attributes: [
+                  "address1",
+                  "address2",
+                  "latitude",
+                  "longitude",
+                  "address3"
+                ]
+              }
+            ],
+            attributes: [
+              "id",
+              "firstName",
+              "lastName",
+              "userName",
+              "phone",
+              "secondaryContact",
+              "secondaryContactName"
+            ]
+          },
+          {
+            model: db.Driver,
+            attributes: ["id", "firstName", "lastName", "phone", "email"]
+          }
+        ],
+        attributes: [
+          "id",
+          "status",
+          "createdAt",
+          "deliveredAt",
+          "deliveryAddress",
+          "returnedAt",
+          "pickupAt",
+          "total",
+          "penalty",
+          "kegsDeliveredQty",
+          "tapsDeliveredQty",
+          "kegsReturnedQty",
+          "tapsReturnedQty"
+        ]
       });
+      return order;
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ message: "Internal server error" });
+      throw new Error("Internal server error");
     }
   };
 
@@ -340,6 +409,9 @@ const OrderQueryController = () => {
                 as: "addresses"
               }
             ]
+          },
+          {
+            model: db.Driver
           }
         ]
       });
@@ -356,7 +428,8 @@ const OrderQueryController = () => {
     getCustomerOrders,
     getOrdersByStoreId,
     getbyIdForDriver,
-    getbyId
+    getOneBy,
+    getbyIdForStore
   };
 };
 
