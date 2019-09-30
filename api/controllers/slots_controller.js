@@ -48,35 +48,38 @@ const SlotController = () => {
   };
 
   const addDriverToSlots = async (req, res) => {
-    // TODO: create slot(s) for a given start-->end range of hours, driver and day
-    const { driverId, start, end } = req.body;
-    // const requestedDate = dayjs(day);
+    const dtFormat = "YYYY-MM-DD HH:mm:ss";
+    const driverId = req.body.driverId;
+    const start = dayjs(req.body.start).format(dtFormat);
+    const finish = dayjs(req.body.finish).format(dtFormat);
 
     try {
-      const slots = await db.Slot({
+      const slots = await db.Slot.findAll({
         where: {
           start: {
             [Op.and]: [
-              { [Op.gte]: dayjs(start).toDate() },
-              { [Op.lt]: dayjs(end).toDate() }
+              { [Op.gte]: start },
+              { [Op.lt]: finish }
             ]
           }
         }
       });
 
-      // loop through and create driverSlots for each slot:
-      for (let slot of slots) {
-        db.DriverSlot.create({
-          driverId,
-          slotId
-        });
-      }
-      const slots = await db.Slot({
-        where: { start: { $between: [start, end] } }
-      });
+      const driverSlots = (
+        await Promise.all(slots.map(slot => {
+          return db.DriverSlot.create({
+            driverId: driverId,
+            slotId: slot.id
+          }).then(driverSlot => {
+            return driverSlot;
+          }).catch(err => {
+            console.log(err)
+          });
+        }))
+      ).filter(driverSlot => driverSlot != null);
 
       return res.status(200).json({
-        slots: slots,
+        driverSlots: driverSlots,
         message: "success",
         StatusCode: 1
       });
