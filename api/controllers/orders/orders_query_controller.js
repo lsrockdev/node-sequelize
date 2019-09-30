@@ -269,11 +269,21 @@ const OrderQueryController = () => {
                   },
                   {
                     model: db.Product,
-                    attributes: ["id", "name", "description"]
+                    attributes: [
+                      "id",
+                      "name",
+                      "description",
+                      "price",
+                      "depositFee"
+                    ]
                   },
                   {
                     model: db.Store,
                     attributes: ["id", "name"]
+                  },
+                  {
+                    model: db.Category,
+                    attributes: ["id", "name", "deliveryFee"]
                   }
                 ],
                 attributes: ["id"]
@@ -304,6 +314,7 @@ const OrderQueryController = () => {
               "lastName",
               "userName",
               "phone",
+              "email",
               "secondaryContact",
               "secondaryContactName"
             ]
@@ -323,6 +334,7 @@ const OrderQueryController = () => {
           "pickupAt",
           "total",
           "penalty",
+          "deliveryFees",
           "kegsDeliveredQty",
           "tapsDeliveredQty",
           "kegsReturnedQty",
