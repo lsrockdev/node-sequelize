@@ -141,6 +141,18 @@ const StoreQueryController = () => {
     }
   };
 
+  const getOneBy = async condition => {
+    try {
+      const store = await Store.findOne({
+        where: condition
+      });
+      return store;
+    } catch (err) {
+      console.log(err);
+      throw new Error("Internal server error");
+    }
+  };
+
   const getOrdersByStoreId = async (req, res) => {
     const { storeId } = req.body;
     try {
@@ -166,6 +178,7 @@ const StoreQueryController = () => {
     checkAddressWithInStoresRange,
     getAll,
     getById,
+    getOneBy,
     getOrdersByStoreId
   };
 };
