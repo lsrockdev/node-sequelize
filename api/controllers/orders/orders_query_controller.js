@@ -76,8 +76,30 @@ const OrderQueryController = () => {
   const getOrdersByStoreId = async (req, res) => {
     try {
       const storeId = req.query.storeId;
+      const beginDate = req.query.beginDate;
+      const endDate = req.query.endDate;
+      const status = req.query.status;
+
+      const condition =
+        status > 0
+          ? {
+              storeId,
+              status,
+              createdAt: {
+                [Sequelize.Op.gte]: new Date(beginDate),
+                [Sequelize.Op.lte]: new Date(endDate)
+              }
+            }
+          : {
+              storeId,
+              createdAt: {
+                [Sequelize.Op.gte]: new Date(beginDate),
+                [Sequelize.Op.lte]: new Date(endDate)
+              }
+            };
+
       const orders = await db.Order.findAll({
-        where: { storeId },
+        where: condition,
         attributes: [
           "id",
           "status",
