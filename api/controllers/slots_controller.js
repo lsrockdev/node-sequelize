@@ -90,11 +90,11 @@ const SlotController = () => {
   };
 
   const deleteBlockedSlot = async (req, res) => {
-    let driverId = parseInt(req.query.driverId);
+    let driverId = req.body.driverId;
     let slotId = dayjs(req.query.slotId);
 
     try {
-      const slots = await DriverSlot.destroy({
+      const slots = await db.DriverSlot.destroy({
         where: { driverId: driverId },
         include: [{ model: db.Slot, where: { id: slotId } }]
       });
@@ -128,6 +128,7 @@ const SlotController = () => {
   return {
     getDriverBlockedSlots,
     deleteAllDriverSlots,
+    deleteBlockedSlot,
     addDriverToSlots
   };
 };
