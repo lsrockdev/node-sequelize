@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = (sequelize, DataTypes) => {
-  var DriverSlot = sequelize.define(
+  const DriverSlot = sequelize.define(
     "DriverSlot",
     {
       driverId: DataTypes.INTEGER,
