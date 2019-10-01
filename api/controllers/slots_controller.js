@@ -47,8 +47,46 @@ const SlotController = () => {
     }
   };
 
-  const saveBlockedSlot = async (req, res) => {
-    // TODO: create slot(s) for a given start-->end range of hours, driver and day
+  const addDriverToSlots = async (req, res) => {
+    const dtFormat = "YYYY-MM-DD HH:mm:ss";
+    const driverId = req.body.driverId;
+    const start = dayjs(req.body.start).format(dtFormat);
+    const finish = dayjs(req.body.finish).format(dtFormat);
+
+    try {
+      const slots = await db.Slot.findAll({
+        where: {
+          start: {
+            [Op.and]: [
+              { [Op.gte]: start },
+              { [Op.lt]: finish }
+            ]
+          }
+        }
+      });
+
+      const driverSlots = (
+        await Promise.all(slots.map(slot => {
+          return db.DriverSlot.create({
+            driverId: driverId,
+            slotId: slot.id
+          }).then(driverSlot => {
+            return driverSlot;
+          }).catch(err => {
+            console.log(err)
+          });
+        }))
+      ).filter(driverSlot => driverSlot != null);
+
+      return res.status(200).json({
+        driverSlots: driverSlots,
+        message: "success",
+        StatusCode: 1
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
   };
 
   const deleteBlockedSlot = async (req, res) => {
@@ -90,7 +128,7 @@ const SlotController = () => {
   return {
     getDriverBlockedSlots,
     deleteAllDriverSlots,
-    saveBlockedSlot
+    addDriverToSlots
   };
 };
 
