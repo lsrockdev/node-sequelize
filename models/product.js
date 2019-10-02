@@ -12,8 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       categoryId: DataTypes.INTEGER,
       isKeg: DataTypes.BOOLEAN,
       depositFee: DataTypes.INTEGER,
-      price: DataTypes.INTEGER,
-      storeId: DataTypes.INTEGER
+      price: DataTypes.INTEGER
     },
     {}
   );
