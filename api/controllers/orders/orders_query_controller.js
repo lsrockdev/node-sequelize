@@ -167,6 +167,21 @@ const OrderQueryController = () => {
     }
   };
 
+  const getbyIdForCustomer = async (req, res) => {
+    const { id } = req.query;
+    try {
+      const order = await getOneBy({ id });
+      return res.status(200).json({
+        order,
+        message: "Successfully returned Orders",
+        StatusCode: 1
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
   const getbyIdForDriver = async (req, res) => {
     try {
       const { id } = req.query;
@@ -440,8 +455,9 @@ const OrderQueryController = () => {
     getCustomerOrders,
     getOrdersByStoreId,
     getbyIdForDriver,
-    getOneBy,
-    getbyIdForStore
+    getbyIdForCustomer,
+    getbyIdForStore,
+    getOneBy
   };
 };
 
