@@ -18,7 +18,6 @@ const SlotController = () => {
 
     try {
       const slots = await db.Slot.findAll({
-        where: startsOnDay(requestedDate),
         include: [{ model: db.DriverSlot, where: { driverId: driverId } }]
       });
 
