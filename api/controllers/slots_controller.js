@@ -6,6 +6,13 @@ const db = require("../services/db.service.js");
 
 const SlotController = () => {
   const getDriverBlockedSlots = async (req, res) => {
+    if (!req.query.driverId && !req.query.day) {
+      return res.status(200).json({
+        slots: [],
+        message: "success",
+        StatusCode: 1
+      });
+    }
     let driverId = parseInt(req.query.driverId);
     let requestedDate = dayjs(req.query.day);
 
@@ -54,32 +61,13 @@ const SlotController = () => {
     const finish = dayjs(req.body.finish).format(dtFormat);
 
     try {
-      const slots = await db.Slot.findAll({
-        where: {
-          start: {
-            [Op.and]: [
-              { [Op.gte]: start },
-              { [Op.lt]: finish }
-            ]
-          }
-        }
+      const slot = await db.Slot.create({ start, finish });
+      const driverSlot = await db.DriverSlot.create({
+        driverId: driverId,
+        slotId: slot.id
       });
-
-      const driverSlots = (
-        await Promise.all(slots.map(slot => {
-          return db.DriverSlot.create({
-            driverId: driverId,
-            slotId: slot.id
-          }).then(driverSlot => {
-            return driverSlot;
-          }).catch(err => {
-            console.log(err)
-          });
-        }))
-      ).filter(driverSlot => driverSlot != null);
-
       return res.status(200).json({
-        driverSlots: driverSlots,
+        driverSlot,
         message: "success",
         StatusCode: 1
       });
