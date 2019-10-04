@@ -17,6 +17,10 @@ router.get("/getOrderById", authPolicy, function(req, res) {
   return ordersQueryController().getbyIdForCustomer(req, res);
 });
 
+router.get("/getDeliverySlots", authPolicy, function(req, res) {
+  return ordersQueryController().getDeliverySlots(req, res);
+});
+
 router.post("/createPaymentIntent", authPolicy, function(req, res) {
   return ordersCreateController().createPaymentIntent(req, res);
 });

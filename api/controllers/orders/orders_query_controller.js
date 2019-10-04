@@ -1,4 +1,5 @@
 const Sequelize = require("sequelize");
+const dayjs = require("dayjs");
 const db = require("../../../api/services/db.service");
 const OrderStatus = require("../../constant/enum").OrderStatus;
 
@@ -449,6 +450,35 @@ const OrderQueryController = () => {
     }
   };
 
+  const getDeliverySlots = async (req, res) => {
+    const { day } = req.query;
+    try {
+      let requestedDate = dayjs(day);
+      // TODO: Need to add an JOIN to driverSlots here and mark whether
+      // at least one driver is scheduled to work that slot.
+      const slots = await db.Slot.findAll({
+        where: {
+          start: {
+            [Op.and]: [
+              { [Op.gte]: start },
+              { [Op.lt]: finish }
+            ]
+          },
+          // TODO: Should this be isSelectable true or isMaxedOut false?
+          isSelectable: true
+        }
+      });
+      return res.status(200).json({
+        slots,
+        message: "Successfully returned delivery slots",
+        StatusCode: 1
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
   return {
     getOrdersByStatus,
     getDriverOrderHistory,
@@ -457,7 +487,8 @@ const OrderQueryController = () => {
     getbyIdForDriver,
     getbyIdForCustomer,
     getbyIdForStore,
-    getOneBy
+    getOneBy,
+    getDeliverySlots
   };
 };
 
