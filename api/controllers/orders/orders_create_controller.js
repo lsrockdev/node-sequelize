@@ -110,6 +110,29 @@ const OrdersController = () => {
         const { subtotal, deliveryFeeTotal } = storeTotals[storeId];
         const store = await db.Store.findOne({ where: { id: storeId } });
 
+        // NOTE: This determines the total number of kegs in the order
+        // based on whether or not the ordered product is in one of
+        // two Categories: "Small Keg" or "Large Keg".
+        //
+        // There are potentially multiple ways to make this determination
+        // based on the current database schema however this was the
+        // current agreed upon initial implementation. Other solutions
+        // could involve checking any of the following assuming that
+        // these fields are being maintained:
+        //
+        // categories.name
+        // carts.hastap
+        // inventories.isKeg
+        // inventories.kegtypeId
+        // products.isKeg
+        //
+        let totalKegs = storeItems[storeId].reduce((kegs, cart) => {
+          let categoryName = cart.Inventory.Category.name;
+          let kegCategories = ["Small Keg", "Large Keg"];
+          let isKeg = kegCategories.includes(categoryName);
+          return (isKeg ? kegs + 1 : kegs)
+        }, 0);
+
         // Add up stripe fees: 2.9% + 30 cents:
         let stripeProcessingFees = Math.ceil(
           (subtotal - discount + deliveryFeeTotal) * 0.029
@@ -130,6 +153,8 @@ const OrdersController = () => {
           status: 1, // Paid
           discount: discount, // Can be calculated in the future with coupon codes
           instructions: body.instructions,
+          kegsDeliveredQty: totalKegs,
+          tapsDeliveredQty: totalKegs,
           stripeToken: body.stripeToken,
           stripeCardType: charge.payment_method_details.card.brand,
           stripePaymentAmount: charge.payment_method_details.card.amount,

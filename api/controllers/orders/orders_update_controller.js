@@ -95,6 +95,27 @@ const OrderUpdateController = () => {
     }
   };
 
+  const kegPickUpFromCustomer = async (req, res) => {
+    const body = req.body;
+    try {
+      const order = await updateOne(body.orderId, {
+        status: OrderStatus.Returned,
+        kegsReturnedQty: body.kegsReturnedQty,
+        tapsReturnedQtr: body.tapsReturnedQty,
+        returnedBy: body.driverId,
+        returnedAt: Date.now()
+      });
+      return res.status(200).json({
+        order: order,
+        message: "Update Successfull",
+        StatusCode: 1
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
   const pickUpOrder = async (req, res) => {
     const body = req.body;
     try {
@@ -152,6 +173,7 @@ const OrderUpdateController = () => {
     declaimOrder,
     deliveredOrder,
     deliverFailed,
+    kegPickUpFromCustomer,
     pickUpOrder,
     pickUpFailed
   };
