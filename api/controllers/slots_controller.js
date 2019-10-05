@@ -82,13 +82,12 @@ const SlotController = () => {
     const requestedDate = dayjs(day);
 
     try {
-      const slots = await db.DriverSlot.destroy({
-        where: { driverId: driverId },
-        include: [{ model: db.Slot, where: startsOnDay(requestedDate) }]
+      await db.Slot.destroy({
+        where: startsOnDay(requestedDate),
+        include: [{ model: db.DriverSlot, where: { driverId } }]
       });
 
       return res.status(200).json({
-        slots: slots,
         message: "success",
         StatusCode: 1
       });
