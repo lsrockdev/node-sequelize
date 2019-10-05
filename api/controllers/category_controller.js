@@ -20,19 +20,19 @@ const CategoryController = () => {
           },
           {
             model: Product,
-            limit: 20,
             order: [["createdAt", "DESC"]],
             include: [
               {
                 model: Inventory,
                 attributes: ["id", "price", "storeId"],
+                required: true,
                 where: {
-                  storeId: { [Sequelize.Op.in]: JSON.parse(req.query.storeIds) },
+                  storeId: { [Sequelize.Op.in]: JSON.parse(req.query.storeIds) }
                 }
               }
             ]
           }
-        ],
+        ]
       });
       return res.status(200).json({
         categories,
