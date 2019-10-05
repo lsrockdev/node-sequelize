@@ -34,6 +34,10 @@ router.post("/deliverFailed", authPolicy, function(req, res) {
   return orderUpdateController().deliverFailed(req, res);
 });
 
+router.post("/kegPickUpFromCustomer", authPolicy, function(req, res) {
+  return orderUpdateController().kegPickUpFromCustomer(req, res);
+});
+
 router.post("/pickUpOrder", authPolicy, function(req, res) {
   return orderUpdateController().pickUpOrder(req, res);
 });
