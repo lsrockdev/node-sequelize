@@ -7,15 +7,13 @@ const bcryptService = require("../../services/bcrypt.service");
 const StoreAuthController = () => {
   const register = async (req, res) => {
     const { body } = req;
-    const address = body.address;
-    delete body.address;
     try {
       const existingCode = await codeController().getByCode(body.uid);
       if (!existingCode) {
-        return res.status(404).json({ message: "Tapster Code doesn't Exist." });
+        return res.status(401).json({ message: "Tapster Code doesn't Exist." });
       }
       if (existingCode.Stores.length > 0) {
-        return res.status(404).json({ message: "Tapster Code already used." });
+        return res.status(401).json({ message: "Tapster Code already used." });
       }
 
       const existing = await models.StoreUser.findOne({
@@ -27,7 +25,7 @@ const StoreAuthController = () => {
         }
       });
       if (!!existing) {
-        return res.status(404).json({
+        return res.status(402).json({
           message: `${body.email.toLowerCase()} or ${
             body.phone
           } was already used in other accounts`
@@ -35,12 +33,14 @@ const StoreAuthController = () => {
       }
       const storeUser = await models.StoreUser.create({
         email: body.email.toLowerCase(),
-        password: bcryptService().password(body)
+        password: bcryptService().password(body),
+        phone: body.phone
       });
 
       delete body.email;
       delete body.password;
-      const store = await models.Store.create({
+      delete body.phone;
+      await models.Store.create({
         ...body,
         userId: storeUser.id
       });
@@ -55,6 +55,7 @@ const StoreAuthController = () => {
           }
         ]
       });
+
       const token = authService().issue({ id: createdUser.id });
       return res.status(200).json({
         message: "Successfully Registered",
