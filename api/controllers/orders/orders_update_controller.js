@@ -3,7 +3,30 @@ const db = require("../../../api/services/db.service");
 const OrderStatus = require("../../constant/enum").OrderStatus;
 
 const OrderUpdateController = () => {
-  // customer app
+  const schedulePickUp = async (req, res) => {
+    const body = req.body;
+    try {
+      const slot = await db.Slot.findOne({
+        where: { id: body.slotId }
+      });
+      if (slot.isMaxedOut || slot.isSelectable) {
+        return res.status(401).json({ message: "Unavailable Slot" });
+      }
+      const order = await updateOne(body.orderId, {
+        status: OrderStatus.ScheduledPickup,
+        deliveredBy: slot.start
+      });
+      return res.status(200).json({
+        order: order,
+        message: "Update Successfull",
+        StatusCode: 1
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
   const claimOrderforDeliver = async (req, res) => {
     const body = req.body;
     try {
@@ -175,6 +198,7 @@ const OrderUpdateController = () => {
     deliverFailed,
     kegPickUpFromCustomer,
     pickUpOrder,
+    schedulePickUp,
     pickUpFailed
   };
 };
