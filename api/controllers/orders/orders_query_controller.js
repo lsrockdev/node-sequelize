@@ -368,7 +368,6 @@ const OrderQueryController = () => {
       return await db.Order.findAll({
         where: condition,
         include: [
-          db.LineItem,
           db.Driver,
           db.Store,
           {
@@ -395,6 +394,27 @@ const OrderQueryController = () => {
               "firstName",
               "userName",
               "gender"
+            ]
+          },
+          {
+            model: db.LineItem,
+            include: [
+              {
+                model: db.Inventory,
+                attributes: ["id", "price", "productId"],
+                include: [
+                  {
+                    model: db.Product,
+                    attributes: ["id", "categoryId"],
+                    include: [
+                      {
+                        model: db.Category,
+                        attributes: ["id", "name"],
+                      }
+                    ]
+                  }
+                ]
+              }
             ]
           }
         ]
