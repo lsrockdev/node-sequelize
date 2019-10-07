@@ -420,7 +420,12 @@ const OrderQueryController = () => {
                     model: db.Size
                   },
                   {
-                    model: db.Product
+                    model: db.Product,
+                    include: [
+                      {
+                        model: db.Category,
+                      }
+                    ]
                   }
                 ]
               }
