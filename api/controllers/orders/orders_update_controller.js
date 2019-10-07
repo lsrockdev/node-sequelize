@@ -14,7 +14,7 @@ const OrderUpdateController = () => {
       }
       const order = await updateOne(body.orderId, {
         status: OrderStatus.ScheduledPickup,
-        deliveredBy: slot.start
+        pickupAt: slot.start
       });
       return res.status(200).json({
         order: order,

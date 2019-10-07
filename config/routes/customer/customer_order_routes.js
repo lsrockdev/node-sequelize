@@ -19,7 +19,7 @@ router.get("/getOrderById", authPolicy, function(req, res) {
 });
 
 router.post("/schedulePickUp", authPolicy, function(req, res) {
-  return ordersCreateController().schedulePickUp(req, res);
+  return ordersUpdateController().schedulePickUp(req, res);
 });
 
 router.post("/createPaymentIntent", authPolicy, function(req, res) {
