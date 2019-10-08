@@ -51,7 +51,7 @@ const SlotController = () => {
   };
 
   const getDriverBlockedSlots = async (req, res) => {
-    if (!req.query.driverId && !req.query.day) {
+    if (!req.query.driverId) {
       return res.status(200).json({
         slots: [],
         message: "success",
@@ -59,8 +59,6 @@ const SlotController = () => {
       });
     }
     let driverId = parseInt(req.query.driverId);
-    let requestedDate = dayjs(req.query.day);
-
     try {
       const slots = await db.Slot.findAll({
         include: [{ model: db.DriverSlot, where: { driverId: driverId } }]
