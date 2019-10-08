@@ -104,13 +104,19 @@ const SlotController = () => {
     const finish = dayjs(req.body.finish).format(dtFormat);
 
     try {
-      const slot = await db.Slot.create({ start, finish });
-      const driverSlot = await db.DriverSlot.create({
-        driverId: driverId,
-        slotId: slot.id
+      const slots = await db.Slot.findAll({
+        where: {
+          start: { [Op.gte]: start },
+          finish: { [Op.lte]: finish }
+        }
       });
+      const driverSlots = slots.map(slot => ({
+        driverId,
+        slotId: slot.dataValues.id
+      }));
+      await db.DriverSlot.bulkCreate(driverSlots);
       return res.status(200).json({
-        driverSlot,
+        driverSlots,
         message: "success",
         StatusCode: 1
       });

@@ -9,11 +9,10 @@ const OrderUpdateController = () => {
       const slot = await db.Slot.findOne({
         where: { id: body.slotId }
       });
-      if (slot.isMaxedOut || slot.isSelectable) {
+      if (slot.isMaxedOut || !slot.isSelectable) {
         return res.status(401).json({ message: "Unavailable Slot" });
       }
       const order = await updateOne(body.orderId, {
-        status: OrderStatus.ScheduledPickup,
         pickupAt: slot.start
       });
       return res.status(200).json({
