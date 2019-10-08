@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 const ordersCreateController = require("../../../api/controllers/orders/orders_create_controller");
 const ordersQueryController = require("../../../api/controllers/orders/orders_query_controller");
+const ordersUpdateController = require("../../../api/controllers/orders/orders_update_controller");
 
 const authPolicy = require("../../../api/policies/auth.policy");
 
@@ -19,6 +20,10 @@ router.get("/getOrderById", authPolicy, function(req, res) {
 
 router.get("/getDeliverySlots", authPolicy, function(req, res) {
   return ordersQueryController().getDeliverySlots(req, res);
+});
+
+router.post("/schedulePickUp", authPolicy, function(req, res) {
+  return ordersUpdateController().schedulePickUp(req, res);
 });
 
 router.post("/createPaymentIntent", authPolicy, function(req, res) {

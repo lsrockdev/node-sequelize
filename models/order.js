@@ -90,7 +90,8 @@ module.exports = (sequelize, DataTypes) => {
       stripeChargeId: DataTypes.STRING,
       deliveredBy: DataTypes.INTEGER,
       returnedBy: DataTypes.INTEGER,
-      slotId: DataTypes.INTEGER
+      slotId: DataTypes.INTEGER,
+      pickupAt: DataTypes.DATE
     },
     {}
   );

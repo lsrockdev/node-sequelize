@@ -1,18 +1,13 @@
-'use strict';
+"use strict";
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.addIndex(
-      'driverSlots',
-      ['driverId', 'slotId'],
-      { type: 'UNIQUE' }
-    );
+    return queryInterface.addIndex("DriverSlots", ["driverId", "slotId"], {
+      type: "UNIQUE"
+    });
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.removeIndex(
-      'driverSlots',
-      ['driverId', 'slotId']
-    );
+    return queryInterface.removeIndex("DriverSlots", ["driverId", "slotId"]);
   }
 };

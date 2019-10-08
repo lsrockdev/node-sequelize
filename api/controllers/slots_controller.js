@@ -5,6 +5,51 @@ const dayjs = require("dayjs");
 const db = require("../services/db.service.js");
 
 const SlotController = () => {
+  const getAllSlotsForDay = async (req, res) => {
+    let requestedDate = dayjs(req.query.day);
+    try {
+      const slots = await db.Slot.findAll({
+        where: startsOnDay(requestedDate),
+        attributes: [
+          "id",
+          "start",
+          "finish",
+          "isMaxedOut",
+          "isSelectable",
+          "maxDeliveriesAllowed"
+        ],
+        include: [
+          {
+            model: db.Driver,
+            attributes: ["id", "email", "phone", "firstName", "lastName"]
+          }
+        ]
+      });
+
+      const slotsMap = slots.map(slot => {
+        let driver =
+          slot.dataValues.Drivers.length > 0
+            ? slot.dataValues.Drivers[0]
+            : null;
+        delete slot.dataValues.Drivers;
+        delete driver.DriverSlot;
+        return {
+          ...slot.dataValues,
+          driver
+        };
+      });
+
+      return res.status(200).json({
+        slots: slotsMap,
+        message: "success",
+        StatusCode: 1
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
   const getDriverBlockedSlots = async (req, res) => {
     if (!req.query.driverId && !req.query.day) {
       return res.status(200).json({
@@ -37,13 +82,12 @@ const SlotController = () => {
     const requestedDate = dayjs(day);
 
     try {
-      const slots = await db.DriverSlot.destroy({
-        where: { driverId: driverId },
-        include: [{ model: db.Slot, where: startsOnDay(requestedDate) }]
+      await db.Slot.destroy({
+        where: startsOnDay(requestedDate),
+        include: [{ model: db.DriverSlot, where: { driverId } }]
       });
 
       return res.status(200).json({
-        slots: slots,
         message: "success",
         StatusCode: 1
       });
@@ -116,7 +160,8 @@ const SlotController = () => {
     getDriverBlockedSlots,
     deleteAllDriverSlots,
     deleteBlockedSlot,
-    addDriverToSlots
+    addDriverToSlots,
+    getAllSlotsForDay
   };
 };
 
