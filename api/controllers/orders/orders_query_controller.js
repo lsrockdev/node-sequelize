@@ -82,21 +82,6 @@ const OrderQueryController = () => {
               "gender"
             ]
           }
-        ],
-        attributes: [
-          "id",
-          "status",
-          "createdAt",
-          "deliveredAt",
-          "deliveryAddress",
-          "returnedAt",
-          "pickupAt",
-          "total",
-          "penalty",
-          "kegsDeliveredQty",
-          "tapsDeliveredQty",
-          "kegsReturnedQty",
-          "tapsReturnedQty"
         ]
       });
 
@@ -114,7 +99,7 @@ const OrderQueryController = () => {
       });
 
       return res.status(200).json({
-        orders: orders,
+        orders: driverOrders,
         message: "Successfully returned Orders",
         StatusCode: 1
       });
