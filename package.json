@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./api/app.js",
+    "start": "node ./api/app.js node ./tasks/createSlots.js",
     "dev": "cross-env NODE_ENV=development DEBUG=tapster:* nodemon start",
     "production": "cross-env NODE_ENV=production DEBUG=tapster:* nodemon start",
     "console": "node --experimental-repl-await ./api/console.js",
