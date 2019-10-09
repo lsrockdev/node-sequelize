@@ -28,6 +28,7 @@ const OrderUpdateController = () => {
 
   const claimOrderforDeliver = async (req, res) => {
     const driverId = req.token.id;
+    const body = req.body;
     try {
       const order = await updateOne(body.orderId, {
         status: OrderStatus.ClaimDeliver,
@@ -46,6 +47,7 @@ const OrderUpdateController = () => {
 
   const claimOrderforPickup = async (req, res) => {
     const driverId = req.token.id;
+    const body = req.body;
     try {
       const order = await updateOne(body.orderId, {
         status: OrderStatus.ClaimPickUp,
@@ -63,6 +65,7 @@ const OrderUpdateController = () => {
   };
 
   const declaimOrder = async (req, res) => {
+    const body = req.body;
     try {
       const order = await updateOne(body.orderId, {
         status: OrderStatus.Declaim
@@ -80,6 +83,7 @@ const OrderUpdateController = () => {
 
   const deliveredOrder = async (req, res) => {
     const driverId = req.token.id;
+    const body = req.body;
     try {
       const order = await updateOne(body.orderId, {
         status: OrderStatus.Delivered,
@@ -99,6 +103,7 @@ const OrderUpdateController = () => {
 
   const deliverFailed = async (req, res) => {
     const driverId = req.token.id;
+    const body = req.body;
     try {
       const order = await updateOne(body.orderId, {
         status: OrderStatus.DeliverFailed,
