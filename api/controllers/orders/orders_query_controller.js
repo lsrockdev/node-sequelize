@@ -19,17 +19,42 @@ const OrderQueryController = () => {
   };
   // driver app
   const getOrdersByStatus = async (req, res) => {
+    const driverId = req.token.id;
     try {
       const statusValues = JSON.parse(req.query.status);
+      const driverSlots = await db.DriverSlot.findAll({
+        where: { driverId }
+      });
+      const slotIds = driverSlots.map(
+        driverSlot => driverSlot.dataValues.slotId
+      );
+
       const condition = {
         status: {
           [Sequelize.Op.in]: statusValues
+          // slotId: { [Sequelize.Op.in]: slotIds }
         }
       };
+
       const orders = await db.Order.findAll({
         where: condition,
         include: [
-          db.LineItem,
+          {
+            model: db.LineItem,
+            include: [
+              {
+                model: db.Inventory,
+                include: [
+                  {
+                    model: db.Category,
+                    attributes: ["name"]
+                  }
+                ],
+                attributes: ["id"]
+              }
+            ],
+            attributes: ["id"]
+          },
           db.Store,
           {
             model: db.Customer,
@@ -60,8 +85,20 @@ const OrderQueryController = () => {
         ]
       });
 
+      const driverOrders = orders.map(order => {
+        const kegItems = order.dataValues.LineItems.filter(lineItem => {
+          const kegCategories = ["Small Keg", "Large Keg"];
+          return kegCategories.includes(lineItem.Inventory.Category.name);
+        });
+        const isKeg = kegItems.length > 0;
+        return {
+          ...order.dataValues,
+          isKeg
+        };
+      });
+
       return res.status(200).json({
-        orders,
+        driverOrders,
         message: "Successfully returned Orders",
         StatusCode: 1
       });
