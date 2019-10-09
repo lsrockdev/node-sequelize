@@ -33,7 +33,7 @@ const OrdersController = () => {
                 include: [
                   {
                     model: db.Category,
-                    attributes: ["id", "deliveryFee"],
+                    attributes: ["id", "deliveryFee"]
                   }
                 ]
               },
@@ -130,7 +130,7 @@ const OrdersController = () => {
           let categoryName = cart.Inventory.Category.name;
           let kegCategories = ["Small Keg", "Large Keg"];
           let isKeg = kegCategories.includes(categoryName);
-          return (isKeg ? kegs + 1 : kegs)
+          return isKeg ? kegs + 1 : kegs;
         }, 0);
 
         // Add up stripe fees: 2.9% + 30 cents:
@@ -165,7 +165,8 @@ const OrdersController = () => {
           paymentCompleted: true,
           deliveryAddress: await db.UserLocation.findOne({
             where: { customerId: customerId, id: body.addressId }
-          })
+          }),
+          slotId: body.slotId
           // TODO: If keg, Calculate returnedAt data based on noOfReturnDays
           // TODO: If needed in future, calculate tax and add in:
           //    total: subtotal - discount + deliveryFeeTotal + order.tax + body.tip,
