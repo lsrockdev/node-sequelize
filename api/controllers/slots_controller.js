@@ -104,6 +104,17 @@ const SlotController = () => {
         slotId: slot.dataValues.id
       }));
       await db.DriverSlot.bulkCreate(driverSlots);
+      await db.Slot.update(
+        {
+          isSelectable: true
+        },
+        {
+          where: {
+            start: { [Op.gte]: start },
+            finish: { [Op.lte]: finish }
+          }
+        }
+      );
       return res.status(200).json({
         driverSlots,
         message: "success",
