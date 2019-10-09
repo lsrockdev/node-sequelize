@@ -17,15 +17,22 @@ const OrderQueryController = () => {
       return res.status(500).json({ message: "Internal server error" });
     }
   };
+
   // driver app
-  const getOrdersByStatus = async (req, res) => {
+  const getDriverOrders = async (req, res) => {
+    const driverId = req.token.id;
     try {
-      const statusValues = JSON.parse(req.query.status);
+      const driverSlots = await db.DriverSlot.findAll({
+        where: { driverId }
+      });
+      const slotIds = driverSlots.map(
+        driverSlot => driverSlot.dataValues.slotId
+      );
       const condition = {
-        status: {
-          [Sequelize.Op.in]: statusValues
-        }
+        status: OrderStatus.Paid,
+        slotId: { [Sequelize.Op.in]: slotIds }
       };
+
       const orders = await db.Order.findAll({
         where: condition,
         include: [
@@ -140,7 +147,6 @@ const OrderQueryController = () => {
           [Sequelize.Op.in]: [
             OrderStatus.ClaimDeliver,
             OrderStatus.ClaimPickUp,
-            OrderStatus.Declain,
             OrderStatus.Delivered,
             OrderStatus.DeliverFailed,
             OrderStatus.Pickup,
@@ -409,7 +415,7 @@ const OrderQueryController = () => {
                     include: [
                       {
                         model: db.Category,
-                        attributes: ["id", "name"],
+                        attributes: ["id", "name"]
                       }
                     ]
                   }
@@ -443,7 +449,7 @@ const OrderQueryController = () => {
                     model: db.Product,
                     include: [
                       {
-                        model: db.Category,
+                        model: db.Category
                       }
                     ]
                   }
@@ -475,7 +481,7 @@ const OrderQueryController = () => {
   };
 
   return {
-    getOrdersByStatus,
+    getDriverOrders,
     getDriverOrderHistory,
     getCustomerOrders,
     getOrdersByStoreId,

@@ -21,9 +21,11 @@ module.exports = {
     //   onUpdate: "CASCADE",
     //   onDelete: "SET NULL"
     // });
+    return true;
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.removeIndex("StoreCodes", ["code"]);
+    // await queryInterface.removeIndex("StoreCodes", ["code"]);
+    return true;
   }
 };

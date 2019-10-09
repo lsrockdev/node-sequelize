@@ -26,21 +26,8 @@ const SlotController = () => {
         ]
       });
 
-      const slotsMap = slots.map(slot => {
-        let driver =
-          slot.dataValues.Drivers.length > 0
-            ? slot.dataValues.Drivers[0]
-            : null;
-        delete slot.dataValues.Drivers;
-        delete driver.DriverSlot;
-        return {
-          ...slot.dataValues,
-          driver
-        };
-      });
-
       return res.status(200).json({
-        slots: slotsMap,
+        slots: slots,
         message: "success",
         StatusCode: 1
       });
@@ -51,7 +38,7 @@ const SlotController = () => {
   };
 
   const getDriverBlockedSlots = async (req, res) => {
-    if (!req.query.driverId && !req.query.day) {
+    if (!req.query.driverId) {
       return res.status(200).json({
         slots: [],
         message: "success",
@@ -59,8 +46,6 @@ const SlotController = () => {
       });
     }
     let driverId = parseInt(req.query.driverId);
-    let requestedDate = dayjs(req.query.day);
-
     try {
       const slots = await db.Slot.findAll({
         include: [{ model: db.DriverSlot, where: { driverId: driverId } }]
@@ -82,11 +67,16 @@ const SlotController = () => {
     const requestedDate = dayjs(day);
 
     try {
-      await db.Slot.destroy({
-        where: startsOnDay(requestedDate),
-        include: [{ model: db.DriverSlot, where: { driverId } }]
+      const slots = await db.Slot.findAll({
+        where: startsOnDay(requestedDate)
       });
-
+      const slotIds = slots.map(slot => slot.dataValues.id);
+      await db.DriverSlot.destroy({
+        where: {
+          driverId,
+          slotId: slotIds
+        }
+      });
       return res.status(200).json({
         message: "success",
         StatusCode: 1
@@ -102,15 +92,20 @@ const SlotController = () => {
     const driverId = req.body.driverId;
     const start = dayjs(req.body.start).format(dtFormat);
     const finish = dayjs(req.body.finish).format(dtFormat);
-
     try {
-      const slot = await db.Slot.create({ start, finish });
-      const driverSlot = await db.DriverSlot.create({
-        driverId: driverId,
-        slotId: slot.id
+      const slots = await db.Slot.findAll({
+        where: {
+          start: { [Op.gte]: start },
+          finish: { [Op.lte]: finish }
+        }
       });
+      const driverSlots = slots.map(slot => ({
+        driverId,
+        slotId: slot.dataValues.id
+      }));
+      await db.DriverSlot.bulkCreate(driverSlots);
       return res.status(200).json({
-        driverSlot,
+        driverSlots,
         message: "success",
         StatusCode: 1
       });
