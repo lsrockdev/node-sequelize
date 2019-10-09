@@ -27,11 +27,11 @@ const OrderUpdateController = () => {
   };
 
   const claimOrderforDeliver = async (req, res) => {
-    const body = req.body;
+    const driverId = req.token.id;
     try {
       const order = await updateOne(body.orderId, {
         status: OrderStatus.ClaimDeliver,
-        deliveredBy: body.driverId
+        deliveredBy: driverId
       });
       return res.status(200).json({
         order: order,
@@ -45,11 +45,11 @@ const OrderUpdateController = () => {
   };
 
   const claimOrderforPickup = async (req, res) => {
-    const body = req.body;
+    const driverId = req.token.id;
     try {
       const order = await updateOne(body.orderId, {
         status: OrderStatus.ClaimPickUp,
-        returnedBy: body.driverId
+        returnedBy: driverId
       });
       return res.status(200).json({
         order: order,
@@ -63,7 +63,6 @@ const OrderUpdateController = () => {
   };
 
   const declaimOrder = async (req, res) => {
-    const body = req.body;
     try {
       const order = await updateOne(body.orderId, {
         status: OrderStatus.Declaim
@@ -80,11 +79,11 @@ const OrderUpdateController = () => {
   };
 
   const deliveredOrder = async (req, res) => {
-    const body = req.body;
+    const driverId = req.token.id;
     try {
       const order = await updateOne(body.orderId, {
         status: OrderStatus.Delivered,
-        deliveredBy: body.driverId,
+        deliveredBy: driverId,
         deliveredAt: Date.now()
       });
       return res.status(200).json({
@@ -99,11 +98,11 @@ const OrderUpdateController = () => {
   };
 
   const deliverFailed = async (req, res) => {
-    const body = req.body;
+    const driverId = req.token.id;
     try {
       const order = await updateOne(body.orderId, {
         status: OrderStatus.DeliverFailed,
-        deliveredBy: body.driverId,
+        deliveredBy: driverId,
         deliveredAt: Date.now()
       });
       return res.status(200).json({

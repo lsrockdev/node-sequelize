@@ -26,21 +26,8 @@ const SlotController = () => {
         ]
       });
 
-      const slotsMap = slots.map(slot => {
-        let driver =
-          slot.dataValues.Drivers.length > 0
-            ? slot.dataValues.Drivers[0]
-            : null;
-        delete slot.dataValues.Drivers;
-        delete driver.DriverSlot;
-        return {
-          ...slot.dataValues,
-          driver
-        };
-      });
-
       return res.status(200).json({
-        slots: slotsMap,
+        slots: slots,
         message: "success",
         StatusCode: 1
       });
