@@ -31,8 +31,10 @@ const OrderQueryController = () => {
 
       const condition = {
         status: {
-          [Sequelize.Op.in]: statusValues,
-          slotId: { [Sequelize.Op.in]: slotIds }
+          [Sequelize.Op.in]: statusValues
+        },
+        slotId: {
+          [Sequelize.Op.in]: slotIds
         }
       };
 
