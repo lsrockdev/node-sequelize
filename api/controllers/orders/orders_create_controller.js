@@ -1,6 +1,7 @@
 // const getCurrentUser = require("../helpers/current_user_helper");
 const db = require("../../../api/services/db.service");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const OrderStatus = require("../../constant/enum").OrderStatus;
 
 const OrdersController = () => {
   const placeOrder = async (req, res) => {
@@ -150,7 +151,7 @@ const OrdersController = () => {
             : subtotal - discount + deliveryFeeTotal + tip,
           totalPaidToStore: subtotal,
           tip: driverTipped ? 0 : tip,
-          status: 1, // Paid
+          status: OrderStatus.Paid, // Paid
           discount: discount, // Can be calculated in the future with coupon codes
           instructions: body.instructions,
           kegsDeliveredQty: totalKegs,
