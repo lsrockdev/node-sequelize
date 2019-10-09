@@ -98,7 +98,7 @@ const OrderQueryController = () => {
       });
 
       return res.status(200).json({
-        driverOrders,
+        orders: driverOrders,
         message: "Successfully returned Orders",
         StatusCode: 1
       });
