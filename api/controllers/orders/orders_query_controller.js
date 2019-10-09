@@ -82,6 +82,21 @@ const OrderQueryController = () => {
               "gender"
             ]
           }
+        ],
+        attributes: [
+          "id",
+          "status",
+          "createdAt",
+          "deliveredAt",
+          "deliveryAddress",
+          "returnedAt",
+          "pickupAt",
+          "total",
+          "penalty",
+          "kegsDeliveredQty",
+          "tapsDeliveredQty",
+          "kegsReturnedQty",
+          "tapsReturnedQty"
         ]
       });
 
@@ -91,14 +106,15 @@ const OrderQueryController = () => {
           return kegCategories.includes(lineItem.Inventory.Category.name);
         });
         const isKeg = kegItems.length > 0;
-        return {
+        order.dataValues = {
           ...order.dataValues,
           isKeg
         };
+        return order;
       });
 
       return res.status(200).json({
-        orders: driverOrders,
+        orders: orders,
         message: "Successfully returned Orders",
         StatusCode: 1
       });
