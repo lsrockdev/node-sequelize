@@ -9,6 +9,7 @@ const OrdersController = () => {
     const discount = body.discount || 0;
     const tip = parseInt(body.tip) || 0;
     const customerId = req.token.id;
+    const slotId = body.slotId;
     let orderIds = [];
     // const currentUser = await getCurrentUser("db.Customer", customerId);
 
@@ -167,7 +168,7 @@ const OrdersController = () => {
           deliveryAddress: await db.UserLocation.findOne({
             where: { customerId: customerId, id: body.addressId }
           }),
-          slotId: body.slotId
+          slotId: slotId
           // TODO: If keg, Calculate returnedAt data based on noOfReturnDays
           // TODO: If needed in future, calculate tax and add in:
           //    total: subtotal - discount + deliveryFeeTotal + order.tax + body.tip,
@@ -182,6 +183,13 @@ const OrdersController = () => {
 
         // Loop through lineitems and create them for order:
         await createLineItemsForOrder(order.id, storeItems[storeId]);
+
+        // Disallow more deliveries for the Slot if maxDeliveriesAllowed has been reached
+        let deliveriesCount = await db.Order.Count({ where: { slotId: slotId } });
+        let slot = await db.Slot.findOne({ where: { id: slotId } });
+        if (deliveriesCount >= slot.maxDeliveriesAllowed) {
+          await db.Slot.update({ isMaxedOut: true }, { where: { id: slotId } });
+        }
 
         // STRIPE TRANSFER TO STORE
         // Create a Transfer to the store's connected account:
