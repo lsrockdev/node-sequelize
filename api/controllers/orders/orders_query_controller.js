@@ -121,7 +121,7 @@ const OrderQueryController = () => {
       const status = req.query.status;
 
       const condition =
-        status > 0
+        status < 8
           ? {
               storeId,
               status,
