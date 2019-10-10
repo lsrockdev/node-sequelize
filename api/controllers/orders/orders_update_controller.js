@@ -14,7 +14,13 @@ const OrderUpdateController = () => {
       if (slot.isMaxedOut || !slot.isSelectable) {
         return res.status(401).json({ message: "Unavailable Slot" });
       }
-      const order = await updateOne(body.orderId, {
+      let order = await db.Order.findOne({
+        where: { id: body.orderId }
+      });
+      if (order.customerId !== req.token.id) {
+        return res.status(401).json({ message: 'Unauthorized access.' });
+      }
+      order = await updateOne(body.orderId, {
         pickupAt: slot.start
       });
       // Disallow more deliveries for the Slot if maxDeliveriesAllowed has been reached
@@ -43,7 +49,13 @@ const OrderUpdateController = () => {
       if (slot.isMaxedOut || !slot.isSelectable) {
         return res.status(401).json({ message: "Unavailable Slot" });
       }
-      const order = await updateOne(body.orderId, {
+      let order = await db.Order.findOne({
+        where: { id: body.orderId }
+      });
+      if (order.customerId !== req.token.id) {
+        return res.status(401).json({ message: 'Unauthorized access.' });
+      }
+      order = await updateOne(body.orderId, {
         slotId: slotId,
         status: OrderStatus.Paid, // Reset status back to the first one
       });
