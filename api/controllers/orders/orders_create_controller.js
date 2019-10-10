@@ -6,11 +6,18 @@ const OrderStatus = require("../../constant/enum").OrderStatus;
 const OrdersController = () => {
   const placeOrder = async (req, res) => {
     const { body } = req;
-    const discount = body.discount || 0;
+    const couponCode = body.couponCode;
+    let discount = 0;
     const tip = parseInt(body.tip) || 0;
     const customerId = req.token.id;
     const slotId = body.slotId;
     let orderIds = [];
+
+    // Create an orderCount variable to enforce coupon use for first-time orders only:
+    let orderCount = await db.Order.count({
+      where: { customerId }
+    });
+
     // const currentUser = await getCurrentUser("db.Customer", customerId);
 
     try {
@@ -73,6 +80,7 @@ const OrdersController = () => {
           throw new Error("Inventory items must have a price");
         const itemTotal = cart.Inventory.price * cart.quantity;
 
+        console.log("==============", cart.Inventory);
         const deliveryFeeTotal =
           parseInt(cart.Inventory.Product.Category.deliveryFee) *
           parseInt(cart.quantity);
@@ -135,6 +143,19 @@ const OrdersController = () => {
           return isKeg ? kegs + 1 : kegs;
         }, 0);
 
+        // Apply coupon code TAP5 if used:
+        // only applies if new customer - first order
+        if (couponCode.toLowerCase() === "tap5" && orderCount < 1) {
+          // only discount from delivery fees. up to $5
+          if (deliveryFeeTotal < 500) {
+            discount = parseInt(deliveryFeeTotal);
+          } else {
+            discount = 500;
+          }
+          // increment orderCount so discount only applies once in orders loop:
+          orderCount = orderCount + 1;
+        }
+
         // Add up stripe fees: 2.9% + 30 cents:
         let stripeProcessingFees = Math.ceil(
           (subtotal - discount + deliveryFeeTotal) * 0.029
@@ -153,7 +174,7 @@ const OrdersController = () => {
           totalPaidToStore: subtotal,
           tip: driverTipped ? 0 : tip,
           status: OrderStatus.Paid, // Paid
-          discount: discount, // Can be calculated in the future with coupon codes
+          discount: discount,
           instructions: body.instructions,
           kegsDeliveredQty: totalKegs,
           tapsDeliveredQty: totalKegs,
@@ -185,7 +206,7 @@ const OrdersController = () => {
         await createLineItemsForOrder(order.id, storeItems[storeId]);
 
         // Disallow more deliveries for the Slot if maxDeliveriesAllowed has been reached
-        let deliveriesCount = await db.Order.Count({
+        let deliveriesCount = await db.Order.count({
           where: { slotId: slotId }
         });
         let slot = await db.Slot.findOne({ where: { id: slotId } });
