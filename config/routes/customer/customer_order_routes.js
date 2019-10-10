@@ -26,6 +26,10 @@ router.post("/schedulePickUp", authPolicy, function(req, res) {
   return ordersUpdateController().schedulePickUp(req, res);
 });
 
+router.post("/addTipToOrder", authPolicy, function(req, res) {
+  return ordersUpdateController().addTipToOrder(req, res);
+});
+
 router.post("/createPaymentIntent", authPolicy, function(req, res) {
   return ordersCreateController().createPaymentIntent(req, res);
 });

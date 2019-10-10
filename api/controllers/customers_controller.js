@@ -146,7 +146,7 @@ const CustomerController = () => {
       });
     }
     await Customer.update(
-      { password: bcryptService().password(password) },
+      { password: bcryptService().password(req.body) },
       { where: { otpCode } }
     );
     return res.status(200).json({

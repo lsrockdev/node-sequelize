@@ -20,17 +20,44 @@ const OrderQueryController = () => {
   };
   // driver app
   const getOrdersByStatus = async (req, res) => {
+    const driverId = req.token.id;
     try {
       const statusValues = JSON.parse(req.query.status);
+      const driverSlots = await db.DriverSlot.findAll({
+        where: { driverId }
+      });
+      const slotIds = driverSlots.map(
+        driverSlot => driverSlot.dataValues.slotId
+      );
+
       const condition = {
         status: {
           [Sequelize.Op.in]: statusValues
+        },
+        slotId: {
+          [Sequelize.Op.in]: slotIds
         }
       };
+
       const orders = await db.Order.findAll({
         where: condition,
         include: [
-          db.LineItem,
+          {
+            model: db.LineItem,
+            include: [
+              {
+                model: db.Inventory,
+                include: [
+                  {
+                    model: db.Category,
+                    attributes: ["name"]
+                  }
+                ],
+                attributes: ["id"]
+              }
+            ],
+            attributes: ["id"]
+          },
           db.Store,
           {
             model: db.Customer,
@@ -61,8 +88,21 @@ const OrderQueryController = () => {
         ]
       });
 
+      const driverOrders = orders.map(order => {
+        const kegItems = order.dataValues.LineItems.filter(lineItem => {
+          const kegCategories = ["Small Keg", "Large Keg"];
+          return kegCategories.includes(lineItem.Inventory.Category.name);
+        });
+        const isKeg = kegItems.length > 0;
+        order.dataValues = {
+          ...order.dataValues,
+          isKeg
+        };
+        return order;
+      });
+
       return res.status(200).json({
-        orders,
+        orders: driverOrders,
         message: "Successfully returned Orders",
         StatusCode: 1
       });
@@ -82,7 +122,7 @@ const OrderQueryController = () => {
       const status = req.query.status;
 
       const condition =
-        status > 0
+        status < 8
           ? {
               storeId,
               status,
@@ -410,7 +450,7 @@ const OrderQueryController = () => {
                     include: [
                       {
                         model: db.Category,
-                        attributes: ["id", "name"],
+                        attributes: ["id", "name"]
                       }
                     ]
                   }
@@ -444,7 +484,7 @@ const OrderQueryController = () => {
                     model: db.Product,
                     include: [
                       {
-                        model: db.Category,
+                        model: db.Category
                       }
                     ]
                   }

@@ -1,21 +1,15 @@
 const OrderStatus = {
-  //Use for Customer
-  AwaitingPayment: 0,
-  Paid: 1,
+  Paid: 0,
 
-  //Use for Store
-  Keg_Ready: 2,
-  ScheduledPickup: 3,
+  ClaimDeliver: 1,
+  ClaimPickUp: 2,
 
-  // Use for Driver app
-  ClaimDeliver: 4,
-  ClaimPickUp: 5,
-  Declaim: 6,
-  Delivered: 7,
-  DeliverFailed: 8,
-  Pickup: 9,
-  PickupFailed: 10,
-  Returned: 11
+  Delivered: 3,
+  Pickup: 4,
+
+  DeliverFailed: 5,
+  PickupFailed: 6,
+  Returned: 7
 };
 
 module.exports = {
