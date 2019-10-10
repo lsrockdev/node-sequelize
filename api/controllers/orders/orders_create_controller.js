@@ -145,7 +145,11 @@ const OrdersController = () => {
 
         // Apply coupon code TAP5 if used:
         // only applies if new customer - first order
-        if (couponCode.toLowerCase() === "tap5" && orderCount < 1) {
+        if (
+          couponCode &&
+          couponCode.toLowerCase() === "tap5" &&
+          orderCount < 1
+        ) {
           // only discount from delivery fees. up to $5
           if (deliveryFeeTotal < 500) {
             discount = parseInt(deliveryFeeTotal);
