@@ -185,7 +185,9 @@ const OrdersController = () => {
         await createLineItemsForOrder(order.id, storeItems[storeId]);
 
         // Disallow more deliveries for the Slot if maxDeliveriesAllowed has been reached
-        let deliveriesCount = await db.Order.Count({ where: { slotId: slotId } });
+        let deliveriesCount = await db.Order.Count({
+          where: { slotId: slotId }
+        });
         let slot = await db.Slot.findOne({ where: { id: slotId } });
         if (deliveriesCount >= slot.maxDeliveriesAllowed) {
           await db.Slot.update({ isMaxedOut: true }, { where: { id: slotId } });
@@ -272,6 +274,11 @@ const OrdersController = () => {
       // add up delivery fees
       deliveryFeeTotal = deliveryFeeTotal + response.deliveryfee;
       subtotal = subtotal + response.extendedPrice;
+
+      //count down inventory quantity
+      await db.Inventory.updateOne(item.Inventory.id, {
+        quantity: item.Inventory.quantity - item.quantity
+      });
     }
     return { subtotal, deliveryFeeTotal };
   };
