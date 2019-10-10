@@ -276,9 +276,11 @@ const OrdersController = () => {
       subtotal = subtotal + response.extendedPrice;
 
       //count down inventory quantity
-      await db.Inventory.updateOne(item.Inventory.id, {
-        quantity: item.Inventory.quantity - item.quantity
+      const downQuantity = item.Inventory.quantity - item.quantity;
+      const inventory = await db.Inventory.findOne({
+        where: { id: item.Inventory.id }
       });
+      await inventory.update({ quantity: downQuantity });
     }
     return { subtotal, deliveryFeeTotal };
   };
