@@ -504,7 +504,10 @@ const OrderQueryController = () => {
           },
           {
             model: db.Driver
-          }
+          },
+          {
+            model: db.Slot,
+          },
         ]
       });
       return order;

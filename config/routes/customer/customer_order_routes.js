@@ -22,6 +22,10 @@ router.post("/schedulePickUp", authPolicy, function(req, res) {
   return ordersUpdateController().schedulePickUp(req, res);
 });
 
+router.post("/rescheduleDelivery", authPolicy, function(req, res) {
+  return ordersUpdateController().rescheduleDelivery(req, res);
+});
+
 router.post("/addTipToOrder", authPolicy, function(req, res) {
   return ordersUpdateController().addTipToOrder(req, res);
 });

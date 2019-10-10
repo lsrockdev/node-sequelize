@@ -33,6 +33,36 @@ const OrderUpdateController = () => {
     }
   };
 
+  const rescheduleDelivery = async (req, res) => {
+    const body = req.body;
+    const slotId = body.slotId;
+    try {
+      const slot = await db.Slot.findOne({
+        where: { id: slotId }
+      });
+      if (slot.isMaxedOut || !slot.isSelectable) {
+        return res.status(401).json({ message: "Unavailable Slot" });
+      }
+      const order = await updateOne(body.orderId, {
+        slotId: slotId,
+        status: OrderStatus.Paid, // Reset status back to the first one
+      });
+      // Disallow more deliveries for the Slot if maxDeliveriesAllowed has been reached
+      let deliveriesCount = await db.Order.Count({ where: { slotId: slotId } });
+      if (deliveriesCount >= slot.maxDeliveriesAllowed) {
+        await db.Slot.update({ isMaxedOut: true }, { where: { id: slotId } });
+      }
+      return res.status(200).json({
+        order: order,
+        message: "Update Successfull",
+        StatusCode: 1
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
   const claimOrderforDeliver = async (req, res) => {
     const driverId = req.token.id;
     const body = req.body;
@@ -259,6 +289,7 @@ const OrderUpdateController = () => {
     kegPickUpFromCustomer,
     pickUpOrder,
     schedulePickUp,
+    rescheduleDelivery,
     pickUpFailed,
     addTipToOrder
   };
