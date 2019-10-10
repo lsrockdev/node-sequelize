@@ -17,14 +17,11 @@ const OrderUpdateController = () => {
       const order = await updateOne(body.orderId, {
         pickupAt: slot.start
       });
-
       // Disallow more deliveries for the Slot if maxDeliveriesAllowed has been reached
       let deliveriesCount = await db.Order.Count({ where: { slotId: slotId } });
-      let slot = await db.Slot.findOne({ where: { id: slotId } });
       if (deliveriesCount >= slot.maxDeliveriesAllowed) {
         await db.Slot.update({ isMaxedOut: true }, { where: { id: slotId } });
       }
-
       return res.status(200).json({
         order: order,
         message: "Update Successfull",

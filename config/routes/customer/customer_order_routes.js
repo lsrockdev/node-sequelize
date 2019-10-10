@@ -18,10 +18,6 @@ router.get("/getOrderById", authPolicy, function(req, res) {
   return ordersQueryController().getbyIdForCustomer(req, res);
 });
 
-router.get("/getDeliverySlots", authPolicy, function(req, res) {
-  return ordersQueryController().getDeliverySlots(req, res);
-});
-
 router.post("/schedulePickUp", authPolicy, function(req, res) {
   return ordersUpdateController().schedulePickUp(req, res);
 });
