@@ -72,27 +72,30 @@ const OrdersController = () => {
         }
         storeItems[storeId].push(cart);
 
-        // Add price and delivery fees to total
+        // Add price and delivery fees to total:
+
+        // If store isnt' in the totals object yet, add it:
         if (!storeTotals.hasOwnProperty(storeId)) {
           storeTotals[storeId] = { subtotal: 0, deliveryFeeTotal: 0 };
         }
         if (!cart.Inventory.price)
           throw new Error("Inventory items must have a price");
+
+        // Calculate extended price for cart item based on qty:
         const itemTotal = cart.Inventory.price * cart.quantity;
 
-        console.log("==============", cart.Inventory);
-        const deliveryFeeTotal =
+        // Calculate delivery fees for this cart item based on qty:
+        let deliveryFeeTotal =
           parseInt(cart.Inventory.Product.Category.deliveryFee) *
           parseInt(cart.quantity);
-        storeTotals[storeId]["subtotal"] =
-          storeTotals[storeId]["subtotal"] + itemTotal;
-        storeTotals[storeId]["deliveryFeeTotal"] =
-          storeTotals[storeId]["deliveryFeeTotal"] +
-          parseInt(cart.Inventory.Product.Category.deliveryFee);
 
-        // update storeTotals[all]
-        storeTotals.all.subtotal += Number(itemTotal);
-        storeTotals.all.deliveryFeeTotal += Number(deliveryFeeTotal);
+        // Update storeTotals object with this cart item total and delivery fees:
+        storeTotals[storeId]["subtotal"] += itemTotal;
+        storeTotals[storeId]["deliveryFeeTotal"] += deliveryFeeTotal;
+
+        // Update storeTotals[all] with this cart itemTotal and deliveryFees:
+        storeTotals.all.subtotal += parseInt(itemTotal);
+        storeTotals.all.deliveryFeeTotal += parseInt(deliveryFeeTotal);
       }
 
       // STRIPE CHARGE:
