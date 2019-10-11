@@ -126,15 +126,15 @@ const OrderQueryController = () => {
               storeId,
               status,
               createdAt: {
-                [Sequelize.Op.gte]: new Date(beginDate),
-                [Sequelize.Op.lte]: new Date(endDate)
+                [Sequelize.Op.gte]: new Date(+beginDate),
+                [Sequelize.Op.lte]: new Date(+endDate)
               }
             }
           : {
               storeId,
               createdAt: {
-                [Sequelize.Op.gte]: new Date(beginDate),
-                [Sequelize.Op.lte]: new Date(endDate)
+                [Sequelize.Op.gte]: new Date(+beginDate),
+                [Sequelize.Op.lte]: new Date(+endDate)
               }
             };
 
@@ -506,8 +506,8 @@ const OrderQueryController = () => {
             model: db.Driver
           },
           {
-            model: db.Slot,
-          },
+            model: db.Slot
+          }
         ]
       });
       return order;
