@@ -12,6 +12,7 @@ const OrdersController = () => {
     const customerId = req.token.id;
     const slotId = body.slotId;
     let orderIds = [];
+    let couponApplied = false; // Ensures coupon only gets applied one time in multi-store order
 
     // Create an orderCount variable to enforce coupon use for first-time orders only:
     let orderCount = await db.Order.count({
@@ -151,16 +152,21 @@ const OrdersController = () => {
         if (
           couponCode &&
           couponCode.toLowerCase() === "tap5" &&
+          !couponApplied &&
           orderCount < 1
         ) {
+          console.log("Applying coupon TAP5 to order");
           // only discount from delivery fees. up to $5
           if (deliveryFeeTotal < 500) {
             discount = parseInt(deliveryFeeTotal);
           } else {
             discount = 500;
           }
-          // increment orderCount so discount only applies once in orders loop:
-          orderCount = orderCount + 1;
+          // flip couponApplied to true so discount only applies once in orders loop:
+          couponApplied = true;
+        } else {
+          // Set discount back to zero if coupon already applied to an order:
+          discount = 0;
         }
 
         // Add up stripe fees: 2.9% + 30 cents:
