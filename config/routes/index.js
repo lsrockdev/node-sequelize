@@ -18,6 +18,7 @@ const adminStoreCodeRoutes = require("./dashboard/admin_storecode_routes");
 const adminSettingRoutes = require("./dashboard/admin_setting_routes");
 const adminDriverRoutes = require("./dashboard/admin_driver_routes");
 const adminSlotRoutes = require("./dashboard/admin_slot_routes");
+const adminTempRoutes = require("./dashboard/admin_temp_routes");
 
 const driverAuthRoutes = require("./driver/driver_auth_routes");
 const driverOrderRoutes = require("./driver/driver_order_routes");
@@ -44,6 +45,7 @@ router.use("/admin", adminStoreCodeRoutes);
 router.use("/admin", adminSettingRoutes);
 router.use("/admin", adminDriverRoutes);
 router.use("/admin", adminSlotRoutes);
+router.use("/admin", adminTempRoutes);
 
 router.use("/driver", driverAuthRoutes);
 router.use("/driver", driverOrderRoutes);

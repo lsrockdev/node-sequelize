@@ -110,9 +110,53 @@ const StoreAuthController = () => {
       .json({ message: "Bad Request: Email or password is wrong" });
   };
 
+  const migrate1 = async (req, res) => {
+    try {
+      const storeUsers = await models.StoreUser.findAll();
+      for (var i = 0; i < storeUsers.length; i++) {
+        const storeUser = storeUsers[i];
+        const encryptPw = bcryptService().password({
+          password: storeUser.dataValues.password
+        });
+        await storeUser.update({ password: encryptPw });
+        console.log(`success- ${storeUser.dataValues.password}`, i);
+      }
+      return res.status(200).json({ message: "success" });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
+  const migrate2 = async (req, res) => {
+    try {
+      const stores = await models.Store.findAll();
+      for (var i = 0; i < stores.length; i++) {
+        const store = stores[i];
+        const address = await models.StoreLocation.findOne({
+          where: {
+            storeId: store.dataValues.id
+          },
+          attributes: ["address1", "city", "zipCode", "latitude", "longitude"]
+        });
+
+        await store.update({
+          address: address.dataValues
+        });
+
+        console.log(`success- ${address.dataValues}`, i);
+      }
+      return res.status(200).json({ message: "success" });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
   return {
     register,
-    login
+    login,
+    migrate2
   };
 };
 
