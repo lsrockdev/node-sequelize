@@ -62,8 +62,9 @@ const OrdersController = () => {
       for (let cart of carts) {
         const storeId = cart.Inventory.Store.id;
         const store = await db.Store.findOne({ where: { id: storeId } });
-        if (!store.stripeToken)
-          throw new Error("Store does not have stripe account!");
+        // For launch, process even if store doesn't have stripe token:
+        // if (!store.stripeToken)
+        //   throw new Error("Store does not have stripe account!");
       }
 
       for (let cart of carts) {
@@ -229,18 +230,31 @@ const OrdersController = () => {
 
         // STRIPE TRANSFER TO STORE
         // Create a Transfer to the store's connected account:
-        const transfer = await stripe.transfers.create({
-          amount: order.totalPaidToStore - order.stripeProcessingFees,
-          currency: "usd",
-          metadata: {
-            orderTotal: order.totalPaidToStore,
-            processingFees: order.stripeProcessingFees
-          },
-          description: `Order #${order.id} for Tapster customer: ${customerId}`,
-          source_transaction: order.stripeChargeId, // Makes sure transfer waits for payment to clear
-          destination: store.stripeToken,
-          transfer_group: transferGroup
-        });
+        if (store.stripeToken) {
+          const transfer = await stripe.transfers.create({
+            amount: order.totalPaidToStore - order.stripeProcessingFees,
+            currency: "usd",
+            metadata: {
+              orderTotal: order.totalPaidToStore,
+              processingFees: order.stripeProcessingFees
+            },
+            description: `Order #${order.id} for Tapster customer: ${customerId}`,
+            source_transaction: order.stripeChargeId, // Makes sure transfer waits for payment to clear
+            destination: store.stripeToken,
+            transfer_group: transferGroup
+          });
+        } else {
+          console.log(
+            "Store doesn't have stripe connect ID. Transfer skipped.",
+            `Order #${order.id} for Tapster customer: ${customerId}, storeId: ${
+              store.id
+            }, transferGroup: ${transferGroup}, 
+            orderTotal: ${order.totalPaidToStore}, processingFees: ${
+              order.stripeProcessingFees
+            }, transfer amount:
+            ${order.totalPaidToStore - order.stripeProcessingFees}`
+          );
+        }
       }
 
       // Remove all carts for this customer
