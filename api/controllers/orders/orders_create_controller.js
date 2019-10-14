@@ -12,6 +12,7 @@ const OrdersController = () => {
     const customerId = req.token.id;
     const slotId = body.slotId;
     let orderIds = [];
+    let couponApplied = false; // Ensures coupon only gets applied one time in multi-store order
 
     // Create an orderCount variable to enforce coupon use for first-time orders only:
     let orderCount = await db.Order.count({
@@ -61,8 +62,9 @@ const OrdersController = () => {
       for (let cart of carts) {
         const storeId = cart.Inventory.Store.id;
         const store = await db.Store.findOne({ where: { id: storeId } });
-        if (!store.stripeToken)
-          throw new Error("Store does not have stripe account!");
+        // For launch, process even if store doesn't have stripe token:
+        // if (!store.stripeToken)
+        //   throw new Error("Store does not have stripe account!");
       }
 
       for (let cart of carts) {
@@ -72,27 +74,30 @@ const OrdersController = () => {
         }
         storeItems[storeId].push(cart);
 
-        // Add price and delivery fees to total
+        // Add price and delivery fees to total:
+
+        // If store isnt' in the totals object yet, add it:
         if (!storeTotals.hasOwnProperty(storeId)) {
           storeTotals[storeId] = { subtotal: 0, deliveryFeeTotal: 0 };
         }
         if (!cart.Inventory.price)
           throw new Error("Inventory items must have a price");
+
+        // Calculate extended price for cart item based on qty:
         const itemTotal = cart.Inventory.price * cart.quantity;
 
-        console.log("==============", cart.Inventory);
-        const deliveryFeeTotal =
+        // Calculate delivery fees for this cart item based on qty:
+        let deliveryFeeTotal =
           parseInt(cart.Inventory.Product.Category.deliveryFee) *
           parseInt(cart.quantity);
-        storeTotals[storeId]["subtotal"] =
-          storeTotals[storeId]["subtotal"] + itemTotal;
-        storeTotals[storeId]["deliveryFeeTotal"] =
-          storeTotals[storeId]["deliveryFeeTotal"] +
-          parseInt(cart.Inventory.Product.Category.deliveryFee);
 
-        // update storeTotals[all]
-        storeTotals.all.subtotal += Number(itemTotal);
-        storeTotals.all.deliveryFeeTotal += Number(deliveryFeeTotal);
+        // Update storeTotals object with this cart item total and delivery fees:
+        storeTotals[storeId]["subtotal"] += itemTotal;
+        storeTotals[storeId]["deliveryFeeTotal"] += deliveryFeeTotal;
+
+        // Update storeTotals[all] with this cart itemTotal and deliveryFees:
+        storeTotals.all.subtotal += parseInt(itemTotal);
+        storeTotals.all.deliveryFeeTotal += parseInt(deliveryFeeTotal);
       }
 
       // STRIPE CHARGE:
@@ -148,16 +153,21 @@ const OrdersController = () => {
         if (
           couponCode &&
           couponCode.toLowerCase() === "tap5" &&
+          !couponApplied &&
           orderCount < 1
         ) {
+          console.log("Applying coupon TAP5 to order");
           // only discount from delivery fees. up to $5
           if (deliveryFeeTotal < 500) {
             discount = parseInt(deliveryFeeTotal);
           } else {
             discount = 500;
           }
-          // increment orderCount so discount only applies once in orders loop:
-          orderCount = orderCount + 1;
+          // flip couponApplied to true so discount only applies once in orders loop:
+          couponApplied = true;
+        } else {
+          // Set discount back to zero if coupon already applied to an order:
+          discount = 0;
         }
 
         // Add up stripe fees: 2.9% + 30 cents:
@@ -220,18 +230,31 @@ const OrdersController = () => {
 
         // STRIPE TRANSFER TO STORE
         // Create a Transfer to the store's connected account:
-        const transfer = await stripe.transfers.create({
-          amount: order.totalPaidToStore - order.stripeProcessingFees,
-          currency: "usd",
-          metadata: {
-            orderTotal: order.totalPaidToStore,
-            processingFees: order.stripeProcessingFees
-          },
-          description: `Order #${order.id} for Tapster customer: ${customerId}`,
-          source_transaction: order.stripeChargeId, // Makes sure transfer waits for payment to clear
-          destination: store.stripeToken,
-          transfer_group: transferGroup
-        });
+        if (store.stripeToken) {
+          const transfer = await stripe.transfers.create({
+            amount: order.totalPaidToStore - order.stripeProcessingFees,
+            currency: "usd",
+            metadata: {
+              orderTotal: order.totalPaidToStore,
+              processingFees: order.stripeProcessingFees
+            },
+            description: `Order #${order.id} for Tapster customer: ${customerId}`,
+            source_transaction: order.stripeChargeId, // Makes sure transfer waits for payment to clear
+            destination: store.stripeToken,
+            transfer_group: transferGroup
+          });
+        } else {
+          console.log(
+            "Store doesn't have stripe connect ID. Transfer skipped.",
+            `Order #${order.id} for Tapster customer: ${customerId}, storeId: ${
+              store.id
+            }, transferGroup: ${transferGroup}, 
+            orderTotal: ${order.totalPaidToStore}, processingFees: ${
+              order.stripeProcessingFees
+            }, transfer amount:
+            ${order.totalPaidToStore - order.stripeProcessingFees}`
+          );
+        }
       }
 
       // Remove all carts for this customer
