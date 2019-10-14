@@ -18,13 +18,13 @@ const OrderUpdateController = () => {
         where: { id: body.orderId }
       });
       if (order.customerId !== req.token.id) {
-        return res.status(401).json({ message: 'Unauthorized access.' });
+        return res.status(401).json({ message: "Unauthorized access." });
       }
       order = await updateOne(body.orderId, {
         pickupAt: slot.start
       });
       // Disallow more deliveries for the Slot if maxDeliveriesAllowed has been reached
-      let deliveriesCount = await db.Order.Count({ where: { slotId: slotId } });
+      let deliveriesCount = await db.Order.count({ where: { slotId: slotId } });
       if (deliveriesCount >= slot.maxDeliveriesAllowed) {
         await db.Slot.update({ isMaxedOut: true }, { where: { id: slotId } });
       }
@@ -53,11 +53,11 @@ const OrderUpdateController = () => {
         where: { id: body.orderId }
       });
       if (order.customerId !== req.token.id) {
-        return res.status(401).json({ message: 'Unauthorized access.' });
+        return res.status(401).json({ message: "Unauthorized access." });
       }
       order = await updateOne(body.orderId, {
         slotId: slotId,
-        status: OrderStatus.Paid, // Reset status back to the first one
+        status: OrderStatus.Paid // Reset status back to the first one
       });
       // Disallow more deliveries for the Slot if maxDeliveriesAllowed has been reached
       let deliveriesCount = await db.Order.Count({ where: { slotId: slotId } });
