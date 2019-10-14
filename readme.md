@@ -14,6 +14,8 @@ DB_USER=root
 DB_PASS=yourpassword
 TWILIO_SID=yourtwiliosid
 TWILIO_AUTH_TOKEN=yourtwilioauthtoken
+STRIPE_SECRET_KEY=yourstripesecretkey
+STRIPE_CLIENT_ID=yourstripeclientid
 ```
 
 - Make sure mysql server is running locally.
