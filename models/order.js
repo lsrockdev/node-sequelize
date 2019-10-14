@@ -102,6 +102,10 @@ module.exports = (sequelize, DataTypes) => {
     Order.belongsTo(models.Driver, {
       foreignKey: "deliveredBy"
     });
+    Order.belongsTo(models.Driver, {
+      as: "ReturnDriver",
+      foreignKey: "returnedBy"
+    });
     Order.belongsTo(models.Slot, {
       foreignKey: "id"
     });
