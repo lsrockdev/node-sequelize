@@ -6,7 +6,8 @@ const InventoryController = () => {
       const inventories = await db.Inventory.findAll({
         where: { storeId, isDeleted: false },
         include: [db.Product, db.Category, db.Size],
-        attributes: ["id", "price", "quantity"]
+        attributes: ["id", "price", "quantity"],
+        order: [["id", "DESC"]]
       });
       return inventories;
     } catch (err) {
