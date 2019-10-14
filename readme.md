@@ -48,6 +48,28 @@ OR
 
 `const prod = await Product.findOne({ where: { id: 1 }, include: [Category] });`
 
+## Stripe connect:
+
+Here's how it works. Abbi sends the store a url to set up the connect account. She replaces the `FRTPSTR5013` with the correct code for that store.
+
+The store clicks it and fills out the stripe connect setup - store name, email, bank account info
+
+Then it hits our api back end, which automatically updates the store record in our DB with the stripe connect id for that store
+
+Then, if successful, redirects to store dashboard login screen
+
+if there's an error, it will error out instead of the store dashboard
+
+Roll it out to all stores by changing the `FRTPSTR5013` in the link sent to each store
+
+### Live URL:
+
+https://connect.stripe.com/express/oauth/authorize?redirect_uri=https://tapster-dev.herokuapp.com/api/store/stripeConnectOath&client_id=ca_Fl2XML9a6RmRF2A9LVFwpzIwZ5LK2GT1&suggested_capabilities[]=transfers&state=FRTPSTR5013
+
+### Test mode URL (for dev/testing):
+
+https://connect.stripe.com/express/oauth/authorize?redirect_uri=http://localhost:3000/api/store/stripeConnectOath&client_id=ca_Fl2XKZbnxlqNakhjBKQ4a9OwYF4ADYxO&suggested_capabilities[]=transfers&state=FRTPSTR5013
+
 ## Heroku deploy:
 
 - Deploy:
