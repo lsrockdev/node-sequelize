@@ -154,7 +154,7 @@ const StoreQueryController = () => {
   };
 
   const getOrdersByStoreId = async (req, res) => {
-    const { storeId } = req.body;
+    const { storeId } = req.query;
     try {
       const orders = await db.Order.findAll({
         where: {
