@@ -89,7 +89,9 @@ const CustomerController = () => {
           ]
         });
         if (!customer) {
-          return res.status(400).json({ message: "Bad Request: User not found" });
+          return res
+            .status(400)
+            .json({ message: "Bad Request: User not found" });
         }
         if (bcryptService().comparePassword(password, customer.password)) {
           const token = authService().issue({ id: customer.id });
@@ -110,6 +112,26 @@ const CustomerController = () => {
     return res
       .status(400)
       .json({ message: "Bad Request: Email or password is wrong" });
+  };
+
+  const migrate1 = async (req, res) => {
+    try {
+      const customers = await Customer.findAll();
+      for (var i = 0; i < customers.length; i++) {
+        const customer = customers[i];
+        const encryptPw = bcryptService().password({
+          password: !!customer.dataValues.password
+            ? customer.dataValues.password
+            : "welcome"
+        });
+        await customer.update({ password: encryptPw });
+        console.log(`success- ${customer.dataValues.password}`, i);
+      }
+      return res.status(200).json({ message: "success" });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
   };
 
   const checkOtp = async (req, res) => {
@@ -248,7 +270,9 @@ const CustomerController = () => {
         }
       });
       if (!!existing) {
-        return res.status(400).json({ message: `${email} is already registered` });
+        return res
+          .status(400)
+          .json({ message: `${email} is already registered` });
       } else {
         // valid unique email:
         filteredAttributes.email = email;
@@ -319,7 +343,8 @@ const CustomerController = () => {
     getCustomerProfile,
     generateBraintreeToken,
     createOtp,
-    checkOtp
+    checkOtp,
+    migrate1
   };
 };
 

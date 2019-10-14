@@ -116,11 +116,30 @@ const DriverAuthController = () => {
     }
   };
 
+  const migrate1 = async (req, res) => {
+    try {
+      const drivers = await Driver.findAll();
+      for (var i = 0; i < drivers.length; i++) {
+        const driver = drivers[i];
+        const encryptPw = bcryptService().password({
+          password: driver.dataValues.password
+        });
+        await driver.update({ password: encryptPw });
+        console.log(`success- ${driver.dataValues.password}`, i);
+      }
+      return res.status(200).json({ message: "success" });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
   return {
     authenticate,
     signUp,
     getProfile,
-    updateProfile
+    updateProfile,
+    migrate1
   };
 };
 
