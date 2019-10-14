@@ -23,4 +23,8 @@ router.post("/updateStore", authPolicy, function(req, res) {
   return storesUpdateController().updateOne(req, res);
 });
 
+router.get("/stripeConnectOath", function(req, res) {
+  return storesUpdateController().stripeConnectOath(req, res);
+});
+
 module.exports = router;
