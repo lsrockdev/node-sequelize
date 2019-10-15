@@ -1,3 +1,4 @@
+require("newrelic"); // Newrelic performance monitoring
 require("dotenv").config(); // Allows access to .env vars throughout entire app
 
 var express = require("express");
