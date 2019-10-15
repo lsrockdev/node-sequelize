@@ -28,6 +28,18 @@ const InventoryController = () => {
     }
   };
 
+  const getOne = async condition => {
+    try {
+      const inventory = await db.Inventory.findOne({
+        where: condition
+      });
+      return inventory;
+    } catch (err) {
+      console.log(err);
+      throw new Error("Internal server error");
+    }
+  };
+
   const addOne = async data => {
     try {
       const inventory = await db.Inventory.create({
@@ -69,6 +81,7 @@ const InventoryController = () => {
   return {
     getAllByStoreId,
     getOneById,
+    getOne,
     addOne,
     updateOne,
     deleteOne
