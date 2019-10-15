@@ -28,7 +28,10 @@ const CategoryController = () => {
                 attributes: ["id", "price", "storeId"],
                 required: true,
                 where: {
-                  storeId: { [Sequelize.Op.in]: JSON.parse(req.query.storeIds) }
+                  storeId: {
+                    [Sequelize.Op.in]: JSON.parse(req.query.storeIds)
+                  },
+                  isDeleted: false
                 }
               }
             ]
