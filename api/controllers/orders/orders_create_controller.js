@@ -2,6 +2,7 @@
 const db = require("../../../api/services/db.service");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const OrderStatus = require("../../constant/enum").OrderStatus;
+const notificationsService = require("../../services/notifications.service");
 
 const OrdersController = () => {
   const placeOrder = async (req, res) => {
@@ -105,6 +106,13 @@ const OrdersController = () => {
       const stripeAmount =
         storeTotals.all.subtotal + storeTotals.all.deliveryFeeTotal + tip;
 
+      // console.log("============", stripeAmount);
+      // console.log(
+      //   "============",
+      //   storeTotals.all.subtotal,
+      //   storeTotals.all.deliveryFeeTotal,
+      //   tip
+      // );
       const charge = await stripe.charges.create({
         amount: Math.ceil(stripeAmount),
         currency: "usd",
@@ -204,7 +212,6 @@ const OrdersController = () => {
             where: { customerId: customerId, id: body.addressId }
           }),
           slotId: slotId
-          // TODO: If keg, Calculate returnedAt data based on noOfReturnDays
           // TODO: If needed in future, calculate tax and add in:
           //    total: subtotal - discount + deliveryFeeTotal + order.tax + body.tip,
           //    totalPaidToStore: subtotal - discount + order.tax,
@@ -273,7 +280,17 @@ const OrdersController = () => {
         include: [db.LineItem]
       });
 
-      // TODO: Scheduling add slotStart, slotEnd
+      // Send SMS message to admins for each order:
+      for (let order of orders) {
+        const store = await db.Store.findOne({ where: { id: order.storeId } });
+        const slot = await db.Slot.findOne({
+          where: { id: order.slotId }
+        });
+        const deliveryDateTime = slot.start;
+
+        let message = `Order No. ${order.id} has been placed to store ${store.name} and delivery date is ${deliveryDateTime}`;
+        await notificationsService().sendSmsToAdmins(message);
+      }
 
       return res.status(200).json({
         Message: "Order successfully created",
