@@ -21,6 +21,7 @@ const CategoryController = () => {
           {
             model: Product,
             order: [["createdAt", "DESC"]],
+            limit: 20,
             include: [
               {
                 model: Inventory,
