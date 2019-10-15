@@ -59,7 +59,8 @@ const ProductController = () => {
             model: Inventory,
             attributes: ["id", "price", "storeId"],
             where: {
-              storeId: { [Sequelize.Op.in]: JSON.parse(req.query.storeIds) }
+              storeId: { [Sequelize.Op.in]: JSON.parse(req.query.storeIds) },
+              isDeleted: false
             }
           }
         ],
@@ -111,9 +112,10 @@ const ProductController = () => {
       const condition = storeIds
         ? {
             productId: id,
-            storeId: { [Sequelize.Op.in]: JSON.parse(storeIds) }
+            storeId: { [Sequelize.Op.in]: JSON.parse(storeIds) },
+            isDeleted: false
           }
-        : { productId: id };
+        : { productId: id, isDeleted: false };
       const inventories = await Inventory.findAll({
         where: condition,
         include: [
