@@ -344,7 +344,14 @@ const OrderQueryController = () => {
                 attributes: ["id", "price"]
               }
             ],
-            attributes: ["id", "price", "extendedPrice", "qty"]
+            attributes: [
+              "id",
+              "price",
+              "extendedPrice",
+              "qty",
+              "deliveryfee",
+              "depositfee"
+            ]
           },
           {
             model: db.Customer,
