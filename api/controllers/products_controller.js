@@ -13,7 +13,8 @@ const ProductController = () => {
         where: {
           isDeleted: false,
           isActive: true
-        }
+        },
+        order: [["id", "DESC"]]
       });
       return res.status(200).json({
         products,
@@ -31,7 +32,8 @@ const ProductController = () => {
       const products = await Product.findAll({
         where: {
           isDeleted: false
-        }
+        },
+        order: [["id", "DESC"]]
       });
       return res.status(200).json({
         products,
@@ -57,10 +59,11 @@ const ProductController = () => {
             model: Inventory,
             attributes: ["id", "price", "storeId"],
             where: {
-              storeId: { [Sequelize.Op.in]: JSON.parse(req.query.storeIds) },
+              storeId: { [Sequelize.Op.in]: JSON.parse(req.query.storeIds) }
             }
           }
-        ]
+        ],
+        order: [["id", "DESC"]]
       });
       const productIds = products.map(product => product.id);
       const favorites = await Favorites.findAll({
@@ -70,7 +73,7 @@ const ProductController = () => {
         },
         include: [
           {
-            model: Product,
+            model: Product
           }
         ]
       });
