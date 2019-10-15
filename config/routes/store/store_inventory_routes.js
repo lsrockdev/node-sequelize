@@ -39,6 +39,22 @@ router.get("/getInventoryById", authPolicy, async function(req, res) {
 router.post("/addInventory", authPolicy, async function(req, res) {
   try {
     const data = req.body;
+
+    const condition = {
+      productId: data.productId,
+      storeId: data.storeId,
+      sizeId: data.sizeId,
+      price: data.price,
+      isDeleted: false
+    };
+    const oldInventory = await inventoryController().getOne(condition);
+    if (!!oldInventory) {
+      return res.status(200).json({
+        message: "Inventory already present",
+        StatusCode: 0
+      });
+    }
+
     const inventory = await inventoryController().addOne(data);
     return res.status(200).json({
       inventory,
