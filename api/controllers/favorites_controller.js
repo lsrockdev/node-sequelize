@@ -19,6 +19,7 @@ const FavoritesController = () => {
               {
                 model: Inventory,
                 attributes: ["id", "price", "storeId"],
+                where: { isDeleted: false }
               }
             ]
           }

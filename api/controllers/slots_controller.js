@@ -3,6 +3,7 @@ const Op = Sequelize.Op;
 const dayjs = require("dayjs");
 
 const db = require("../services/db.service.js");
+const sequelize = require("../../models").sequelize;
 
 const SlotController = () => {
   const getAllSlotsForDay = async (req, res) => {
@@ -77,6 +78,11 @@ const SlotController = () => {
           slotId: slotIds
         }
       });
+
+      await sequelize.query(`update Slots s set isSelectable = false 
+          where (select count(*) as num from DriverSlots where slotId = s.id) = 0
+          and s.id in ('${slotIds.join("', '")}')`);
+
       return res.status(200).json({
         message: "success",
         StatusCode: 1
