@@ -382,6 +382,9 @@ const OrderQueryController = () => {
           {
             model: db.Driver,
             attributes: ["id", "firstName", "lastName", "phone", "email"]
+          },
+          {
+            model: db.Slot
           }
         ],
         attributes: [
