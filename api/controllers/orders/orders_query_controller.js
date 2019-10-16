@@ -84,7 +84,8 @@ const OrderQueryController = () => {
               "gender"
             ]
           }
-        ]
+        ],
+        order: [["id", "DESC"]]
       });
 
       const driverOrders = orders.map(order => {
@@ -159,7 +160,8 @@ const OrderQueryController = () => {
             model: db.Customer,
             attributes: ["email", "phone", "firstName", "lastName"]
           }
-        ]
+        ],
+        order: [["id", "DESC"]]
       });
       return res.status(200).json({
         orders,
@@ -410,6 +412,7 @@ const OrderQueryController = () => {
     try {
       return await db.Order.findAll({
         where: condition,
+        order: [["id", "DESC"]],
         include: [
           db.Driver,
           db.Store,
