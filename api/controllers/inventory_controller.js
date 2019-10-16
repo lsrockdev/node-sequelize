@@ -5,7 +5,13 @@ const InventoryController = () => {
     try {
       const inventories = await db.Inventory.findAll({
         where: { storeId, isDeleted: false },
-        include: [db.Product, db.Category, db.Size],
+        include: [
+          {
+            model: db.Product,
+            include: [db.Category]
+          },
+          db.Size
+        ],
         attributes: ["id", "price", "quantity"],
         order: [["id", "DESC"]]
       });

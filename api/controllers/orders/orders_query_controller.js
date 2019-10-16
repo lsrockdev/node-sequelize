@@ -335,10 +335,6 @@ const OrderQueryController = () => {
                   {
                     model: db.Store,
                     attributes: ["id", "name"]
-                  },
-                  {
-                    model: db.Category,
-                    attributes: ["id", "name", "deliveryFee"]
                   }
                 ],
                 attributes: ["id", "price"]
