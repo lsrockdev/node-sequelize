@@ -176,7 +176,7 @@ const OrderUpdateController = () => {
       const order = await updateOne(body.orderId, {
         status: OrderStatus.Returned,
         kegsReturnedQty: body.kegsReturnedQty,
-        tapsReturnedQtr: body.tapsReturnedQty,
+        tapsReturnedQty: body.tapsReturnedQty,
         returnedBy: body.driverId,
         returnedAt: Date.now()
       });
