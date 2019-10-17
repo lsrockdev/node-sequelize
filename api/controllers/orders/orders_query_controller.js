@@ -410,7 +410,8 @@ const OrderQueryController = () => {
           "kegsDeliveredQty",
           "tapsDeliveredQty",
           "kegsReturnedQty",
-          "tapsReturnedQty"
+          "tapsReturnedQty",
+          "tip"
         ]
       });
       return order;
