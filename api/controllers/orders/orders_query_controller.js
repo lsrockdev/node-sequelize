@@ -88,18 +88,24 @@ const OrderQueryController = () => {
         order: [["id", "DESC"]]
       });
 
-      const driverOrders = orders.map(order => {
-        const kegItems = order.dataValues.LineItems.filter(lineItem => {
-          const kegCategories = ["Small Keg", "Large Keg"];
-          return kegCategories.includes(lineItem.Inventory.Category.name);
-        });
-        const isKeg = kegItems.length > 0;
-        order.dataValues = {
-          ...order.dataValues,
-          isKeg
-        };
-        return order;
-      });
+      const driverOrders = orders
+        .map(order => {
+          const kegItems = order.dataValues.LineItems.filter(lineItem => {
+            const kegCategories = ["Small Keg", "Large Keg"];
+            return kegCategories.includes(lineItem.Inventory.Category.name);
+          });
+          const isKeg = kegItems.length > 0;
+          order.dataValues = {
+            ...order.dataValues,
+            isKeg
+          };
+          return order;
+        })
+        .filter(
+          order =>
+            order.dataValues.status === 0 ||
+            (order.dataValues.status != 0 && order.deliveredBy === driverId)
+        );
 
       return res.status(200).json({
         orders: driverOrders,
