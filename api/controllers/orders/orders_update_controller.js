@@ -82,9 +82,11 @@ const OrderUpdateController = () => {
       const claimedOrder = await db.Order.findOne({
         where: { id: body.orderId }
       });
-      if (!!claimedOrder.dataValues.deliveredBy) {
+      if (
+        !!claimedOrder.dataValues.deliveredBy ||
+        claimedOrder.dataValues.status !== OrderStatus.Paid
+      ) {
         return res.status(200).json({
-          order: order,
           message: "This order just claimed for deliver by other driver.",
           StatusCode: 0
         });
