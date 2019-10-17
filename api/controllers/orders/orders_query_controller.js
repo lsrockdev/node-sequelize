@@ -165,6 +165,9 @@ const OrderQueryController = () => {
           {
             model: db.Customer,
             attributes: ["email", "phone", "firstName", "lastName"]
+          },
+          {
+            model: db.Slot
           }
         ],
         order: [["id", "DESC"]]
