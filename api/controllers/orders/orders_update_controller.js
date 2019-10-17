@@ -57,6 +57,7 @@ const OrderUpdateController = () => {
       }
       order = await updateOne(body.orderId, {
         slotId: slotId,
+        deliveredBy: null,
         status: OrderStatus.Paid // Reset status back to the first one
       });
       // Disallow more deliveries for the Slot if maxDeliveriesAllowed has been reached

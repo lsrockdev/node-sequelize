@@ -10,8 +10,7 @@ const CategoryController = () => {
     try {
       const categories = await Category.findAll({
         where: {
-          isDeleted: false,
-          isActive: true
+          isDeleted: false
         },
         include: [
           {
@@ -53,8 +52,7 @@ const CategoryController = () => {
     try {
       const categories = await Category.findAll({
         where: {
-          isDeleted: false,
-          isActive: true
+          isDeleted: false
         },
         include: [
           {
