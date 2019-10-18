@@ -3,6 +3,7 @@ const db = require("../../../api/services/db.service");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const OrderStatus = require("../../constant/enum").OrderStatus;
 const notificationsService = require("../../services/notifications.service");
+const dayjs = require("dayjs");
 
 const OrdersController = () => {
   const placeOrder = async (req, res) => {
@@ -280,16 +281,26 @@ const OrdersController = () => {
         include: [db.LineItem]
       });
 
-      // Send SMS message to admins for each order:
+      // Send SMS messages for each order:
       for (let order of orders) {
         const store = await db.Store.findOne({ where: { id: order.storeId } });
         const slot = await db.Slot.findOne({
           where: { id: order.slotId }
         });
-        const deliveryDateTime = slot.start;
+        const deliveryDateTime = dayjs(slot.start).format(
+          "dddd MM/DD/YYYY [at] h:mma"
+        );
 
+        // Notify admins via SMS:
         let message = `Order No. ${order.id} has been placed to store ${store.name} and delivery date is ${deliveryDateTime}`;
         await notificationsService().sendSmsToAdmins(message);
+
+        // Notify customer via SMS:
+        let customerMessage = `Your Tapster order #${order.id} for ${store.name} has been received.`;
+        await notificationsService().sendOrderStatusUpdateToCustomer(
+          customerId,
+          customerMessage
+        );
       }
 
       return res.status(200).json({
