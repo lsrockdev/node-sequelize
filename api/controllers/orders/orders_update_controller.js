@@ -2,6 +2,7 @@ const Sequelize = require("sequelize");
 const db = require("../../../api/services/db.service");
 const OrderStatus = require("../../constant/enum").OrderStatus;
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const notificationsService = require("../../services/notifications.service");
 
 const OrderUpdateController = () => {
   const schedulePickUp = async (req, res) => {
@@ -83,6 +84,14 @@ const OrderUpdateController = () => {
         status: OrderStatus.ClaimDeliver,
         deliveredBy: driverId
       });
+
+      // Notify customer via SMS:
+      let customerMessage = `Your Tapster order #${order.id} has been assigned to a driver.`;
+      await notificationsService().sendOrderStatusUpdateToCustomer(
+        order.customerId,
+        customerMessage
+      );
+
       return res.status(200).json({
         order: order,
         message: "Update Successfull",
@@ -139,6 +148,14 @@ const OrderUpdateController = () => {
         deliveredBy: driverId,
         deliveredAt: Date.now()
       });
+
+      // Notify customer via SMS:
+      let customerMessage = `Your Tapster order #${order.id} has been delivered.`;
+      await notificationsService().sendOrderStatusUpdateToCustomer(
+        order.customerId,
+        customerMessage
+      );
+
       return res.status(200).json({
         order: order,
         message: "Update Successfull",
