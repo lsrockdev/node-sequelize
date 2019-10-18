@@ -304,7 +304,9 @@ const OrderQueryController = () => {
           "kegsDeliveredQty",
           "tapsDeliveredQty",
           "kegsReturnedQty",
-          "tapsReturnedQty"
+          "tapsReturnedQty",
+          "instructions",
+          "gift"
         ]
       });
       return res.status(200).json({
@@ -411,7 +413,9 @@ const OrderQueryController = () => {
           "tapsDeliveredQty",
           "kegsReturnedQty",
           "tapsReturnedQty",
-          "tip"
+          "tip",
+          "instructions",
+          "gift"
         ]
       });
       return order;
