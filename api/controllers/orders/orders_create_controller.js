@@ -198,6 +198,7 @@ const OrdersController = () => {
           status: OrderStatus.Paid, // Paid
           discount: discount,
           instructions: body.instructions,
+          gift: body.gift,
           kegsDeliveredQty: totalKegs,
           tapsDeliveredQty: totalKegs,
           stripeToken: body.stripeToken,

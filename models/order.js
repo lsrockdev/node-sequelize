@@ -78,13 +78,14 @@ module.exports = (sequelize, DataTypes) => {
       stripeCardType: DataTypes.STRING,
       stripePaymentAmount: DataTypes.INTEGER,
       stripeProcessingFees: DataTypes.INTEGER,
-      instructions: {
+      instructions: DataTypes.TEXT,
+      gift: {
         type: DataTypes.TEXT,
         get: function() {
-          return JSON.parse(this.getDataValue("instructions"));
+          return JSON.parse(this.getDataValue("gift"));
         },
         set: function(value) {
-          return this.setDataValue("instructions", JSON.stringify(value));
+          return this.setDataValue("gift", JSON.stringify(value));
         }
       },
       stripeChargeId: DataTypes.STRING,
