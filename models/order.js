@@ -108,10 +108,7 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "returnedBy"
     });
     Order.belongsTo(models.Slot);
-    Order.belongsTo(models.Store, {
-      foreignKey: "id",
-      sourceKey: "storeId"
-    });
+    Order.belongsTo(models.Store);
     Order.hasMany(models.LineItem);
     // Order.belongsToMany(models.Product, { through: models.LineItem });
     Order.belongsToMany(models.Inventory, { through: models.LineItem });
