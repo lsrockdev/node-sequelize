@@ -11,7 +11,8 @@ const DriverAuthController = () => {
       let driver = await Driver.findOne({
         where: {
           code,
-          isActive: true
+          isActive: true,
+          isDeleted: false
         }
       });
       if (!driver) {

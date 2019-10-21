@@ -252,10 +252,6 @@ const OrderQueryController = () => {
                   {
                     model: db.Product,
                     attributes: ["id", "name", "description"]
-                  },
-                  {
-                    model: db.Store,
-                    attributes: ["id", "name"]
                   }
                 ],
                 attributes: ["id"]
@@ -289,6 +285,9 @@ const OrderQueryController = () => {
               "secondaryContact",
               "secondaryContactName"
             ]
+          },
+          {
+            model: db.Store
           }
         ],
         attributes: [
