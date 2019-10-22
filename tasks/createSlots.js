@@ -5,7 +5,7 @@ const db = require("../api/services/db.service.js");
 seedSlotRecordsIntoDb();
 
 async function seedSlotRecordsIntoDb() {
-  let days = 7;
+  let days = 14;
   let minutesInterval = 30;
 
   let maxDeliveriesPerSlot = await db.Setting.findOne({
