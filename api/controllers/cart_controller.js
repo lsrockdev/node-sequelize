@@ -25,7 +25,7 @@ const CartController = () => {
                 include: [
                   {
                     model: Category,
-                    attributes: ["id", "deliveryFee"],
+                    attributes: ["id", "name", "deliveryFee"],
                   }
                 ]
               },
@@ -110,7 +110,7 @@ const CartController = () => {
                 include: [
                   {
                     model: Category,
-                    attributes: ["id", "deliveryFee"],
+                    attributes: ["id", "name", "deliveryFee"],
                   }
                 ]
               },
@@ -147,7 +147,7 @@ const CartController = () => {
                 include: [
                   {
                     model: Category,
-                    attributes: ["id", "deliveryFee"],
+                    attributes: ["id", "name", "deliveryFee"],
                   }
                 ]
               },
