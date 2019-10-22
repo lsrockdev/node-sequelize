@@ -27,8 +27,11 @@ const SlotController = () => {
         ]
       });
 
+      const orderLagMinutes = await db.Setting.findOne({ where: { name: "orderLagMinutes" } });
+
       return res.status(200).json({
-        slots: slots,
+        orderLagMinutes,
+        slots,
         message: "success",
         StatusCode: 1
       });
