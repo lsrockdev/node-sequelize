@@ -57,6 +57,10 @@ const OrderQueryController = () => {
             ],
             attributes: ["id"]
           },
+          {
+            model: db.Slot,
+            attributes: ["start"]
+          },
           db.Store,
           {
             model: db.Customer,
@@ -258,6 +262,10 @@ const OrderQueryController = () => {
               }
             ],
             attributes: ["id", "price", "qty"]
+          },
+          {
+            model: db.Slot,
+            attributes: ["start"]
           },
           {
             model: db.Customer,
