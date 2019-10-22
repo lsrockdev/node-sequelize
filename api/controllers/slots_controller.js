@@ -153,8 +153,9 @@ const SlotController = () => {
     }
   };
 
-  function startsOnDay(day) {
-    let requestedDate = dayjs(day);
+  async function startsOnDay(day) {
+    const orderLagMinutes = await db.Setting.findOne({ where: { name: "orderLagMinutes" } });
+    let requestedDate = dayjs(day).add(orderLagMinutes || 0, "minutes");
     let nextDate = requestedDate.add(1, "day");
     let dateFormat = "YYYY-MM-DD";
     let conditions = {
