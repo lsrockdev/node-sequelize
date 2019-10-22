@@ -45,7 +45,7 @@ const OrdersController = () => {
                 include: [
                   {
                     model: db.Category,
-                    attributes: ["id", "deliveryFee"]
+                    attributes: ["id", "name", "deliveryFee"]
                   }
                 ]
               },
