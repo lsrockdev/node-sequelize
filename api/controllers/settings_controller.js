@@ -1,4 +1,7 @@
 const db = require("../services/db.service.js");
+var Sequelize = require("sequelize");
+const Op = Sequelize.Op;
+const dayjs = require("dayjs");
 
 const SettingsController = () => {
   const getAll = async (req, res) => {
@@ -45,6 +48,13 @@ const SettingsController = () => {
       } else {
         await db.Setting.create(body);
       }
+
+      // Update and check each slot if updating maxDeliveriesAllowed:
+      if (body.name === "maxDeliveriesAllowed") {
+        const maxDeliveriesAllowed = body.value;
+        await updateAndCheckMaxForEachSlot(maxDeliveriesAllowed);
+      }
+
       return res.status(200).json({
         message: "success",
         StatusCode: 1
@@ -54,6 +64,36 @@ const SettingsController = () => {
       return res.status(500).json({ message: "Internal server error" });
     }
   };
+
+  async function updateAndCheckMaxForEachSlot(maxDeliveriesAllowed) {
+    let requestedDate = dayjs(Date.now()).toDate();
+    // let requestedDate = "2019-09-27 10:55:44"; // for testing
+
+    const slots = await db.Slot.findAll({
+      where: {
+        start: {
+          [Op.gte]: requestedDate
+        }
+      }
+    });
+
+    for (let slot of slots) {
+      // Disallow more deliveries for the Slot if maxDeliveriesAllowed has been reached
+      let deliveriesCount = await db.Order.count({
+        where: { slotId: slot.id }
+      });
+
+      if (deliveriesCount >= maxDeliveriesAllowed) {
+        await db.Slot.update(
+          { isMaxedOut: true, isSelectable: false, maxDeliveriesAllowed },
+          { where: { id: slot.id } }
+        );
+      } else {
+        // Update maxDeliveries Allowed for the slot:
+        await slot.update({ maxDeliveriesAllowed, isMaxedOut: false });
+      }
+    }
+  }
 
   return {
     getAll,

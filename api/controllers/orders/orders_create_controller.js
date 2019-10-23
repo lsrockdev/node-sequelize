@@ -234,7 +234,10 @@ const OrdersController = () => {
         });
         let slot = await db.Slot.findOne({ where: { id: slotId } });
         if (deliveriesCount >= slot.maxDeliveriesAllowed) {
-          await db.Slot.update({ isMaxedOut: true }, { where: { id: slotId } });
+          await db.Slot.update(
+            { isMaxedOut: true, isSelectable: false },
+            { where: { id: slotId } }
+          );
         }
 
         // STRIPE TRANSFER TO STORE
