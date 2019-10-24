@@ -16,6 +16,7 @@ TWILIO_SID=yourtwiliosid
 TWILIO_AUTH_TOKEN=yourtwilioauthtoken
 STRIPE_SECRET_KEY=yourstripesecretkey
 STRIPE_CLIENT_ID=yourstripeclientid
+ADMIN_SMS_NUMBER=+1-847-239-2189
 ```
 
 - Make sure mysql server is running locally.
