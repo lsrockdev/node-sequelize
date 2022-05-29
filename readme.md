@@ -1,4 +1,4 @@
-# Tapster Server
+# Node.js + Sequelize
 
 Node/Express API for Tapster apps and dashboards
 
